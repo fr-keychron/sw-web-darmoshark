@@ -34,6 +34,8 @@ export class BaseLayoutMouseComponent implements OnInit {
 	public workMode: number;
 	public leftLock: string;
 	public deviceOptions: Array<{ label: string; value: number }> = [];
+	public ConfigList = [1,2,3,4,5]
+	public Profile = 1
 	ngOnInit() {
 		this.leftLock = localStorage.getItem('leftLock')
 		if (this.hidDevices) {
@@ -204,4 +206,8 @@ export class BaseLayoutMouseComponent implements OnInit {
 		$e.preventDefault()
 	}
 
+	public setConfig(e:number) {
+		console.log(e);
+		
+	}
 }

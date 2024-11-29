@@ -6,7 +6,7 @@ import { GOptionComponent } from './option.component';
     selector: 'g-select',
     template: `
         <div class="g-select" (click)="toggleDropdown($event)" [ngStyle]="{'text-align': gCenter ? 'center' : 'left'}">
-            <div class="g-select-box" tabindex="0" (blur)="onBlur()">
+            <div class="g-select-box" tabindex="0"  >
                 <span>{{ getSelectedLabel() | translate}}</span>
                 <div class="arrow"></div>
             </div>

@@ -1,114 +1,109 @@
 {
-    "name": "Keychron M3 mini",
-    "type": "mouse",
-    "size": [
-      517,
-      1001
-    ],
-    "keys": [
-      {
-        "x": 1265,
-        "y": 279,
-        "dir": "left",
-        "index": 0,
-        "custom": true,
-        "w": 570
-      },
-      {
-        "x": 1626,
-        "y": 361,
-        "w": 650,
-        "dir": "right",
-        "custom": true,
-        "index": 2
-      },
-      {
-        "x": 1616,
-        "y": 621,
-        "w": 667,
-        "dir": "right",
-        "custom": true,
-        "index": 1
-      },
-      {
-        "x": 1074,
-        "y": 1064,
-        "w": 400,
-        "dir": "left",
-        "custom": true,
-        "index": 3
-      },
-      {
-        "x": 1143,
-        "y": 1431,
-        "w": 460,
-        "dir": "left",
-        "custom": true,
-        "index": 4
-      },
-      {
-        "x": 1527,
-        "y": 512,
-        "w": 830,
-        "dir": "left",
-        "custom": true,
-        "index": 14,
-        "name": "upScroll"
-      },
-      {
-        "x": 1636,
-        "y": 787,
-        "w": 940,
-        "dir": "left",
-        "custom": true,
-        "index": 13,
-        "name": "downScroll"
-      }
-    ],
-    "dpi": {
-      "limit": [
-        100,
-        26000
-      ],
-      "level": [
-        400,
-        800,
-        1600,
-        3200,
-        5000
-      ],
-      "colors": [
-        "#fff",
-        "#12ff00",
-        "#0060ff",
-        "#dda635",
-        "#ff0000"
-      ],
-      "reportRate": [
-        {
-          "value": 125,
-          "color": "#fff"
-        },
-        {
-          "value": 500,
-          "color": "#0060ff"
-        },
-        {
-          "value": 1000,
-          "color": "#ff0000"
-        }
-      ]
+  "name": "Darnoshark-M3-4k",
+  "type": "mouse",
+  "size": [
+    517,
+    1001
+  ],
+  "keys": [
+    {
+      "x": 168,
+      "y": 68,
+      "dir": "left",
+      "index": 0,
+      "custom": true,
+      "w": 241
     },
-    "sys": {
-      "lod": [
-        {
-          "index": 1,
-          "value": "1.0mm"
-        },
-        {
-          "index": 2,
-          "value": "2.0mm"
-        }
-      ]
+    {
+      "x": 326,
+      "y": 68,
+      "w": 241,
+      "dir": "right",
+      "custom": true,
+      "index": 2
+    },
+    {
+      "x": 255,
+      "y": 191,
+      "w": 314,
+      "dir": "right",
+      "custom": true,
+      "index": 1
+    },
+    {
+      "x": 0,
+      "y": 412,
+      "w": 80,
+      "dir": "left",
+      "custom": true,
+      "index": 4
+    },
+    {
+      "x": 0,
+      "y": 567,
+      "w": 80,
+      "dir": "left",
+      "custom": true,
+      "index": 3
+    },
+    {
+      "x": 255,
+      "y": 140,
+      "w": 330,
+      "dir": "left",
+      "custom": true,
+      "index": 14,
+      "title": "upScroll",
+      "name": "onRoller"
+    },
+    {
+      "x": 255,
+      "y": 248,
+      "w": 331,
+      "dir": "left",
+      "custom": true,
+      "index": 13,
+      "title": "downScroll",
+      "name": "underRoller"
     }
+  ],
+  "dpi": {
+    "limit": [
+      50,
+      30000
+    ],
+    "level": [
+      400,
+      800,
+      1600,
+      3200,
+      4800
+    ],
+    "reportRate": [
+      {
+        "value": 125,
+        "color": "#fff"
+      },
+      {
+        "value": 500,
+        "color": "#12ff00"
+      },
+      {
+        "value": 1000,
+        "color": "#0060ff"
+      }
+    ]
+  },
+  "sys": {
+    "lod": [
+      {
+        "index": 1,
+        "value": "1.0mm"
+      },
+      {
+        "index": 2,
+        "value": "2.0mm"
+      }
+    ]
   }
+}

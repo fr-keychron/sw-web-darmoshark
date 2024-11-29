@@ -40,8 +40,21 @@
 			</div>
 		</div> 
 		<div class="device-connected-bottom">
-			<div class="device-botton-box g-flex g-justify-evenly">
-				
+			<div class="device-botton-box g-flex g-justify-end g-item-center">
+				<!-- <div class="icon_square"></div>
+				<div class="device-connected-select">
+					<g-select
+					[(ngModel)]="Profile" 
+					[gCenter]="false"
+					(ngModelChange)="setConfig($event)"
+				>
+					<g-option *ngFor="let option of ConfigList" 
+						[gLabel]="('macro.config'| translate) + '0' + option" 
+						[gValue]="option"
+					>
+					</g-option>
+				</g-select> 
+				</div> -->
 				<div class="icon_square"></div>
 				<button class="button-bule">
 					<span class="icon-reset icon-button"></span>

@@ -247,19 +247,39 @@
             position: relative;
             & > .device-botton-box {
                 width: 54.266rem;
-                display: flex;
-                justify-content: flex-end;
+                height: 2rem;
                 border-bottom: 1px solid $global-blue;
                 padding-bottom: 0.333rem;
                 padding-right: 6.666rem;
                 position: absolute;
                 bottom: 0.666rem;
                 right: 5.933rem;
+                & > .device-connected-select {
+                    width: 8.6rem;
+                }
             }
             .icon_square {
                 margin: 0 0.666rem;
             }
             
         }
+    }
+}
+
+.device-connected-select ::ng-deep .g-select {
+    height: 1.333rem;
+    line-height: 1.233rem;
+    font-size: 0.933rem;
+    & > .g-select-box {
+        border: 1px solid white;
+        padding-left: .666rem;
+        &:hover {
+            box-shadow: 0;
+            border-bottom: 1px solid $global-border-blue;
+        }
+    }
+    & > .g-options {
+        top: 0;
+        bottom: 100%;
     }
 }
