@@ -1,0 +1,22 @@
+<div class="slider-container" (click)="onTrackClick($event)" *ngIf="type === 'Track'">
+    <div class="slider-track" >
+        <div class="slider-progress" [style.width.%]="progress"></div>
+        <div
+            class="slider-handle"
+            [style.left.%]="progress"
+            (mousedown)="onMouseDown($event)"
+            (touchstart)="onTrackClick($event)"
+        ></div>
+    </div>
+</div>
+<div class="slider-container" (click)="onTrackClick($event)" *ngIf="type === 'Thumb'">
+    <div class="slider-track-Thumb" >
+        <div class="slider-progress" [style.width.%]="progress"></div>
+        <div
+            class="slider-handle"
+            [style.left]="'calc(' + progress + '% - 9px)'"
+            (mousedown)="onMouseDown($event)"
+            (touchstart)="onTrackClick($event)"
+        ></div>
+    </div>
+</div>

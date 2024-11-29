@@ -1,0 +1,110 @@
+@import "src/styles.scss";
+
+
+
+.keymap-unconnected {
+    width: 100%;
+    height: 4.118rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    background: $global-dark-gray;
+
+    & > .loading {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: $global-dark-gray;
+        color: #fff;
+        font-size: 0.765rem
+    }
+
+    & > .keymap-unconnected-wrapper {
+        border: 1px dashed $global-border-color;
+        border-radius: 5px;
+        transition: all .1s linear;
+        cursor: pointer;
+        user-select: none;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+        text-align: center;
+        line-height: 4.118rem;
+
+        & > span {
+            color: $global-fc-gray;
+            font-size: 0.824rem;
+
+            &:not(:last-child) {
+                margin-right: 0.294rem;
+            }
+        }
+    }
+}
+
+.device-connected {
+    width: 100%;
+    height: 4.333rem;
+    background-color: rgba(0,0,0,0.4);
+    color: $global-border-blue;
+    padding: 1rem .666rem;
+    padding-bottom: 1rem;
+    position: relative;
+    .battery-container {
+        width: 3rem;
+        height: 1.6rem;
+        border: 3px solid #00FFFD;
+        border-radius: 0.333rem;
+        position: relative;
+        margin-right: .4rem;
+        &::after {
+            content: "";
+            width: 0.333rem;
+            height: 0.666rem;
+            background-color: #00FFFD;
+            position: absolute;
+            border-radius: 42%;
+            top: 50%;
+            right: -6px;
+            transform: translateY(-50%);
+        }
+        & > .battery-level {
+            width: 50%;
+            height: calc(100% - 2px);
+            background-color: #00FFFD;
+            border-radius: 2px 0 0 2px;
+            margin: 1px;
+            position: absolute;
+        }
+    }
+    
+   
+    .connect-type {
+        width: 6rem;
+        height: 1.46rem;
+        border: 1px solid $global-border-blue;
+        border-radius: .333rem;
+        text-align: center;
+        line-height: 1.3rem;
+    }
+    &::after {
+        content: '';
+        width: calc(100% - 1.332rem);
+        height: 0;
+        position: absolute;
+        bottom: 1rem;
+        border-bottom: 1px solid $global-border-blue;
+    }
+}
+.mock-device {
+    width: 80%;
+}

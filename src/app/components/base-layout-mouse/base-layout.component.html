@@ -1,0 +1,64 @@
+<div class='base-layout-wrapper g-scroll-bar'>
+	<!-- 加载图 -->
+	<div class='device-unconnected' *ngIf="!currentHidDevice">
+		<c-loading/>
+	</div> 
+
+	<div class='device-connected' *ngIf="currentHidDevice && showCover">
+		<div class="device-connected-top  g-flex g-justify-between g-item-center" (click)="bodyClick($event)">
+			<div class="left" (click)="$event.stopPropagation()"  *ngIf="left">
+				<ng-container *ngTemplateOutlet="left"></ng-container>
+			</div>
+			<div class="middle g-flex g-item-center g-justify-center" [class]="!right ? 'middle-left g-justify-end' : ''">
+				<div>
+					<img [src]="cover" #coverImage>
+					<ng-container *ngIf="jsonConf && showMouseButton">
+						<div *ngFor="let item of keys, let i = index"
+						     class="mouse-key-button"
+						     [ngStyle]="item.style"
+						     [ngClass]="{
+									'mouse-key-active': (leftLock === '1' && i === 0) ? false : item.index === mouseKeyActive, 
+									'disabled': leftLock === '1' && i === 0
+								 }"
+						     (click)="(leftLock === '1' && i === 0) ? false : activeMouseKey($event, item.index)"
+						>
+							<div [ngStyle]="item.line"></div>
+							<div [ngStyle]="item.text" class="g-flex g-item-center g-justify-between">
+								<div class="icon_square"></div>
+								<span>
+        							{{(item.name && !item.keyKeep) ? (('mouse.key_basic.'+item.name) | translate) : (('mouse.button' | translate) +" "+ (i+1))}}
+								</span>
+								<ng-container *ngTemplateOutlet="textAttach;context: { key: item }"></ng-container>
+							</div>
+						</div>
+ 
+					</ng-container>
+				</div>
+			</div>
+			<div class="right"  *ngIf="right">
+				<ng-container *ngTemplateOutlet="right"></ng-container> 
+			</div>
+		</div> 
+		<div class="device-connected-bottom">
+			<div class="device-botton-box g-flex g-justify-evenly">
+				
+				<div class="icon_square"></div>
+				<button class="button-bule">
+					<span class="icon-reset icon-button"></span>
+					重置
+				</button>
+				<div class="icon_square"></div>
+				<button class="button-bule">
+					<span class="icon-import icon-button"></span>
+					导出
+				</button>
+				<div class="icon_square"></div>
+				<button class="button-bule">
+					<span class="icon-export icon-button"></span>
+					导入
+				</button> 
+			</div>
+			
+	</div> 
+	</div>
+</div>

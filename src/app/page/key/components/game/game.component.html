@@ -1,0 +1,67 @@
+<div class="game-content">
+	<div class="g-flex g-justify-between g-item-center">
+		<div class="game-title g-flex g-item-center">
+			<span class="icon_square"></span>
+			{{ 'mouse.key.7' | translate}}
+		</div>
+		<div class="sumit-btn" (click)="submit()">
+			<span>{{ 'common.save' | translate }}</span>
+		</div>
+	</div>
+	<div class="frequency-content">
+		<div class="game-select g-flex g-item-center g-justify-between" >
+			<g-select
+				class="game-type-select"
+				[ngClass]="{ 'game-active-select': keyType }"
+				[(ngModel)]="keyType" 
+				[gCenter]="false"
+			>
+				<g-option gLabel="mouse.key_game.mouse" [gValue]='1'></g-option>
+				<g-option gLabel="mouse.key_game.key" [gValue]='2'></g-option>
+			</g-select>
+			<span>键值</span>
+			<g-select
+				*ngIf="keyType == 1" 
+				class="game-key-select"
+				[ngClass]="{ 'game-active-select': currentSelectKey }"
+				[(ngModel)]="currentSelectKey" 
+				[gCenter]="false" 
+				(ngModelChange)="setKey($event)"
+			>
+				<g-option
+					 *ngFor="let option of mouseCodes " 
+					[gLabel]="'mouse.key_game.' + option.name" 
+					[gValue]="option.code"
+				>	
+				</g-option>
+			</g-select>
+			<g-select
+				*ngIf="keyType == 2" 
+				class="game-key-select"
+				[ngClass]="{ 'game-active-select': keyActive }"
+				[(ngModel)]="currentSelectKey" 
+				[gCenter]="false" 
+				(ngModelChange)="setKey($event)"
+			>
+				<g-option
+					 *ngFor="let option of keyCodes " 
+					[gLabel]="option.name" 
+					[gValue]="option.code"
+					[useInnerHTML]="true"
+				>	
+				</g-option>
+			</g-select>
+		</div>
+		<div class="game-input g-flex g-item-center g-justify-between">
+			<span>{{ 'mouse.key_game.count' | translate }}</span>
+			<input type="text" (input)="countChange($event)" [(ngModel)]="count" placeholder="1~9999">
+			<span>{{ 'mouse.key_game.rate' | translate }}</span>
+			<div>
+				<input type="text" (input)="rateChange($event)" [(ngModel)]="rate" placeholder="10~1000">
+				<span>ms</span>
+			</div>
+			
+		</div>
+	</div>
+		
+</div>

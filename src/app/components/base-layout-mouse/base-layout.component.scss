@@ -1,0 +1,265 @@
+@import "src/styles.scss";
+
+.base-layout-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    & > .device-unconnected {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    & > .device-connected {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+        & > .device-connected-top {
+            width: 100%;
+            min-width: 30rem;
+            height: 100%;
+            display: flex;
+            user-select: none;
+
+            & > .left {
+                position: relative;
+                height: 100%;
+                z-index: 1;
+            }
+
+            & > .middle {
+                width: 100%;
+                height: 100%; 
+                flex-direction: row;
+                user-select: none;
+                padding-top: 6.2rem;
+                padding-bottom: 7rem;
+                & .battery-container {
+                    width: 2.667rem;
+                    height: 1.333rem;
+                    background: #ccc;
+                    margin: 2.4rem auto 0.667rem auto;
+                    position: relative;
+                    border-radius: 0.133rem;
+
+                    &:after {
+                        content: '';
+                        display: block;
+                        width: 0.333rem;
+                        height: 0.667rem;
+                        position: absolute;
+                        right: -0.333rem;
+                        background: #ccc;
+                        border-radius: 0 0.133rem 0.133rem 0;
+                        top: 50%;
+                        margin-top: -0.333rem;
+                    }
+
+                    & > .battery-level {
+                        width: 100%;
+                        height: 100%;
+                        position: relative;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: center;
+                        align-items: center;
+
+                        & > img {
+                            display: block;
+                            height: 1rem;
+                            width: auto;
+                            position: relative;
+                            z-index: 2;
+                        }
+
+                        & > span {
+                            position: relative;
+                            z-index: 2;
+                            color: #fff;
+                            text-align: center;
+                            line-height: 20px;
+                            width: 100%;
+                            font-size: 12px;
+                            display: inline-block;
+                        }
+
+                        & > div {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            border-radius: 2px;
+                            width: 100%;
+                            height: 100%;
+                            background: #4ccc00;
+                        }
+
+                        & > .charge {
+                            background-image: linear-gradient(to right, #62a836, #4ccc00) !important;
+                            animation: charging 10s linear infinite
+                        }
+
+                        @keyframes charging {
+                            0% {
+                                filter: hue-rotate(0)
+                            }
+                            50% {
+                                filter: hue-rotate(180deg);
+                            }
+                            100% {
+                                filter: hue-rotate(0deg);
+                            }
+                        }
+                    }
+                }
+
+                & .mouse-key-active {
+                    div:nth-child(2) {
+                        background: url(../../../assets/icon/bg-key-active.png) !important;
+                        position: relative;
+                        &::after {
+                            content: '';  
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            right: 0;
+                            bottom: 0;
+                            background: rgba($global-border-blue, 0.9);
+                            z-index: 1;
+                            mix-blend-mode: color;
+                        }
+                    }
+                }
+
+                & .mouse-key-button {
+                    position: absolute;
+                    border: 2px solid $global-border-blue;
+                    border-radius: 30%;
+                    box-sizing: border-box;
+                    transition: all .2s linear;
+                    & > div:nth-child(2):hover {
+                        box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+                    }
+
+                    & > div:nth-of-type(1) {
+                        height: 0.118rem;
+                        background: $global-border-blue;
+                        position: absolute;
+                        top: 50%;
+                        margin-top: -0.059rem;
+                        transition: all .2s linear;
+                    }
+
+                    & > div:nth-of-type(2) {
+                        position: absolute;
+                        padding: 0 .16rem;
+                        min-width: 5rem;
+                        height: 1.666rem;
+                        background: $global-bg-gray;
+                        text-align: center;
+                        font-size: 1rem;
+                        border-radius: 0.294rem;
+                        border: 1px solid $global-border-blue;
+                        color: $global-fc-white;
+                        word-break: break-word;
+                        cursor: pointer;
+                        transition: all .2s linear;
+                    }
+                }
+                & .disabled{
+                    & > div:nth-of-type(2) {
+                        cursor: not-allowed;
+                    }
+                    &:hover {
+                        opacity: 1;
+                    }
+                }
+
+                & > div {
+                    height: 100%;
+                    position: relative;
+
+                    & > img {
+                        display: block;
+                        height: 100%;
+                        width: auto;
+                        user-select: none;
+                    }
+                }
+            }
+            // & > .middle-left {
+            //     margin-right: 3.2rem;
+            //     justify-content: flex-end;
+            // }
+            & > .right {
+                position: relative;
+                height: 100%;
+                font-size: .875rem;
+                .tips-wrapper {
+                    width: 12rem;
+                    margin-right: 1.588rem;
+                    .mouse-name{
+                        border-radius: 5px;
+                        color: $global-fc-white;
+                        background: $global-light-gray;
+                        text-align: center;
+                        padding: .5rem;
+                        margin-bottom: 1rem;
+                    }
+                    .tips-item{
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-between;
+                        .ele-left {
+                            position: relative;
+                            width: 40%;
+                            
+                            span{
+                                font-size: .6rem
+                            }
+                            .ele-num {
+                                position: absolute;
+                                top: 2px;
+                                z-index: 1;
+                                font-size: 0.7rem;
+                                left: 0;
+                                right: 0;
+                            }
+                        }
+                        .ele-right {
+                            width: 60%;
+                        }
+                    }
+                }
+            }
+        }
+        & > .device-connected-bottom {
+            width: 100%;
+            height: 100%;
+            min-width: 5rem;
+            display: flex;
+            position: relative;
+            & > .device-botton-box {
+                width: 54.266rem;
+                display: flex;
+                justify-content: flex-end;
+                border-bottom: 1px solid $global-blue;
+                padding-bottom: 0.333rem;
+                padding-right: 6.666rem;
+                position: absolute;
+                bottom: 0.666rem;
+                right: 5.933rem;
+            }
+            .icon_square {
+                margin: 0 0.666rem;
+            }
+            
+        }
+    }
+}

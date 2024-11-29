@@ -1,0 +1,258 @@
+<base-layout-mouse [left]="left" [showMouseButton]="false">
+  <ng-template #left>
+    <div class="g-flex">
+        <div>
+            <div class="container-title g-flex g-justify-between g-item-center">
+                <span>宏自定义编辑器</span>
+                <span class="icon-macroEdit"></span>
+            </div>
+            <div class="g-flex">
+                <!-- 宏设置 -->
+                <div class="macro-setting g-flex g-flex-col">
+                <div class="g-flex g-item-center">
+                        <span class="icon_square"></span>
+                        {{'宏名称' | translate}}
+                </div>
+                <div class="macro-content g-flex g-flex-col g-item-evenly">
+                    <ul class="macro-list">
+                    <li [ngClass]="{active: item.id === currentMacro.id}" *ngFor="let item of macroList, let i = index"
+                        (click)="!recordFlag && selectMacro(item)">
+                        <ng-container *ngIf="nameVisible && item.id === currentMacro.id; else elseTemplate">
+                        <input class="macro-li-input" nz-input [(ngModel)]="newName" autofocus>
+                        <div class="list-btn">
+                            <span (click)="rename()">{{'common.save' | translate}}</span>
+                            <span (click)="nameVisible = false;newName = ''">{{'common.cancel' | translate}}</span>
+                        </div>
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                        <span>{{item.name || 'M' + (i + 1)}}</span>
+                        <span *ngIf="!recordFlag">
+                            <i 
+                                nz-popover 
+                                nzPopoverTrigger="click" 
+                                [nzPopoverContent]="macroOperate"
+                                nzPopoverPlacement="right"
+                            >
+                            ···
+                            </i>
+                        </span>
+                        </ng-template>
+                    </li>
+                    <ng-template #macroOperate>
+                        <div (click)="rename()">{{'macro.rename' | translate}}</div>
+                        <div (click)="delMarco()">
+                        {{'common.delete' | translate}}
+                        </div>
+                    </ng-template>
+                    </ul>
+                    <div class="macro-btns g-flex g-justify-between">
+                        <div class="macro-btn" [ngClass]="{disabled: recordFlag}" (click)="!recordFlag && addMacroItem()">
+                            {{'common.create' | translate}}
+                        </div>
+                        <div class="macro-btn" [ngClass]="{disabled: recordFlag}">
+                            {{'common.import' | translate}}
+                        <input class="upload" type="file" accept=".json" (change)="handleImport($event)">
+                        </div>
+                        <div class="macro-btn" [ngClass]="{disabled: recordFlag}" (click)="handleExport()">
+                            {{'common.export' | translate}}
+                        </div>
+                    </div>
+                </div>
+                </div>
+                <div class="macro-eventList">
+                    <div class="g-flex g-item-center">
+                        <span class="icon_square"></span>
+                        {{'事件列表' | translate}}
+                    </div>
+                    <div class="record-right">
+                        <div nz-row class="record-header">
+                            <div nz-col nzSpan="7">{{'序号' | translate}}</div>
+                            <div nz-col nzSpan="7">{{'macro.event' | translate}}</div>
+                            <div nz-col nzSpan="7">{{'macro.value' | translate}}</div>
+                            <div nz-col nzSpan="3"></div>
+                        </div>
+                        <div class="record-list" #macro *ngIf="currentMacro">
+                            <div nz-row 
+                                *ngFor="let item of currentMacro.list, let i = index" 
+                                (click)="currentRecordClick(item)"
+                                [ngClass]="{record_list_active: currentRecord?.id === item.id }"
+                            >
+                                    <div nz-col nzSpan="7">{{i+1}}</div>
+                                    <div nz-col nzSpan="7">
+                                        <div class="record-list-icons g-flex g-item-end g-justify-center">
+                                            <span *ngIf="item.type=== 'keyboard'" [ngClass]="currentRecord?.id === item.id ? 'icon-eventKeyborad-active' : 'icon-eventKeyborad'"></span>
+                                            <span *ngIf="item.type=== 'mouse'"  [ngClass]="currentRecord?.id === item.id ? 'icon-eventMouse-active' : 'icon-eventMouse'"></span>
+                                            <span *ngIf="item.type=== 'delay'" [ngClass]="currentRecord?.id === item.id ? 'icon-eventDelay-active' : 'icon-eventDelay'"></span>
+                                        </div>
+                                        
+                                    </div>
+                                    <div nz-col nzSpan="7">{{getValueText(item)}}</div>
+                                    <div class="operate" nz-col nzSpan="3" *ngIf="!recordFlag" (click)="toggleEventRemoveModal(item)">
+                                        ···
+                                        <div class="event-remove" *ngIf="activeItem === item">
+                                            <div (click)="moveItem('top')">{{'置顶' | translate}}</div>
+                                            <div (click)="moveItem('up')">{{'向上移动' | translate}}</div>
+                                            <div (click)="moveItem('down')">{{'向下移动' | translate}}</div>
+                                            <div (click)="moveItem('bottom')">{{'置底' | translate}}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="record-btns g-flex g-justify-end">
+                            <div class="record-btn" 
+                                [ngClass]="{disabled: recordFlag || !currentRecord}" 
+                                (click)="onInsertModal(true)" 
+                                (blur)="onInsertModal(false)"
+                                tabindex="0"
+                            >
+                                {{'插入' | translate}}
+                            </div>
+                            <div class="record-btn" [ngClass]="{disabled: recordFlag || !currentRecord}" (click)="delEvent()">
+                                {{'删除' | translate}}
+                            </div>
+                            <div class="insert-modal" *ngIf="insertModal" >
+                                <span (click)="insert('mouse')">插入鼠标事件</span>
+                                <span (click)="insert('keyboard')">插入键盘事件</span>
+                                <span (click)="insert('delay')">插入事件延迟</span>
+                            </div>
+                        </div>
+                  </div>
+            </div>
+        </div>
+        <!-- 宏录制 -->
+        <div>
+            <div class="macro-record" >
+                <div class="g-flex g-item-center">
+                    <span class="icon_square"></span>
+                    <div class="record-btn g-flex g-item-center" [ngClass]="{REC: recordFlag}" (click)="currentMacro.id && handleRecord()">
+                        <i [ngClass]="!recordFlag ? 'icon-startREC' : 'icon-endREC'"></i>
+                        <span>{{(recordFlag ? 'macro.endREC' : 'macro.startREC') | translate}}</span>
+                    </div>
+                </div>
+                <!-- 延时设置 -->
+                <div class="set-item">
+                    <div class="g-flex g-item-center">
+                        <span class="icon_square"></span>
+                        <div class="set-name">{{'macro.delaySet' | translate}}</div>
+                    </div>
+                    <div class="radio-blue">
+                        <div class="radio-box g-flex g-item-center">
+                            <input type="radio" [disabled]="recordFlag" [(ngModel)]="currentMacro.delayMode" value="none" name="delayMode" (ngModelChange)="handleDelay($event)"/>
+                            <label>{{'没有延时' | translate}}</label>
+                        </div>
+                        <div class="radio-box g-flex g-item-center">
+                            <input type="radio" [disabled]="recordFlag"  [(ngModel)]="currentMacro.delayMode" value="dynamic" name="delayMode" (ngModelChange)="handleDelay($event)"/>
+                            <label>{{'录制延时' | translate}}</label>
+                        </div>
+                        <div class="radio-box g-flex g-item-center">
+                            <input type="radio" [disabled]="recordFlag"  [(ngModel)]="currentMacro.delayMode" value="fixed" name="delayMode" (ngModelChange)="handleDelay($event)"/>
+                            <label>{{'统一延时' | translate}}</label>
+                        </div>
+                    </div>
+                    <div class="set-delay set-delay-ms g-flex" *ngIf="currentMacro.delayMode === 'fixed'" >
+                        <input
+                            type="number"
+                            [(ngModel)]="currentMacro.delayNum" 
+                            [min]="1"
+                            [max]="65535"
+                            (keydown)="validateInput($event)" 
+                            (input)="checkRange($event,65535,1,currentMacro,'delayNum')" 
+                        />
+                        <span>ms</span>
+                    </div>
+                </div>
+                <!-- 循环设置 -->
+                <div class="set-item">
+                    <div class="g-flex g-item-center">
+                        <span class="icon_square"></span>
+                        <div class="set-name">{{'macro.loopSet' | translate}}</div>
+                    </div>
+                    <div class="radio-blue">
+                        <div class="radio-box g-flex g-item-center">
+                            <input type="radio" [disabled]="recordFlag" [(ngModel)]="currentMacro.loopMode" value="loopTilRelease" name="loopMode" (ngModelChange)="handleLoop($event)"/>
+                            <label>{{'循环直到按键松开' | translate}}</label>
+                        </div>
+                        <div class="radio-box g-flex g-item-center">
+                            <input type="radio" [disabled]="recordFlag"  [(ngModel)]="currentMacro.loopMode" value="loopTilPress" name="loopMode" (ngModelChange)="handleLoop($event)"/>
+                            <label>{{'循环直到任意键按下' | translate}}</label>
+                        </div>
+                        <div class="radio-box g-flex g-item-center">
+                            <input type="radio" [disabled]="recordFlag"  [(ngModel)]="currentMacro.loopMode" value="loopTilDoublePress" name="loopMode" (ngModelChange)="handleLoop($event)"/>
+                            <label>{{'循环直到触发键再次按下' | translate}}</label>
+                        </div>
+                        <div class="radio-box g-flex g-item-center">
+                            <input type="radio" [disabled]="recordFlag" [(ngModel)]="currentMacro.loopMode" value="loopTilCount" name="loopMode" (ngModelChange)="handleLoop($event)"/>
+                            <label>{{'macro.loopCount' | translate}}</label>
+                        </div>
+                    </div>
+                    <div class="set-delay g-flex" *ngIf="currentMacro.loopMode === 'loopTilCount'" >
+                        <input
+                            type="number"
+                            [(ngModel)]="currentMacro.loopNum" 
+                            (ngModelChange)="save()" 
+                            (keydown)="validateInput($event)"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="macro-event" *ngIf="currentRecord">
+                <div class="g-flex g-item-center">
+                    <span class="icon_square"></span>
+                    <span>{{'事件属性' | translate}}</span>
+                </div>
+                <div class="event-select">
+                    <g-select
+                        class="macro-select"
+                        [(ngModel)]="currentRecord.type" 
+                        [gCenter]="false"
+                    >
+                        <g-option *ngIf="currentRecord.type === 'mouse'" gLabel="插入鼠标事件"  gValue="mouse" ></g-option>
+                        <g-option *ngIf="currentRecord.type === 'keyboard'"  gLabel="插入键盘事件"  gValue="keyboard" ></g-option>
+                        <g-option *ngIf="currentRecord.type === 'delay'"  gLabel="插入时间延迟"  gValue="delay" ></g-option>
+                    </g-select>
+                    <span (click)="moveItem('up')" class="icon-upMove"></span>
+                </div> 
+                <div class="g-flex g-item-center">
+                    <span class="icon_square"></span>
+                    <span>{{'事件值' | translate}}</span>
+                </div>
+                <div class="event-select">
+                    <g-select
+                        class="macro-select"
+                        [ngClass]="{hidden: currentRecord.type !=='mouse' }"
+                        [(ngModel)]="currentRecord.key.value" 
+                        [gCenter]="false"
+                        (ngModelChange)="setEvent()" 
+                    >
+                        <g-option *ngFor="let option of macroMouses" 
+                            [gLabel]="'mouse.key_game.' + option.key" 
+                            [gValue]="option.value"
+                        >
+                        </g-option>
+                    </g-select>
+                    <div 
+                        #enter
+                        (click)="recEvent()"
+                        class="select-item" 
+                        [ngClass]="{hidden: currentRecord.type !=='keyboard', rec: recflag }"
+                    >
+                        {{currentRecord.key.name}}
+                    </div>
+                    <input
+                        type="number"
+                        [(ngModel)]="currentRecord.key.value"
+                        [ngClass]="{ hidden: currentRecord.type !== 'delay' }"
+                        [min]="0"
+                        [max]="65535"
+                        (keydown)="validateInput($event)" 
+                        (input)="checkRange($event,65535,0,currentRecord.key,'value')" 
+                    />
+                    <span class="icon-downMove" (click)="moveItem('down')"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+  </ng-template>
+</base-layout-mouse>

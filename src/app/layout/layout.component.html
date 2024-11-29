@@ -1,0 +1,16 @@
+<div class="layout-container">
+	<div class="layout-top"></div>
+	<div class="layout-bottom">
+		<div class="layout-left" *ngIf="!layoutConf.leftHide">
+			<layout-aside/>
+		</div>
+		<div class="layout-right">
+			<div class="layout-right-body" [@fadeAnimation]="outlet.isActivated ? outlet.activatedRoute : ''">
+				<router-outlet #outlet="outlet"></router-outlet>
+			</div>
+		</div>
+	</div>
+</div>
+<div class='loading-wrapper g-flex g-justify-center g-item-center' *ngIf="globalLoading">
+	<nz-spin nzSimple></nz-spin>
+</div>

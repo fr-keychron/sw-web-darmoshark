@@ -1,0 +1,138 @@
+@import "src/styles.scss";
+
+.bluetooth-cotent{
+  height: 100%;
+  width: 100%;
+
+  // .bluetooth-wrapper{
+  //   min-height: 20rem;
+  //   margin-top: calc(50vh - 10rem);
+  //   text-align: center;
+  //   color: $global-fc-white;
+  //   .bluetooth-btn{
+  //     margin: 2rem auto 0;
+  //   }
+  // }
+  .bluetooth-btn{
+    width: 10rem;
+    height: 3rem;
+    background: $global-orange;
+    color: $global-fc-white;
+    transition: all .2s linear;
+    text-align: center;
+    line-height: 3rem;
+    border-radius: 0.294rem;
+    cursor: pointer;
+    padding: 0 0.533rem;
+    // margin: 0 1rem;
+    &:hover {
+        opacity: 0.5 ;
+    }
+  }
+  .update-wrapper{
+    min-height: 18rem;
+    display: flex;
+    justify-content: center;
+    margin-top: calc(50vh - 18rem);
+    .update-msg{
+      .msg-box {
+        width: 26rem;
+        color: $global-fc-white;
+        padding: 1.5rem;
+        background-color: $global-light-gray;
+        border-radius: 0.294rem;
+        margin-bottom: 1rem;
+        .msg-item{
+          display: flex;
+          margin: .5rem 0;
+          div:first-child{
+            width: 40%;
+          }
+          div:last-child{
+            width: 60%;
+          }
+        }
+        .loading{
+          border-radius: 2px;
+          transition: opacity 1s ease;
+          animation: gradient 6s ease infinite;
+          background: linear-gradient(
+            270deg, 
+            rgba(99, 99, 99, 0.4),
+            rgba(185, 185, 185, 0.6), 
+            rgba(255, 255, 255, 0.8), 
+            rgba(185, 185, 185, 0.6), 
+            rgba(99, 99, 99, 0.4),
+          ) center / cover;
+          background-size: 800% 800%;
+        }
+      }
+    }
+    .update-tips{
+      color: $global-fc-white;
+      text-align: center;
+    }
+  }
+  .tips{
+    color: $global-fc-white;
+    padding: 1rem 0;
+    width: 26rem;
+  }
+  .btns{
+    width: 26rem;
+    display: flex;
+    justify-content: center;
+    padding-top: 2rem;
+    margin: auto;
+  }
+  .hidden{
+    display: none !important;
+  }
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.upload-rate {
+  color: $global-fc-white !important;
+}
+.rate-num{
+  color: $global-fc-white;
+  text-align: center;
+}
+.upload-btn{
+  margin: 1rem auto;
+  width: 100%;
+  height: 10rem;
+  text-align: center;
+  position: relative;
+  background-color: $global-dark-gray;
+  color: $global-fc-white;
+  cursor: pointer;
+  padding-top: 2rem;
+  border: 1px dashed #bababa;
+  &:hover{
+    opacity: .5;
+  }
+  span{
+    font-size: 3rem;
+  }
+  input {
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    width: 100%;
+    height: 100%;
+  }
+}

@@ -1,0 +1,29 @@
+<div class="aside-container g-flex g-flex-col g-justify-start g-item-start">
+	<div class="aside-header">
+		<common-connect-devices (type)="switchType($event)"/>
+	</div>
+	<div class="aside-body g-flex g-flex-col"> 
+		<ng-container  *ngFor="let item of menus">	 
+			<div class="aside-menu g-flex g-item-center"
+					[class]="{'aside-menu-active': currentRoutePath === item.path}"
+					(click)="nav(item.path)"
+					(mouseover)="item.isHovered = true" 
+					(mouseleave)="item.isHovered = false"
+			>
+				<div class="aside-menu-content"  >
+					<span>{{ item.i18n | translate }}</span>
+					<img src="assets/menu/accessories.png" alt="">
+				</div>
+				<div class="aside-menu-icon">
+					<img 
+						[src]="item.isHovered || currentRoutePath === item.path ? item.icon : item.icon.replace('assets/menu/', 'assets/menu/_')" 
+						alt=""
+					>
+				</div>
+				<div class="aside-menu-piece"></div>
+			</div>
+		</ng-container>  
+	</div>
+
+</div>
+

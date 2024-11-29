@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Launcher</title>
+	<base href="./">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="keywords" content="Keychron Launcher">
+	<meta name="description" content="Keychron Launcher can give you endless possibilities for key remapping, macros, shortcuts, and more. Now you can easily customize each key with the Keychron Launcher web app."/>
+	<link rel="icon" type="image/x-icon" href="favicon.ico">
+	<style>
+		#loading {
+			position: absolute;
+			top:0;
+			width:100vw ;
+			height: 100vh;
+			left:0;
+			z-index: 99;
+			background: #fff;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			opacity: 1;
+		}
+
+		#loading > img {
+			display:  block;
+			width: auto;
+			height: 100%;
+		}
+		.loading-anima {
+			animation-name: fade;
+			animation-duration: .3s;
+			animation-timing-function: linear;
+			animation-fill-mode: forwards;
+		}
+		@keyframes fade {
+			0% { opacity:  1 }
+			100% { opacity:  0 }
+        }
+	</style>
+</head>
+<body>
+<app-root></app-root>
+
+</body>
+</html>

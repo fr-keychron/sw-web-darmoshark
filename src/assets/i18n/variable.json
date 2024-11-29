@@ -1,0 +1,14 @@
+{
+	"skn": {
+		"firmware.tips.13": {
+			"zh-CN": "2.在键盘断联的情况下，拔下空格键帽，按住下方金属圆点开关不放，并且同时用USB线让键盘与电脑连接，让键盘进入准备更新固件的状态。",
+			"en-US": "2. With the keyboard disconnected, unplug the space bar cap, press and hold the metal dot switch at the bottom, and at the same time, use the USB cable to connect the keyboard to the computer, so that the keyboard enters the state of preparing to update the firmware."
+		}
+	},
+	"908923670": {
+		"magnet.distance.profile_help": {
+			"zh-CN": "按下\"fn\" + \"p\" + \"1/2/3\"能够快速切换配置1/2/3",
+			"en-US": "press \"fn\" + \"p\" + \"1/2/3\", you can quickly switch the profile to profile 1/2/3"
+		}
+	}
+}

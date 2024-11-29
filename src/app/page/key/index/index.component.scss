@@ -1,0 +1,118 @@
+@import "src/styles.scss";
+
+.default-bgcolor {
+    background: $global-bg-gray;
+}
+
+.active-bgcolor {
+    background: url(../../../../assets/icon/bg-select.png);
+    position: relative;
+    &::after {
+        content: '';  
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 128, 38, 0.3);
+        z-index: 1;
+        mix-blend-mode: color;
+    }
+}
+
+.key-container{
+    width: 12.2rem;
+    margin: .666rem 1rem 0 1rem;
+    padding: 0 .333rem .666rem;
+    color: $global-fc-white;
+    background: $global-bg-gray;
+    border-radius: .333rem;
+    border: 1px solid $global-border-blue;
+    align-self: flex-start;
+    .key-item {
+        border-radius: 5px;
+        border: 1px solid $global-border-blue;
+        margin-top: 1.266rem;
+        font-weight: 200;
+        
+        .key-text{
+            position: relative;
+            z-index: 2;
+            margin-left: 1rem;
+        }
+        &:hover {
+            box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+        }
+        &:first-child {
+            margin-top: 0.8rem;
+        }
+    }
+    .disabled{
+        cursor: not-allowed;
+    }
+    &:last-child {
+        margin-bottom: 0;
+    }
+} 
+
+.fun-container {
+    width: 20rem;
+    margin: .666rem 1rem 0 0;
+    padding: 0 .333rem .666rem;
+    color: $global-fc-white;
+    background: $global-bg-black;
+    border-radius: .333rem;
+    border: 1px solid $global-border-blue;
+    & > .fun-content {
+        & > .fun-item {
+            color: $global-border-blue;
+            margin-top: .5rem;
+            
+            & > .fun-select {
+                margin-top: 0.2rem;
+                margin-bottom: 0.666rem;
+                display: flex;
+            }
+            & > button {
+                width: 100%;
+                display: flex;
+                border: 1px solid #00FFFD;
+                border-radius: .333rem;
+                padding: 0 .333rem;
+                margin-top: 0.2rem;
+                margin-bottom: 0.666rem;
+                color: #fff;
+                background-color: transparent;
+                &:hover {
+                    box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+                }
+            }
+            & > .active-bgfun{
+                background: url(../../../../assets/icon/bg-select.png);
+            }
+            .icon_hint {
+                margin-right: 0.666rem ;
+            }
+        }
+    }
+    
+}
+.nested-container {
+    & > .keyboard-content {
+        position: relative;
+        top: 67.6%;
+    }
+    & > .game-content {
+        position: relative;
+        top: 77%;
+    }
+}
+
+.active-bgfun ::ng-deep .g-select-box{
+    background: url(../../../../assets/icon/bg-select.png) !important;
+}
+
+.icon-reset-bule {
+    margin-right: .5rem;
+    margin-top: 0.1rem;
+}

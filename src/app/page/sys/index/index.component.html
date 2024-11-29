@@ -1,0 +1,109 @@
+<base-layout-mouse [left]="left" [showMouseButton]="false" >
+    <ng-template #left>
+        <div class="container-title g-flex g-justify-between g-item-center">
+            <span>系统设置</span>
+            <span class="icon-sys"></span>
+        </div>
+        <div class="sys-container">
+            <div class="item-container">
+                <div class="g-flex g-item-center g-justify-between">
+                    <div class="g-flex g-item-center ">
+                        <span class="icon_square"></span>
+                        {{'mouse.tip.2'  | translate}} 
+                    </div>
+                    <span>{{ mouseInfo.mouse }}</span>
+                </div>
+            </div>
+            <div class="item-container">
+                <div class="g-flex g-item-center g-justify-between">
+                    <div class="g-flex g-item-center ">
+                        <span class="icon_square"></span>
+                        {{'接收器固件版本'  | translate}} 
+                    </div>
+                    <span>{{ mouseInfo.receiver }}</span>
+                </div>
+            </div>
+            <div class="item-container">
+                <div class="g-flex g-item-center g-justify-between">
+                    <div class="g-flex g-item-center ">
+                        <span class="icon_square"></span>
+                        {{'驱动版本'  | translate}} 
+                    </div>
+                    <span>{{ mouseInfo.launcher }}</span>
+                </div>
+            </div>
+            <div class="item-container">
+                <div class="g-flex g-item-center g-justify-between">
+                    <div class="g-flex g-item-center ">
+                        <span class="icon_square"></span>
+                        {{'开机启动'  | translate}} 
+                    </div>
+                </div>
+                <div class="radio-blue">
+                    <input type="radio" [(ngModel)]="isStartUp" [value]="1" name="startUpGroup"/>
+                    <label>开启</label>
+                  
+                    <input type="radio" [(ngModel)]="isStartUp" [value]="2" name="startUpGroup"/>
+                    <label>关闭</label>
+                </div>
+            </div>
+            <div class="item-container">
+                <div class="g-flex g-item-center g-justify-between">
+                    <div class="g-flex g-item-center ">
+                        <span class="icon_square"></span>
+                        {{'语言选择-Language'  | translate}} 
+                    </div>
+                    <div class="lang-select">
+                        <g-select
+                            [(ngModel)]="activeLng" 
+                            [gCenter]="false"
+                            (ngModelChange)="changeLang($event)"
+                        >
+                            <g-option *ngFor="let option of lngEnum" 
+                                [gLabel]="option.label" 
+                                [gValue]="option.value"
+                            >
+                            </g-option>
+                        </g-select> 
+                    </div>
+                </div>
+            </div>
+            <div class="item-container">
+                <div class="g-flex g-item-center g-justify-between">
+                    <div class="g-flex g-item-center ">
+                        <span class="icon_square"></span>
+                        {{'恢复出厂设置'  | translate}} 
+                    </div>
+                    <div class="reset-select" (click)="resetModal = true">恢复</div>
+                </div>
+            </div>
+            <div class="item-container">
+                <div class="g-flex g-item-center g-justify-between">
+                    <div class="g-flex g-item-center ">
+                        <span class="icon_square"></span>
+                        {{'鼠标左键锁'  | translate}} 
+                    </div>
+                </div>
+                <div class="radio-blue">
+                    <input type="radio" [(ngModel)]="leftLock" value="1" name="lockGroup" (ngModelChange)="setLeftLock()"/>
+                    <label>锁定</label>
+                  
+                    <input type="radio" [(ngModel)]="leftLock" value="null" name="lockGroup" (ngModelChange)="setLeftLock()">
+                    <label>解锁</label>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</base-layout-mouse>
+<div class="reset-model"  *ngIf="resetModal">
+    <div class="model-title g-flex g-item-center">
+        <span class="icon_square"></span>
+        {{'恢复出厂设置'  | translate}} 
+    </div>
+    <span>该操作会删除已经保存的数据，是否继续？</span>
+    <div class="model-btns g-flex">
+        <div (click)="reset()">确定</div>
+        <div (click)="resetModal = false">取消</div>
+    </div>
+</div>
+ 

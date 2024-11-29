@@ -1,0 +1,163 @@
+@import "src/styles.scss";
+.dpi-container {
+    width: 33rem;
+    margin: .6rem 0 .6rem 1rem;
+    padding: 0 .666rem .333rem .2rem;
+    color: $global-white;
+    background: $global-bg-gray;
+    border: 1px solid $global-border-blue;
+    border-radius: .333rem;
+
+    & > .dpi-title {
+        margin-top: .333rem;
+        .icon_hint {
+            margin-left: .666rem;
+        }
+    }
+
+    & > .dpi-os {
+        display: flex;
+        margin-top: .4rem;
+        & > .os-left {
+            width: 25%;
+            & > .os-item {
+                display: flex;
+                margin-bottom: .666rem;
+                &:last-child {
+                    margin: 0;
+                }
+                & > .item-left {
+                    width: 1.333rem;
+                    height: 1.333rem;
+                    border-radius: 5px;
+                    margin-right: .2rem;
+                    cursor: pointer;
+                    border: 1px solid $global-border-gray;
+                }
+
+                & > .item-right {
+                    width: 5.4rem;
+                    height: 1.333rem;
+                    line-height: 1.15rem;
+                    border-radius: 5px;
+                    padding-left: .8rem;
+                    border: 1px solid $global-border-gray;
+                    cursor: pointer;
+                    display: flex;
+                    z-index: 2;
+                    &:hover {
+                        border: 1px solid $global-border-blue;
+                        box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+                    }
+                }
+            }
+        }
+
+        .os-right {
+            width: 100%;
+            & > .scale-content {
+                height: 6.666rem;
+                margin-right: 2.8rem;
+            }
+            & > .submit-btn {
+                width: 4rem;
+                height: 1.4rem;
+                line-height: 1.3rem;
+                border-radius: .333rem;
+                text-align: center;
+                cursor: pointer;
+                border: 1px solid $global-border-gray;
+                &:hover {
+                    border: 1px solid $global-border-blue;
+                    box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+                }
+            }
+            .text-levelCount {
+                line-height: 1.2rem;
+                margin-right: .333rem;
+            }
+        }
+    }
+}
+
+.report-container {
+    width: 33rem;
+    margin: .6rem 0 .6rem 1rem;
+    padding: 0 .666rem .333rem .2rem;
+    color: $global-white;
+    background: $global-bg-gray;
+    border: 1px solid $global-border-blue;
+    border-radius: .333rem;
+
+    & > .report-title {
+        margin-top: .333rem;
+        .icon_hint {
+            margin-left: .666rem;
+        }
+    }
+
+    .report-os { 
+        margin-top: 1.1rem;
+        flex-wrap: wrap;
+        & > .os-item {
+            display: flex;
+            margin: 0 2.333rem 1.333rem 0;
+            &:nth-last-child(-n+3) {
+                margin-bottom: .666rem;
+            }
+            & > .item-left {
+                width: 1.333rem;
+                height: 1.333rem;
+                border-radius: 5px;
+                margin-right: .2rem;
+                cursor: pointer;
+                border: 1px solid $global-border-gray;
+                
+            }
+
+            & > .item-right {
+                width: 5.4rem;
+                height: 1.333rem;
+                line-height: 1.15rem;
+                border-radius: 5px;
+                border: 1px solid $global-border-gray;
+                padding-left: .8rem;
+                cursor: pointer;
+                display: flex;
+                z-index: 2;
+                &:hover {
+                    border: 1px solid $global-border-blue;
+                    box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+                }
+            } 
+        }
+    } 
+   
+}
+
+.active-bgcolor {
+    background: url('../../../../assets/icon/bg-key-active.png');
+    border: 1px solid $global-border-blue; 
+}
+
+.dpi-select ::ng-deep .g-select{
+    height: 1.5rem;
+    font-size: .9rem;
+    .g-select-box{
+        height: 1.4rem !important;
+        line-height: 1.3rem;
+        background-color: #0b0b0b;
+        border: 1px solid $global-border-gray;
+        padding-left: 1rem;
+        & > .arrow {
+            top: 45%;
+            right: 8%;
+        }
+        &:hover {
+            border: 1px solid $global-border-blue;
+        }
+    }
+    .g-option {
+        padding-left: 1rem;
+    }
+} 

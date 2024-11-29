@@ -1,0 +1,77 @@
+<div class="bluetooth-cotent" *ngIf="device">
+	<!-- 连接前 -->
+	<div class="update-wrapper" *ngIf="!connectFlag">
+		<div class="update-tips">{{'firmware.tips.0' | translate }}</div>
+	</div>
+	<!-- 连接后 -->
+	<div *ngIf="connectFlag">
+		<div class="update-wrapper">
+			<div class="update-msg">
+
+				<div class="msg-box">
+					<div class="msg-item">
+						<div>{{ 'firmware.info.6' | translate }}:</div>
+						<div [ngClass]="{loading}">{{loading ? '' : firmwareInfo?.productName}}</div>
+					</div>
+					<div class="msg-item">
+						<div>{{ 'firmware.info.currentVersion' | translate }}:</div>
+						<div>{{versionInfo?.fwVersion}}</div>
+					</div>
+				</div>
+
+				<div class="msg-box">
+					<div class="msg-item" [ngClass]="{hidden: nextFlag}">
+						<div>{{ 'firmware.info.7' | translate }}:</div>
+						<div [ngClass]="{loading}">{{loading ? '' : firmwareInfo?.lastedVersion}}</div>
+					</div>
+					<div class="msg-item" [ngClass]="{hidden: nextFlag}">
+						<div>{{ 'firmware.info.8' | translate }}:</div>
+						<div [ngClass]="{loading}">{{loading ? '' : (firmwareInfo?.lastedCreateTime | date:"YYYY-MM-dd")}}</div>
+					</div>
+					<div class="msg-item" [ngClass]="{hidden: !nextFlag}">
+						<div>{{ 'firmware.info.updateVersion' | translate }}:</div>
+						<div [ngClass]="{loading}">{{loading ? '' : firmwareInfo?.lastedVersion}}</div>
+					</div>
+					<div class="msg-item" [ngClass]="{hidden: !nextFlag}">
+						<div>{{ 'firmware.info.updateSize' | translate }}:</div>
+						<div [ngClass]="{loading}">{{loading ? '' : (firmwareInfo?.size + ' KB')}}</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="btns" *ngIf="versionInfo?.fwVersion !== firmwareInfo?.lastedVersion">
+			<div [ngClass]="{hidden: nextFlag}" class="bluetooth-btn" (click)="handleStep()">
+				<span *ngIf="loading" nz-icon nzType="loading" nzTheme="outline"></span>
+				<span *ngIf="!loading">{{ 'firmware.button.2' | translate }}</span>
+			</div>
+			<div [ngClass]="{hidden: !nextFlag}" class="bluetooth-btn" (click)="onUpload()">
+				<span *ngIf="loading" nz-icon nzType="loading" nzTheme="outline"></span>
+				<span *ngIf="!loading">{{ 'firmware.button.5' | translate }}</span>
+			</div>
+		</div>
+	</div>
+</div>
+
+<nz-modal
+		[(nzVisible)]="isVisible"
+		[nzClosable]="false"
+		[nzMaskClosable]="false"
+		[nzFooter]="null"
+		[nzStyle]="{top: '48%', left: '6%'}"
+>
+	<ng-container *nzModalContent>
+		<nz-progress
+				class="upload-rate"
+				*ngIf="rate"
+				[nzPercent]="rate"
+				[nzShowInfo]="false"
+		></nz-progress>
+		<div *ngIf="rate" class="rate-num">{{rate}}%</div>
+		<!-- <div *ngIf="!rate" class="upload-btn">
+		  <span>固件上传区</span>
+		  <input type="file" accept=".bin" (change)="onUpload($event)">
+		</div> -->
+	</ng-container>
+</nz-modal>

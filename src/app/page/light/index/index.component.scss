@@ -1,0 +1,102 @@
+@import "src/styles.scss";
+
+$width: 20rem;
+.light-container-top {
+    width: 32.8rem;
+    // height: 4.6rem;
+    margin: .6rem 0 0 1rem;
+    padding: .333rem;
+    color: $global-white;
+    background: $global-bg-gray;
+    border-radius: .333rem;
+    border: 1px solid $global-border-blue;
+    .light-content{
+        width: 11.8rem;
+        margin-top: .4rem;
+    }
+    .icon-reset-bule {
+        margin-right: .666rem;
+    }
+    
+}
+.light-container-bottom {
+    width: 32.8rem;
+    height: 31.8rem;
+    margin: .6rem 0 0 1rem;
+    padding: .333rem .666rem .333rem;
+    color: $global-white;
+    background: $global-bg-gray;
+    border-radius: .333rem;
+    border: 1px solid $global-border-blue;
+    & > .light-content-top {
+        height: 12.4rem ;
+        .title {
+            margin-top: .666rem;
+        }
+        // 滑块
+        .range-box {
+            width: 14.8rem;
+            height: 3.333rem;
+            margin-bottom: 1.144rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        //色块
+        .color-lump{
+            display: flex;
+            height: 3.333rem;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom:1.144rem;
+            div{
+                width: 1.333rem;
+                height: 1.333rem;
+                border-radius: .333rem;
+                border: 1px solid $global-border-gray;
+                cursor: pointer;
+                &:hover{
+                    opacity: .8;
+                }
+            }
+        }
+        //颜色显示
+        .color-box {
+            width: 3.33rem;
+            height: 3.333rem;
+            border-radius: .333rem;
+            margin-bottom: 5rem;
+            border: 1px solid $global-border-gray;
+        }
+        .rgb{
+            position: absolute;
+            bottom: 0;
+            .rgb-text {
+                display: flex;
+                align-items: center;
+                margin-bottom: 1rem;
+            }
+            .color-btn {
+                width: 4rem;
+                height: 1.4rem;
+                border-radius: .333rem;
+                border: 1px solid $global-border-white;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0 .2rem;
+                position: relative;
+                letter-spacing: 0.1rem;
+                &::after {
+                    content: '';
+                    position: absolute;
+                    left: 1.2rem;
+                    height: 1rem;
+                    width: 0; 
+                    border-right:1px solid $global-border-white;
+                }
+            }
+        }
+    }
+    
+}

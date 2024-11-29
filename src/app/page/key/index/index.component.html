@@ -1,0 +1,245 @@
+<base-layout-mouse 
+    [left]="left"
+    (mouseKey)="mouseKeyClick($event)" 
+    (load)="load($event)"
+    [keyChange]="keyChange"
+>
+  <ng-template #left>
+    <div class="container-title g-flex g-justify-between g-item-center">
+        <span>鼠标按键设置</span>
+        <span class="icon-mouse"></span>
+    </div>
+     <div class="g-flex">
+        <div class="key-container">
+            <div class="key-title g-flex g-justify-between g-item-center ">
+                <div class="g-flex g-item-center">
+                    <span class="icon_square"></span>
+                    {{ 'mouse.key.1' | translate}}
+                </div>
+                <span (click)="resetKey()" class="icon-reset-bule "></span>
+            </div>
+            <div class="key-content">
+                <div 
+                    class="key-item" 
+                    *ngFor="let item of mouseKeys,let i = index" 
+                    (click)="setActive(item.mouseKey,$event)" 
+                    [ngClass]="'key-name' + 
+                    (activeMouseKey === item.mouseKey ? 
+                    ' active-bgcolor' : ' default-bgcolor') + 
+                    (!item?.disabled ? ' hover' : ' disabled')"
+                >
+                    <b class="key-text">
+                        {{item.name ? (('mouse.key_basic.'+item.key) | translate) : (('mouse.button' | translate) +" "+ (i+1))}}
+                    </b>
+                    <b class="key-text">
+                        {{
+                            item.key === 'disabled' ? ('mouse.key.9' | translate) :
+                            item.type === 'mouseMacro' ? ('mouse.key.4' | translate) :
+                            item.type === 'mouseKeyboard'? ('mouse.key.2' | translate) :
+                            item.type === 'mouseGame' ||  item.type === 'keyboardGame' ||  item.type === 'modifierGame' ? ('mouse.key.7' | translate) :
+                            ( 'mouse.key_basic.' + (item.key === 'onRoller' ? 'upScroll' : item.key === 'underRoller' ? 'downScroll' : item.key) | translate) 
+                        }}
+                    </b>
+                
+                </div>
+            </div>
+        </div>
+        <div class="fun-container">
+            <div class="g-flex g-justify-between g-item-center">
+                <div class="g-flex g-item-center">
+                    <span class="icon_square"></span>
+                    {{  activeMouseKey === 7 ? ('mouse.key_basic.onRoller' | translate) :
+                        activeMouseKey === 8 ?('mouse.key_basic.underRoller' | translate):
+                        (('mouse.button' )| translate) + (activeMouseKey+1)}}
+                </div>
+                <span (click)="resetFun()" class="icon-reset-bule "></span>
+            </div>
+            <div class="fun-content">
+                <div class="fun-item">
+                    <div class="g-flex g-item-center">
+                        <span class="icon_square"></span>
+                        基础鼠标功能
+                    </div>
+                    <g-select
+                        class="fun-select"
+                        [(ngModel)]="currentMouseKey" 
+                        [ngClass]="transform(mouseButtons,currentMouseKey)  ? 'active-bgfun' : ''"
+                        [gCenter]="false"
+                        (ngModelChange)="setSelectActive($event)"
+                    >
+                        <g-option *ngFor="let option of mouseButtons" 
+                            [gLabel]="'mouse.key_basic.' + option.key" 
+                            [gValue]="option.value"
+                        >
+                        </g-option>
+                    </g-select> 
+                </div>
+                <div class="fun-item">
+                    <div class="g-flex g-item-center">
+                        <span class="icon_square"></span>
+                        灵敏度
+                    </div>
+                    <g-select
+                        class="fun-select"
+                        [ngClass]="transform(sensitiveAction,currentMouseKey) ? 'active-bgfun' : ''"
+                        [(ngModel)]="currentMouseKey" 
+                        [gCenter]="false"
+                        (ngModelChange)="setSelectActive($event)"
+                    >
+                        <g-option *ngFor="let option of sensitiveAction" 
+                            [gLabel]="'mouse.key_basic.' + option.key" 
+                            [gValue]="option.value"
+                        >
+                        </g-option>
+                    </g-select> 
+                </div>
+                <div class="fun-item">
+                    <div class="g-flex g-item-center">
+                        <span class="icon_square"></span>
+                        多媒体按键
+                    </div>
+                    <g-select
+                        class="fun-select"
+                        [ngClass]="transform(mediaAction,currentMouseKey) ? 'active-bgfun' : ''"
+                        [(ngModel)]="currentMouseKey" 
+                        [gCenter]="false"
+                        (ngModelChange)="setSelectActive($event)"
+                    >
+                        <g-option *ngFor="let option of mediaAction" 
+                            [gLabel]="'mouse.key_basic.' + option.key" 
+                            [gValue]="option.value"
+                        >
+                        </g-option>
+                    </g-select> 
+                </div>
+                <div class="fun-item">
+                    <div class="g-flex g-item-center">
+                        <span class="icon_square"></span>
+                        宏按键
+                    </div>
+                    <g-select
+                        class="fun-select"
+                        [ngClass]="transform(macroList,currentMouseKey)  ? 'active-bgfun' : ''"
+                        [(ngModel)]="currentMouseKey" 
+                        [gCenter]="false"
+                        (ngModelChange)="setMacro($event)"
+                    >
+                        <g-option *ngFor="let option of macroList" 
+                            [gLabel]="option.name" 
+                            [gValue]="option.id"
+                        >
+                        </g-option>
+                    </g-select> 
+                </div>
+                <div class="fun-item">
+                    <div class="g-flex g-item-center">
+                        <span class="icon_square"></span>
+                        系统快捷键
+                    </div>
+                    <g-select
+                        class="fun-select"
+                        [ngClass]="transform(shortcutAction,currentMouseKey)? 'active-bgfun' : ''"
+                        [(ngModel)]="currentMouseKey" 
+                        [gCenter]="false"
+                        (ngModelChange)="setShortcut($event)"
+                    >
+                        <g-option *ngFor="let option of shortcutAction" 
+                            [gLabel]="'mouse.key_basic.' + option.key" 
+                            [gValue]="option.value"
+                        >
+                        </g-option>
+                    </g-select> 
+                </div>
+                <div class="fun-item">
+                    <div class="g-flex g-item-center">
+                        <span class="icon_square"></span>
+                        灯光切换
+                    </div>
+                    <g-select
+                        class="fun-select"
+                        [ngClass]="funKey === 6 ? 'active-bgfun' : ''"
+                        [(ngModel)]="activeMouseFun" 
+                        [gCenter]="false"
+                        (ngModelChange)="setlight($event)"
+                    >
+                        <g-option *ngFor="let option of lightAction" 
+                            [gLabel]="'mouse.key_basic.' + option.key" 
+                            [gValue]="option.value"
+                        >
+                        </g-option>
+                    </g-select> 
+                </div>
+                <div class="fun-item">
+                    <div class="g-flex g-item-center">
+                        <span class="icon_square"></span>
+                        {{ 'mouse.key.2' | translate}}
+                    </div>
+                    <button 
+                        (click)="activeModal = 'combination';"
+                        [ngClass]="currentMouseKey === 'mouseKeyboard' ? 'active-bgfun' : ''"
+                    > 
+                        {{ 'menu.setting' | translate}}
+                    </button>
+                </div>
+                <div class="fun-item">
+                    <div class="g-flex g-item-center g-justify-between">
+                        <div class="g-flex g-item-center">
+                            <span class="icon_square"></span>
+                            {{ 'mouse.key.7' | translate}}
+                        </div>
+                        <span class="icon_hint"></span>
+                    </div>
+                    <button 
+                        (click)="activeModal = 'gameReinforce';"
+                        [ngClass]="currentMouseKey === 'mouseGame' || currentMouseKey === 'keyboardGame' || currentMouseKey === 'modifierGame' ? 'active-bgfun' : ''"
+                    > 
+                        {{ 'menu.setting' | translate}}
+                    </button>
+                </div>
+                <div class="fun-item">
+                    <div class="g-flex g-item-center">
+                        <span class="icon_square"></span>
+                        {{ 'mouse.key.9' | translate}}
+                    </div>
+                    <button 
+                        (click)="setSelectActive(0)"
+                        [ngClass]="!currentMouseKey ? 'active-bgfun' : ''"
+                    > 
+                        {{ 'mouse.key.9' | translate}}
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="nested-container">
+            <mouse-button-keyboard 
+                *ngIf="activeModal === 'combination'" 
+                class="keyboard-content"
+                (update)="load($event)" 
+                [keyChange]="keyChange"
+                [data]="keyConf"
+                [mouseKey]="activeMouseKey" 
+            ></mouse-button-keyboard>
+            <mouse-button-game 
+                class="game-content"
+                *ngIf="activeModal === 'gameReinforce'" 
+                (update)="load($event)" 
+                [keyChange]="keyChange"
+                [data]="keyConf"
+                [mouseKey]="activeMouseKey" 
+            ></mouse-button-game>
+        </div>
+     </div>
+  </ng-template>
+</base-layout-mouse>
+<nz-modal
+    [(nzVisible)]="tipModal"
+    [nzFooter]="null"
+    (nzOnCancel)="tipModal=false"
+    [nzStyle]="{top: '48%'}"
+>
+	<ng-container *nzModalContent>
+    <div class="modal-content">
+      {{"mouse.tip.leftLock" | translate}}
+    </div>
+	</ng-container>
+</nz-modal>

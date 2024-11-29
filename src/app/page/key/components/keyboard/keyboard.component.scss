@@ -1,0 +1,90 @@
+@import "src/styles.scss";
+    
+.mouse-keyboard {
+    min-width: 13.8rem;
+    border: 1px solid $global-border-blue;
+    padding: .1rem .333rem .333rem;
+    border-radius: .333rem;
+    .mouse-content {
+        .keyboard-title {
+            color: $global-border-blue;
+        }
+        .sumit-btn{
+            font-size: .8rem;
+            color: $global-white;
+            border: 1px solid $global-border-blue;
+            width: 2.4rem;
+            height: 1.266rem;
+            line-height: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            &:hover {
+                box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+            }
+        }
+        .key-wrapper{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            .input-item {    
+                width: 100%;
+                position: relative;
+
+                & > input {
+                    height: 1.466rem;
+                    width: 100%;
+                    border: 0;
+                    text-align: center;
+                    outline: none;
+                    font-size: .8rem;
+                    border-radius: .333rem;
+                    cursor: pointer;
+                    border: 1px solid $global-border-blue;
+                    color: $global-border-white;
+                    background: $global-dark;
+                    &::placeholder {
+                        color: #fff;
+                        opacity: 1;
+                    }
+                    &:hover {
+                        box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+                    }
+                } 
+            }
+            .key-item {
+                font-size: .8rem;
+                text-align: center;
+                color: $global-border-white;
+                background: $global-dark;
+                border-radius: .333rem;
+                cursor: pointer;
+                transition: all .3s ease;
+                word-break: break-all;
+                margin-top: .333rem;
+                width: 2.4rem;
+                height: 1.266rem;
+                line-height: 1rem;
+                border: 1px solid $global-border-blue;
+                &:hover {
+                    box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+                }
+            }
+        }
+    }
+    
+    .key-item-active {
+        background: url(../../../../../assets/icon/bg-select.png) !important;
+        position: relative;
+        &::after {
+            content: '';  
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 128, 38, 0.3);  // 半透明的遮罩颜色
+            z-index: 1;
+        }
+    }
+}

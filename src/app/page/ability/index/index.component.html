@@ -1,0 +1,196 @@
+<base-layout-mouse [left]="left" (load)="load($event)" #sysBaseLayout [showMouseButton]="false" >
+    <ng-template #left>
+        <div class="container-title g-flex g-justify-between g-item-center">
+            <span>系统功能设置</span>
+            <span class="icon-ability"></span>
+        </div>
+        <div class="g-flex">
+            <div class="card-container">
+                <!-- lod高度 -->
+                <div class="item-container">
+                    <div class="g-flex g-item-center g-justify-between">
+                        <div class="g-flex g-item-center ">
+                            <span class="icon_square"></span>
+                            {{'mouse.sys.lod'  | translate}} 
+                        </div>
+                        <span 
+                            class="icon_hint"
+                            nz-tooltip
+                            [nzTooltipTitle]="'mouse.dpi.dpiTip' | translate"
+                        ></span>
+                    </div>
+                    <div class="item-content">
+                        <div class="radio-blue">
+                            <div  *ngFor="let lod of lodList">
+                                <input type="radio" [(ngModel)]="lodValue" [value]="lod.index" name="lodValue" (ngModelChange)="submit()"/>
+                                <label>{{lod.value}}</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- sensor画线性能 -->
+                <div class="item-container">
+                    <div class="g-flex g-item-center g-justify-between">
+                        <div class="g-flex g-item-center ">
+                            <span class="icon_square"></span>
+                            {{'mouse.sys.sensor'  | translate}} 
+                        </div>
+                        <span 
+                            class="icon_hint"
+                            nz-tooltip
+                            [nzTooltipTitle]="'mouse.dpi.dpiTip' | translate"
+                        ></span>
+                    </div>
+                    <div class="item-content">
+                        <div class="checkbox-blue">
+                            <input type="checkbox" [(ngModel)]="sensorValue[0]" (ngModelChange)="submit()" />
+                            <label>{{ "mouse.sys.wave" | translate }}</label>
+                          
+                            <input type="checkbox" [(ngModel)]="sensorValue[1]"(ngModelChange)="submit()" />
+                            <label>{{ "mouse.sys.line" | translate }}</label>
+
+                            <input type="checkbox" [(ngModel)]="sensorValue[2]"(ngModelChange)="submit()" />
+                            <label>{{ "Motion Sync开启" | translate }}</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- 滚动方向设置 -->
+                <div class="item-container">
+                    <div class="g-flex g-item-center">
+                        <span class="icon_square"></span>
+                        {{'滚动方向设置'  | translate}} 
+                    </div>
+                    <div class="item-content">
+                        <div class="radio-blue">
+                            <input type="radio" [(ngModel)]="scrollValue" [value]="0" name="scrollValue" (ngModelChange)="submit()"/>
+                            <label>{{ "mouse.sys.forward" | translate }}</label>
+                            <input type="radio" [(ngModel)]="scrollValue" [value]="1" name="scrollValue" (ngModelChange)="submit()"/>
+                            <label>{{ "mouse.sys.backward" | translate }}</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- 电竞模式锁定 -->
+                <div class="item-container">
+                    <div class="g-flex g-item-center g-justify-between">
+                        <div class="g-flex g-item-center ">
+                            <span class="icon_square"></span>
+                            {{'电竞模式'  | translate}} 
+                        </div>
+                        <span 
+                            class="icon_hint"
+                            nz-tooltip
+                            [nzTooltipTitle]="'mouse.dpi.dpiTip' | translate"
+                        ></span>
+                    </div>
+                    <div class="item-content">
+                        <div class="radio-blue">
+                            <input type="radio" [(ngModel)]="eSports" [value]="1" name="eSports" (ngModelChange)="submit()"/>
+                            <label>{{ "打开" | translate }}</label>
+                            <input type="radio" [(ngModel)]="eSports" [value]="0" name="eSports" (ngModelChange)="submit()"/>
+                            <label>{{ "关闭" | translate }}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="scroll-container">
+                <div class="item-container">
+                    <div class="g-flex g-item-center g-justify-between">
+                        <div class="g-flex g-item-center ">
+                            <span class="icon_square"></span>
+                            {{'mouse.sys.lod'  | translate}} 
+                        </div>
+                        <span 
+                            class="icon_hint"
+                            nz-tooltip
+                            [nzTooltipTitle]="'mouse.dpi.dpiTip' | translate"
+                        ></span>
+                    </div>
+                    <div class="item-content g-flex g-item-center">
+                        
+                        慢
+                        <g-slider type="Thumb" [(ngModel)]="mouseSleep" [min]="0" [max]="100" [step]="1" (ngModelChange)="mouseSleepChange()"></g-slider>
+                        快
+                        <div class="slider-number">{{mouseSleep}}</div>
+                    </div>
+                </div>
+                <div class="item-container">
+                    <div class="g-flex g-item-center">
+                        <div class="g-flex g-item-center ">
+                            <span class="icon_square"></span>
+                            {{'滚动速度'  | translate}} 
+                        </div>
+                    </div>
+                    <div class="item-content g-flex">
+                        <div class="radio-blue">
+                            <div>
+                                <input type="radio" [(ngModel)]="scrollType" [value]="0" name="scrollType" (ngModelChange)="submit()"/>
+                                <label>{{ "连续滚动" | translate }}</label>
+                            </div>
+                            <div>
+                                <input type="radio" [(ngModel)]="scrollType" [value]="1" name="scrollType" (ngModelChange)="submit()"/>
+                                <label>{{ "一次滚动一页" | translate }}</label>
+                            </div>
+                        </div>
+                        <div class="scroll-btn">
+                            <div (click)="increment()">+</div>
+                            <input type="number" [ngModel]="dalayTime" min="0" />
+                            <div (click)="decrement()">—</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="item-container">
+                    <div class="g-flex g-item-center">
+                        <div class="g-flex g-item-center ">
+                            <span class="icon_square"></span>
+                            {{'双击速度'  | translate}} 
+                        </div>
+                    </div>
+                    <div class="item-content g-flex g-item-center">
+                        慢
+                        <g-slider type="Thumb" [(ngModel)]="mouseSleep" [min]="0" [max]="100" [step]="1" (ngModelChange)="mouseSleepChange()"></g-slider>
+                        快
+                        <div class="slider-number">{{mouseSleep}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 鼠标系统功能设置 -->
+        
+        <!-- 按键延迟相应设置 -->
+        <div class="delay-container">
+            <div class="delay-container-item g-flex g-justify-between g-item-center">
+                <div class="g-flex g-item-center">
+                    <span class="icon_square"></span>
+                    {{'mouse.sys.delay'  | translate}} 
+                </div>
+                <div class="delay-content">
+                    <div (click)="increment()">+</div>
+                    <input type="number" [(ngModel)]="dalayTime" min="0" (ngModelChange)="submitTime()"/>
+                    <div (click)="decrement()">—</div>
+                </div>
+            </div>
+            <div class="g-flex g-justify-between">
+                <div class="g-flex g-item-center">
+                    <span class="icon_square"></span>
+                    {{'休眠时间设置'  | translate}} 
+                </div>
+                <div class="sleep-content">
+                    <g-select
+                        [(ngModel)]="sleepTime" 
+                        [gCenter]="false"
+                        (ngModelChange)="submitTime()"
+                    >
+                        <g-option [gValue]="60" gLabel="1分钟"></g-option>
+                        <g-option [gValue]="300" gLabel="5分钟"></g-option>
+                        <g-option [gValue]="600" gLabel="10分钟"></g-option>
+                        <g-option [gValue]="1200" gLabel="20分钟"></g-option>
+                        <g-option [gValue]="1500" gLabel="25分钟"></g-option>
+                        <g-option [gValue]="1800" gLabel="30分钟"></g-option>
+                        <g-option [gValue]="2100" gLabel="35分钟"></g-option>
+                        <g-option [gValue]="2400" gLabel="40分钟"></g-option>
+                    </g-select> 
+                </div>
+            </div>
+        </div>
+    </ng-template>
+</base-layout-mouse>

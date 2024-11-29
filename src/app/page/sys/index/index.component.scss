@@ -1,0 +1,90 @@
+@import "src/styles.scss";
+
+.sys-container{
+    width: 33rem;
+    height: 26.2rem;
+    margin: .6rem 1rem 1rem 1rem;
+    padding: 0.2rem;
+    padding-right: 0.6rem;
+    margin-right: 1.5rem;
+    color: $global-white;
+    background: $global-bg-gray;
+    border-radius: .333rem;
+    border: 1px solid $global-border-blue;
+   
+    .item-container{
+        margin-bottom: .5rem;
+        &:nth-child(3) {
+            margin-bottom: 3rem;
+        }
+        &:nth-child(5), &:nth-child(6)  {
+            margin-bottom: 2.2rem;
+        }
+        .lang-select {
+            width: 11.8rem;
+        }
+        .reset-select {
+            width: 11.8rem;
+            border: 1px solid $global-border-blue;
+            border-radius: .333rem;
+            background: $global-bg-black;
+            padding-left: .333rem;
+            &:hover {
+                box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+            }
+        }
+        .radio-blue {
+            margin-top: .2rem;
+            margin-bottom: 1.6rem;
+            label {
+                margin: 0 6.6rem 0 0.6rem;
+            }
+        }
+    }
+}
+
+.reset-model {
+    width: 44.4rem;
+    height: 23.8rem;
+    border-radius: .333rem;
+    color: $global-white;
+    border: 1px solid $global-border-blue;
+    background: url('../../../../assets/icon/bg-reset.png') no-repeat right center;
+    background-color: rgba(0, 0, 0, 0.9);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    padding: 6.6rem 0 0 1rem;
+    transform: translate(-50%, -50%);
+    & > .model-title {
+        width: 10.2rem;
+        margin-bottom: .6rem;
+        font-size: 1.333rem;
+        border-bottom: 2px solid $global-border-blue;
+    }
+    & > .model-btns {
+        margin-top: 1rem;
+        & > div {
+            width: 5.6rem;
+            height: 1.333rem;
+            border: 1px solid $global-border-gray;
+            border-radius: .333rem;
+            padding: 0 1.4rem;
+            margin-right: 2rem;
+            line-height: 1.2rem;
+            text-align: center;
+            &:hover {
+                color: $global-border-blue;
+                border: 1px solid $global-border-blue;
+                box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+            }
+        }
+    }
+      
+} 
+.lang-select ::ng-deep .g-options{
+    max-height: 8.8rem;
+}
+.lang-select ::ng-deep .g-option{
+    border: 0;
+}

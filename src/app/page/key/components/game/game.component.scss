@@ -1,0 +1,98 @@
+@import "src/styles.scss";
+    
+
+.game-content {
+    min-width: 13.866rem;
+    border: 1px solid $global-border-blue;
+    padding: .1rem .333rem .333rem;
+    border-radius: .333rem;
+    .game-title {
+        color: $global-border-blue;
+    }
+    .sumit-btn{
+        font-size: .8rem;
+        color: $global-white;
+        border: 1px solid $global-border-blue;
+        width: 2.4rem;
+        height: 1.266rem;
+        line-height: 1rem;
+        border-radius: .333rem;
+        text-align: center;
+        cursor: pointer;
+        &:hover {
+            box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+        }
+    }
+    & > .frequency-content {
+        & > .game-select {
+            margin: .5rem 0;
+            color: $global-white;
+            & > span {
+                white-space: nowrap;
+            }
+        }
+        & > .game-input {
+            & > span {
+                color: $global-border-white;
+                font-size: .9rem;
+            }
+            & > input {
+                height: 1.333rem;
+                border: 1px solid $global-border-gray;
+                border-radius: .333rem;
+                color: $global-border-white;
+                cursor: pointer;
+                background: $global-dark;
+                text-align: center;
+                outline: none;
+            }
+            & > input:first-of-type {
+                width: 3.2rem;
+                
+            }
+            & > div {
+                & > input{
+                    width: 4.333rem;
+                    height: 1.333rem;
+                    border: 1px solid $global-border-gray;
+                    border-radius: .333rem;
+                    color: $global-border-white;
+                    cursor: pointer;
+                    background: $global-dark;
+                    text-align: center;
+                    outline: none;
+                    padding-right: 1.7rem;
+                }
+                & > span {
+                    position: absolute;
+                    right: 1rem;
+                    color: $global-border-white;
+                    font-size: .9rem;
+                    line-height: 1.7rem;
+                }
+            }
+           
+        }
+    }
+}
+.game-type-select ::ng-deep .g-select{
+    width: 5.666rem !important;
+    height: 1.266rem !important;
+    font-size: .9rem;
+    line-height: 1.1rem;
+}
+.game-key-select ::ng-deep .g-select{
+    width: 4.6rem !important;
+    height: 1.266rem !important;
+    font-size: .9rem;
+    line-height: 1.1rem;
+}
+.game-select ::ng-deep .g-select-box{
+    border: 1px solid $global-border-gray;
+    &:hover {
+        border: 1px solid $global-border-blue;
+    }
+}
+.game-active-select ::ng-deep .g-select-box{
+    border: 1px solid $global-border-blue;
+}

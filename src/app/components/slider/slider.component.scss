@@ -1,0 +1,65 @@
+@import "src/styles.scss";
+.slider-container {
+    width: 100%;
+    min-width: 14.6rem;
+    padding: 10px;
+    box-sizing: border-box;
+    & > .slider-track {
+        position: relative;
+        height: 12px;
+        background: url('../../../assets/icon/bg-slider.png');
+        border: 2px solid #ffffff;
+        box-sizing: content-box;
+        border-radius: 12px;
+        cursor: pointer;  
+        & > .slider-progress {
+            position: absolute;
+            height: calc(100% - 2px);
+            background-color: $global-border-blue;
+            border-radius: 6px 0 0 6px; 
+            width: 0%;
+            margin: 1px;
+        }
+        
+        & > .slider-handle {
+            position: absolute;
+            top: -2px;
+            width: 16px;
+            height: 16px;
+            background-color: $global-border-blue;
+            border-radius: 50%;
+            cursor: pointer;
+            transform: translateX(-50%);
+            z-index: 1;
+            
+        }
+    }
+    & > .slider-track-Thumb {
+        position: relative;
+        height: 5px;
+        background-color: #fff;
+        border-radius: 5px;
+        cursor: pointer;
+        & > .slider-progress {
+            position: absolute;
+            height: 100%;
+            background-color: $global-border-blue;
+            border-radius: 6px 0 0 6px; 
+        }
+        
+        & > .slider-handle {
+            position: absolute;
+            top: -7px;
+            width: 18px;
+            height: 21px;
+            background: url('../../../assets/icon/icon-radio-active.png');
+            cursor: pointer;
+            z-index: 1;
+            
+        }
+    }
+}
+
+
+
+
