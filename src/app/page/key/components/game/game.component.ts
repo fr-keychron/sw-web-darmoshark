@@ -75,14 +75,14 @@ export class GameComponent {
 		const target = $event.target as HTMLInputElement
 		const val = Number(target.value);
 		target.value = target.value.replace(/[^\d]/g, '');
-		if (val > 9999) target.value = '9999'
+		if (val > 4000) target.value = '4000'
 	}
 
 	public rateChange($event: Event) {
 		const target = $event.target as HTMLInputElement
 		const val = Number(target.value);
 		target.value = target.value.replace(/[^\d]/g, '');
-		if (val > 1000) target.value = '1000'
+		if (val > 255) target.value = '255'
 	}
 
 	public setKey(k: string) {
@@ -103,9 +103,6 @@ export class GameComponent {
 		: 0x30 + Math.floor(this.count / 255)
 		const rate = Number(this.rate)
 		const count = this.count > 255 ? 255 : Number(this.count) 
-		console.log(type);
-		
-		
 		const device = this.mouseService.getCurrentHidDevice<MouseDevice>()
 			device.setMouseBtn2Game(
 				this.mouseKey, {
@@ -114,11 +111,10 @@ export class GameComponent {
 					speed: rate,
 					count: count
 				}
-			)
-				.subscribe(() => {
-					this.update.next(7)
-					this.msg.success(this.i18n.instant('notify.success'))
-				})
+			).subscribe(() => {
+				this.update.next(7)
+				this.msg.success(this.i18n.instant('notify.success'))
+			})
 	}
 
 	public tabIndex = 0;
@@ -149,4 +145,29 @@ export class GameComponent {
 		this.count = count;
 		this.rate = speed;
 	}
+	// 验证键盘输入
+	public validateInput(event: KeyboardEvent): void {
+        const allowedKeys = [
+            'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete', // 常用功能键
+        ]
+        const isNumber = /^[0-9]$/.test(event.key)
+        if (!isNumber && !allowedKeys.includes(event.key)) {
+            event.preventDefault()
+        }
+    }
+
+    // 验证范围
+    // public checkRange(event: Event, max: number, min: number,key:string): void {
+    //     const input = event.target as HTMLInputElement
+    //     const value = parseInt(input.value, 10)
+    //     if (value < min) {
+    //         input.value = min.toString()
+    //         this[key] = min
+    //     } else if (value > max) {
+    //         input.value = max.toString()
+	// 		this[key] = max
+    //     } else {
+    //         this[key]= value
+    //     }
+    // }
 }

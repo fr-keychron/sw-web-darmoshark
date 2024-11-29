@@ -57,8 +57,6 @@ export abstract class Mouse {
 
 	abstract setReportRate(data: { level: number, values: number[] }): Observable<any>
 
-	abstract getMouseBtnInfo(btn: number): Observable<any>
-
 	abstract setMouseBtn( mouseKey: number, buffer: number[]): Observable<any>
 
 	abstract setMouseBtn2Game(

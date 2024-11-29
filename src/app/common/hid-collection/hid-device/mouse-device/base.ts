@@ -128,19 +128,11 @@ export class MouseDevice extends Mouse {
 	}): Observable<any> {
 		return this.commands.setReportRate(data)
 	}
-
-	getMouseBtnInfo(btn: number): Observable<any> {
-		return this.commands.getMouseBtnInfo(btn)
-	}
+	
 	getMouseBtnsInfo(length: number): Observable<any> {
 		return this.commands.getMouseBtnsInfo(length)
 	}
 
-	setMouseBtn(
-		 mouseKey: number, buffer: number[] = []
-	): Observable<any> {
-		return this.commands.setMouseBtn(mouseKey,buffer)
-	}
 	setMouseBtn2KeyBoard(
 		mouseKey: number,
 		shiftKey: number,
@@ -175,28 +167,9 @@ export class MouseDevice extends Mouse {
 		return this.commands.setLevelCount(levelCount)
 	}
 
-	public setMouseBtn2Action(mouseKey: number, e: any): Observable<any> {
-		let bufs= []
-		const buf = ByteUtil.numToHighLow(e, 2, 8, "HighToLow")
-		if(e == 501){
-			bufs= [0x01,0,0xf8,0x01]
-		}else if(e == 502){
-			bufs= [0x01,0,0xf8,0xff]
-		}else {
-			bufs = [buf[0],0,buf[1],0]
-		}
-		return this.setMouseBtn(
-			mouseKey,
-			bufs
-		);
-	}
-
-	public setMouseShortcut(mouseKey: number, e: any): Observable<any> {
+	public setMouseBtn(mouseKey: number, e: any): Observable<any> {
 		const buf = ByteUtil.numberToArray(e)
-		return this.setMouseBtn(
-			mouseKey,
-			buf
-		);
+		return this.commands.setMouseBtn(mouseKey,buf)
 	}
 
 	public setMouseBtn2Game(

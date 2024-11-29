@@ -17,8 +17,11 @@ export let EDmsMouseBtnAction = [
 	{key: 'middleClick', value: EDmsMouseBtnActionKey.middleClick, mouseKey: 2}, 
 	{key: 'button4Click', value: EDmsMouseBtnActionKey.button4Click, mouseKey: 3},
 	{key: 'button5Click', value: EDmsMouseBtnActionKey.button5Click, mouseKey: 4},
+	{key: 'lickDoubleClick', value: EDmsMouseBtnActionKey.lickDoubleClick},
 	{key: 'upScroll', value: EDmsMouseBtnActionKey.upScroll, mouseKey: 7},
 	{key: 'downScroll', value: EDmsMouseBtnActionKey.downScroll, mouseKey: 8},
+	{key: 'leftScroll', value: EDmsMouseBtnActionKey.leftScroll},
+	{key: 'rightScroll', value: EDmsMouseBtnActionKey.rightScroll}
 ]
 
 export enum EDmsMouseBtnDpiKey {
@@ -37,48 +40,58 @@ export enum EDmsMouseBtnMediaKey {
 	volumeUp = 0x0300E900,
 	volumeDown = 0x0300EA00,
 	mute = 0x0300E200,
-	mediaSelect = 0x03008300, 
+	player = 0x03008301, 
 	pause = 0x0300CD00,
 	previous = 0x0300B600,
 	next = 0x0300B500,
+	stop = 0x0300B700
 }
 
 export const EDmsMouseBtnMedia = [
 	{key: 'volumeUp', value: EDmsMouseBtnMediaKey.volumeUp},
 	{key: 'volumeDown', value: EDmsMouseBtnMediaKey.volumeDown},
 	{key: 'mute', value: EDmsMouseBtnMediaKey.mute},
-	{key: 'mediaSelect', value: EDmsMouseBtnMediaKey.mute},
+	{key: 'player', value: EDmsMouseBtnMediaKey.player},
 	{key: 'pause', value: EDmsMouseBtnMediaKey.pause},
 	{key: 'previous', value: EDmsMouseBtnMediaKey.previous},
 	{key: 'next', value: EDmsMouseBtnMediaKey.next},
+	{key: 'stop', value: EDmsMouseBtnMediaKey.stop},
 ]
 
 export enum EDmsMouseBtnShortcutKey {
-	brightnessUp = 0x03007000,
-	brightnessDown = 0x03006f00,
-	calculator = 0x03009201,
+	brightnessUp = 0x03006f00,
+	brightnessDown = 0x03007000,
+	calculate = 0x03009201,
 	myComputer = 0x03009401,
-	WWWHome =  0x03002302,
-	mail =  0x03008a01,
-	WWWRefresh =  0x03002702,
+	homePage =  0x03002302,
+	email =  0x03008a01,
+	refresh =  0x00003e00,
+	switchApp = 0x0a010000,
+	copy = 0x00010600,
+	cut = 0x0001100,
+	paste = 0x0001900
 }
 
 export const EDmsMouseBtnShortcut = [
 	{key: 'brightnessUp', value: EDmsMouseBtnShortcutKey.brightnessUp},
 	{key: 'brightnessDown', value: EDmsMouseBtnShortcutKey.brightnessDown},
-	{key: 'calculator', value: EDmsMouseBtnShortcutKey.calculator},
-	{key: 'myComputer ', value: EDmsMouseBtnShortcutKey.myComputer},
-	{key: 'WWWHome ', value: EDmsMouseBtnShortcutKey.WWWHome},
-	{key: 'mail ', value: EDmsMouseBtnShortcutKey.mail},
-	{key: 'WWWRefresh ', value: EDmsMouseBtnShortcutKey.WWWRefresh},
+	{key: 'calculate', value: EDmsMouseBtnShortcutKey.calculate},
+	{key: 'myComputer', value: EDmsMouseBtnShortcutKey.myComputer},
+	{key: 'homePage', value: EDmsMouseBtnShortcutKey.homePage},
+	{key: 'email', value: EDmsMouseBtnShortcutKey.email},
+	{key: 'refresh', value: EDmsMouseBtnShortcutKey.refresh},
+	{key: 'switchApp', value: EDmsMouseBtnShortcutKey.switchApp},
+	{key: 'copy', value: EDmsMouseBtnShortcutKey.copy},
+	{key: 'cut', value: EDmsMouseBtnShortcutKey.cut},
+	{key: 'paste', value: EDmsMouseBtnShortcutKey.paste},
 ]
 
 export enum EDmsMousseBtnLightKey {
-	swichLight = 1,
-	speedSwitch = 2,
-	colorSwitch = 3,
-	lightBrightnessUp = 4,
-	lightBrightnessDown = 5
+	swichLight = 0x0a020000,
+	speedSwitch = 0x0a030000,
+	colorSwitch = 0x0a040000,
+	lightBrightnessUp = 0x0a050000,
+	lightBrightnessDown = 0x0a060000
 }
 
 export const EDmsMousseBtnLight = [
@@ -111,6 +124,9 @@ export const EMdsMouseBtnGameDefault = [
 	{key: 'front', value: EDmsMouseBtnGameMouseKey.front},
 	{key: 'back', value: EDmsMouseBtnGameMouseKey.back}
 ]
+export const EMdsMouseBtnDisabled= [
+	{key: 'disabled', value: 0}
+]
 export enum EDmsMouseGame {
 	mouseGame,
 	keyboardGame,
@@ -121,28 +137,6 @@ export enum EDmsMouseBtnGameKey {
 	keyboard = 0x02
 }
 
-export let EDmsMouseBtnDefault = [
-    {key: 'disabled', value: 0},
-	{key: 'leftClick', value: EDmsMouseBtnActionKey.leftClick, mouseKey: 0},
-	{key: 'rightClick', value: EDmsMouseBtnActionKey.rightClick, mouseKey: 1},
-	{key: 'middleClick', value: EDmsMouseBtnActionKey.middleClick, mouseKey: 2}, 
-	{key: 'button4Click', value: EDmsMouseBtnActionKey.button4Click, mouseKey: 3},
-	{key: 'button5Click', value: EDmsMouseBtnActionKey.button5Click, mouseKey: 4},
-	{key: 'upScroll', value: EDmsMouseBtnActionKey.upScroll, mouseKey: 7},
-	{key: 'downScroll', value: EDmsMouseBtnActionKey.downScroll, mouseKey: 8},
-    {key: "loop", value: EDmsMouseBtnDpiKey.loop},
-	{key: "up", value: EDmsMouseBtnDpiKey.up},
-	{key: "down", value: EDmsMouseBtnDpiKey.down},
-    {key: 'volumeUp', value: EDmsMouseBtnMediaKey.volumeUp},
-	{key: 'volumeDown', value: EDmsMouseBtnMediaKey.volumeDown},
-	{key: 'mute', value: EDmsMouseBtnMediaKey.mute},
-	{key: 'pause', value: EDmsMouseBtnMediaKey.pause},
-	{key: 'previous', value: EDmsMouseBtnMediaKey.previous},
-	{key: 'next', value: EDmsMouseBtnMediaKey.next},
-    {key: 'brightnessUp', value: EDmsMouseBtnShortcutKey.brightnessUp, plat: ['Win', 'Mac']},
-	{key: 'brightnessDown', value: EDmsMouseBtnShortcutKey.brightnessDown, plat: ['Win', 'Mac']},
-    
-]
 export enum EDmsMouseKeycode {
 	KC_NO = 0x00,
 	KC_OVERRUN_ERROR = 0x01,

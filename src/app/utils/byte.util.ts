@@ -220,14 +220,18 @@ export class ByteUtil {
 		return new Uint8Array(result);
 	}
 	static numberToArray(num: number): number[] {
-		const byteArray: number[] = [];
-
-		// 从最高字节到最低字节提取字节
+		const byteArray: number[] = []
 		for (let i = 3; i >= 0; i--) {
-		  // 提取每个字节并添加到数组
 		  byteArray.push((num >> (8 * i)) & 0xFF);
 		}
-	  
-		return byteArray;
+		return byteArray
 	}
+	
+	static arrayToNumber(byteArray: number[]): number {
+		let result = 0;
+		for (let i = 0; i < byteArray.length; i++) {
+		  result |= (byteArray[i] << (8 * (3 - i)));
+		}
+		return result;
+	  }
 }

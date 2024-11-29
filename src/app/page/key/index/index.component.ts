@@ -36,7 +36,7 @@ export class IndexComponent implements OnInit {
 	public funKey: number
 	public currentMouseKey: number|string;
 	public keyChange: handleMouseKey = new handleMouseKey()
-	public mouseKeys = JSON.parse(JSON.stringify(EDmsMouseBtnAction))
+	public mouseKeys = JSON.parse(JSON.stringify(EDmsMouseBtnAction.filter(item => item.mouseKey || item.mouseKey === 0)))
 	public sensitiveAction = EDmsMouseBtnDpi
 	public mediaAction = EDmsMouseBtnMedia
 	public shortcutAction = EDmsMouseBtnShortcut
@@ -117,6 +117,8 @@ export class IndexComponent implements OnInit {
 		if(currentMouseType?.type === 'mouseKeyboard' ){
 			this.activeModal = 'combination'
 		}
+		console.log(this.mouseKeys);
+		
 	}	
 	public init(): Promise<void> {
 		return new Promise((resolve) => {
@@ -166,15 +168,7 @@ export class IndexComponent implements OnInit {
 	}
 
 	public setSelectActive(active: any ) {
-		this.device.setMouseBtn2Action(this.activeMouseKey, active)
-			.subscribe(() => {
-				this.init()
-				this.msg.success(this.i18n.instant('notify.success'))
-			})
-	}
-
-	public setShortcut(active: any ) {
-		this.device.setMouseShortcut(this.activeMouseKey, active)
+		this.device.setMouseBtn(this.activeMouseKey, active)
 			.subscribe(() => {
 				this.init()
 				this.msg.success(this.i18n.instant('notify.success'))

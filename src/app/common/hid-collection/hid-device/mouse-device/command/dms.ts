@@ -369,42 +369,6 @@ export class MouseDeviceDMS {
 		});
 	}
 
-	public getMouseBtnInfo(btn: number): Observable<any> {
-		return new Observable((s) => {
-			const buf = MouseDevice.Buffer(64)
-			buf[0] = 0x03
-			buf[2] = 0x82;
-			buf[3] = 0x03
-			buf[4] = btn
-			const subj = this.mouse.report$
-			.pipe(
-				filter((v) =>  (v[0] === 0x03 || v[0] === 0x43) && v[4] === btn),
-				map((v) => {
-					const bytes = ByteUtil.byteToNum([v[5], v[7]], "HighToLow")
-					const data = getMouseButtonInfo(bytes)
-					const mouseKey = v[4]
-					return {
-						mouseKey,
-						data
-					}
-				})
-			)
-			.subscribe({
-				next: (v) => {
-					s.next(v);
-					subj.unsubscribe();
-				},
-				error: (error) => {
-					s.next(error)
-					subj.unsubscribe();
-				},
-			});
-			this.setbuf0(buf)
-			this.setbuf63(buf);
-			this.mouse.write(0, buf).subscribe();
-		});
-	}
-
 	public getMouseBtnsInfo(length: number): Observable<any> {
 		return new Observable((s) => {
 			const buf = MouseDevice.Buffer(64);
@@ -419,9 +383,8 @@ export class MouseDeviceDMS {
 					for (let i = 0; i < length; i++) { 
 						const index = 4 + i * 4
 						if (index + 3 < v.length) {
-							const value = ByteUtil.byteToNum([v[index], v[index+2]], "HighToLow");
 							const bufferArr = [v[index], v[index+1], v[index+2], v[index+3]]
-							const data = getMouseButtonInfo(value,bufferArr)
+							const data = getMouseButtonInfo(bufferArr)
 							result.push({
 								mouseKey: i,
 								data: data,
@@ -458,7 +421,7 @@ export class MouseDeviceDMS {
 			buf[3] = 4
 			buf[4] = mouseKey
 			if (buffer && buffer.length) buffer.forEach((k, i) => (buf[i + 5] = k))
-			this.setbuf63(buf)
+			
 			this.mouse.report$
 				.pipe(
 					filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 4),
@@ -474,6 +437,9 @@ export class MouseDeviceDMS {
 						s.next(error)
 					}
 				});
+			this.setbuf0(buf)
+			this.setbuf63(buf)
+			console.log(buf);
 			
 			this.mouse.write(0, buf).subscribe()
 		});

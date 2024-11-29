@@ -54,10 +54,20 @@
 		</div>
 		<div class="game-input g-flex g-item-center g-justify-between">
 			<span>{{ 'mouse.key_game.count' | translate }}</span>
-			<input type="text" (input)="countChange($event)" [(ngModel)]="count" placeholder="1~9999">
+			<input
+				type="text"
+				[(ngModel)]="count"
+				(keydown)="validateInput($event)" 
+				(input)="countChange($event)"
+			/>
 			<span>{{ 'mouse.key_game.rate' | translate }}</span>
 			<div>
-				<input type="text" (input)="rateChange($event)" [(ngModel)]="rate" placeholder="10~1000">
+				<input
+					type="text"
+					[(ngModel)]="rate"
+					(keydown)="validateInput($event)" 
+					(input)="rateChange($event)"
+				/>
 				<span>ms</span>
 			</div>
 			
