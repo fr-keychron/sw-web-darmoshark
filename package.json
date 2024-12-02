@@ -1,11 +1,11 @@
 {
-  "name": "keyboard",
+  "name": "mouse-launcher",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start:local": "node buildInfo.js --env=DEV --api=local --site=dev && ng serve",
     "start": "node buildInfo.js --env=DEV --api=cn --site=dev && ng serve",
-    "build:prod-lemokey": "node buildInfo.js --api=cn --env=QA --site=dev && ng build --aot",
+    "build": "node buildInfo.js --api=cn --env=QA --site=dev && ng build --aot",
     "build:local": "node buildInfo.js --api=local --env=QA --site=dev && ng build --aot",
     
     "watch": "ng build --watch --configuration development",

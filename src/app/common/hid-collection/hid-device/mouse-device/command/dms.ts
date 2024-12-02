@@ -110,6 +110,8 @@ export class MouseDeviceDMS {
 				.pipe(
 					filter((v) => v[0] === 0x01 && v[3] === 0x01),
 					map((v) => {
+						console.log(v);
+						
 						const bits = ByteUtil.oct2Bin(v[4])
 						const workMode = Number(bits[4])
 						const state = workMode;
@@ -139,6 +141,8 @@ export class MouseDeviceDMS {
 					})
 				)
 				.subscribe((v) => {
+					console.log(v);
+					
 					this.mouse.baseInfo.workMode = 2;
 					s.next(v);
 					sub.unsubscribe();
