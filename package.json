@@ -3,11 +3,10 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start:local": "node buildInfo.js --env=DEV --api=local --site=dev && ng serve",
-    "start": "node buildInfo.js --env=DEV --api=cn --site=dev && ng serve",
-    "build": "node buildInfo.js --api=cn --env=QA --site=dev && ng build --aot",
-    "build:local": "node buildInfo.js --api=local --env=QA --site=dev && ng build --aot",
-    
+    "start": "node buildInfo.js --api=local --env=DEV && ng serve",
+    "start:dev-cn": "node buildInfo.js --api=cn --env=DEV && ng serve",
+    "build": "node buildInfo.js --api=local --env=DEV && ng build",
+    "build:prod-cn": "node buildInfo.js --api=cn --env=PROD && ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
   },
@@ -24,6 +23,7 @@
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
     "@the-via/reader": "^1.9.0",
+    "dotenv": "^16.4.5",
     "jszip": "^3.10.1",
     "lodash-es": "^4.17.21",
     "ng-antd-color-picker": "^0.0.2",

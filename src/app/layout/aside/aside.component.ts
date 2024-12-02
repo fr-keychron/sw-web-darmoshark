@@ -31,7 +31,6 @@ export class AsideComponent implements OnInit {
 
 	public ngOnInit() {
 		this.env = BuildInfo.env
-		this.showLogo = BuildInfo.siteConf.showLogo;
 		this.router.events.subscribe(event => {
 			if (event instanceof NavigationEnd) {
 				const url = event.urlAfterRedirects;

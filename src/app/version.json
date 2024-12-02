@@ -1,1 +1,5 @@
-{"env":"DEV","icp":"","api":"cn","siteConf":{"title":"Launcher","logo":"skn.png","ico":"favicon.ico","showLogo":false,"i18n":"skn","growthbook":{"enable":false,"host":"https://feature.keychron.cn/feat/","key":"sdk-WESjHoIhf8M7y"},"feat":{"mouse_home":true,"mouse_setKey":true,"mouse_pointer":true,"mouse_setMacro":true,"mouse_setLight":true,"mouse_ability":true,"mouse_setSys":true}}}
+{
+  "api": "cn",
+  "env": "DEV",
+  "apiHost": "https://launcher.keychron.cn/"
+}
