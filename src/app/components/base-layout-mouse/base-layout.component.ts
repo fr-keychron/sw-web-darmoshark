@@ -3,7 +3,7 @@ import {MsgService} from "../../service/msg/msg.service";
 import {filter} from "rxjs/operators";
 import {GLOBAL_CONFIG} from "../../config";
 import {GetScale, imageEl2Base64} from "../../utils";
-import {Subscription, fromEvent} from "rxjs";
+import {Subscription, fromEvent, firstValueFrom} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
 import {EEventEnum, HidDeviceEventType, IMouseJson, MouseDevice} from "../../common/hid-collection";
 import {DeviceConnectService} from "../../common/device-conncet/device-connect.service";
@@ -237,7 +237,7 @@ export class BaseLayoutMouseComponent implements OnInit {
 
 	public reset(){
 		const device = this.service.getCurrentHidDevice<MouseDevice>()
-		device.recovery({value: 255}).subscribe( () => {
+		device.recovery({value: 1, options: this.profile}).subscribe( () => {
 			this.msg.success(this.i18n.instant('notify.success'))
 			const leftLockList = localStorage.getItem('leftLockList')
 			const parsedList = JSON.parse(leftLockList)
@@ -249,7 +249,53 @@ export class BaseLayoutMouseComponent implements OnInit {
 
 	public importConfig() {
 		const device = this.service.getCurrentHidDevice<MouseDevice>()
-		console.log(device);
+		const data = {
+			mousebtnConf: device.baseInfo.mousebtnConf,
+			dpiConf: device.baseInfo.dpiConf,
+			lightConf:  device.baseInfo.lightConf,
+			leftLock: this.leftLock,
+		}
+        const filename = `${device?.name} 配置0${this.profile+1}.json`;
+        const link = document.createElement('a')
+        const json = JSON.stringify(data)
+        var blob = new Blob([json]);
+        link.href = URL.createObjectURL(blob)
+        link.download = filename
+        link.target = '_blank'
+        link.click()
+        link.remove()
+	}
+
+	public exportConfig( $event: Event) {
+		const input = $event.target as HTMLInputElement;
+		const device = this.service.getCurrentHidDevice<MouseDevice>()
+		if (input.files && input.files.length > 0) {
+			const file = input.files[0]
+			const reader = new FileReader()
+			if (file.type.indexOf('json') < 0) {
+				this.msg.error(this.i18n.instant("macro.fileTypeError"))
+			}
+			reader.readAsText(file)
+			reader.onload = async () => {
+				try {
+					const data = JSON.parse(reader.result as string)
+					device.baseInfo.mousebtnConf = data.mousebtnConf
+					device.baseInfo.dpiConf = data.dpiConf
+					device.baseInfo.lightConf = data.lightConf
+					await firstValueFrom(device.setMouseBtnAll())
+					await firstValueFrom(device.setMouseDpiAll())
+					await firstValueFrom(device.setLightAll())
+					await firstValueFrom(device.setExtConfAll())
+					this.load(this.profile)
+					input.value = ''
 		
+				} catch (error) {
+					console.error("Error processing configuration:", error)
+					this.msg.error(this.i18n.instant("macro.fileLoadError"))
+					input.value = ''
+				}
+			};
+		}
+        
 	}
 }

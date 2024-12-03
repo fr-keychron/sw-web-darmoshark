@@ -116,9 +116,9 @@ export class IndexComponent implements OnInit {
 	public init(): Promise<void> {
 		return new Promise((resolve) => {
 			if(!this.device) return
-			this.device.getMouseBtnsInfo(this.device.json.keys.length + 2).subscribe(
+			this.device.getMouseBtnsInfo().subscribe(
 				(v: any) => {
-					this.keyConf = v
+					this.keyConf = this.device.baseInfo.mousebtnConf
 					this.getMouseKays()
 				}
 			)

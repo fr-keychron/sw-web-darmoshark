@@ -56,15 +56,15 @@ export class IndexComponent implements OnInit {
 	public init() {
 		const device = this.service.getCurrentHidDevice<MouseDevice>()
 		device.getBaseInfoDpi().subscribe(()=>{
-			const {lod, motion, line, wave, scroll, eSports} = device?.baseInfo?.sys
+			const {lod, motion, line, wave, scroll, eSports} = device.baseInfo.dpiConf.sys
 			const {sys} = device.json as any
 				
 			this.lodValue = lod
 			this.eSports = eSports
 			this.scrollValue =  scroll
 			this.sensorValue = [!!wave, !!line, !!motion]
-			this.dalayTime = device.baseInfo.delay
-			this.sleepTime = device.baseInfo.sleep
+			this.dalayTime = device.baseInfo.dpiConf.delay
+			this.sleepTime = device.baseInfo.dpiConf.sleep
 			this.lodList = sys.lod
 		})
 	}

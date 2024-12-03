@@ -97,13 +97,13 @@ export class IndexComponent implements OnInit {
 	private init() {
 		this.currentHidDevice = this.service.getCurrentHidDevice() as MouseDevice
 		const getHidConf = (h: MouseDevice) => {
-			const {json, baseInfo: {dpiConf, reportRate, dpiCurrentLevel, workMode, levelCount }} = h
+			const {json, baseInfo: {dpiConf, workMode}} = h
 			this.jsonConf = json; // 鼠标json信息（鼠标名、键位标识。。）
-			this.reportRateVal = reportRate;
-			this.dpiLevel = dpiCurrentLevel;
-			this.dpiValue = dpiConf.levelVal[dpiCurrentLevel];
-			this.levelCount = levelCount
-			this.dpiValues = dpiConf.levelVal.slice(0,levelCount)
+			this.reportRateVal = dpiConf.reportRate;
+			this.dpiLevel = dpiConf.dpiCurrentLevel;
+			this.dpiValue = dpiConf.levelList[dpiConf.dpiCurrentLevel];
+			this.levelCount = dpiConf.levelCount
+			this.dpiValues = dpiConf.levelList.slice(0,dpiConf.levelCount)
 			if (json?.dpi) {
 				const {dpi} = json
 				this.minDpi = dpi.limit[0] || 100

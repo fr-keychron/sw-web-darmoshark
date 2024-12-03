@@ -51,7 +51,7 @@
                         </div>
                         <div class="macro-btn" [ngClass]="{disabled: recordFlag}">
                             {{'common.import' | translate}}
-                        <input class="upload" type="file" accept=".json" (change)="handleImport($event)">
+                            <input class="upload" type="file" accept=".json" (change)="handleImport($event)">
                         </div>
                         <div class="macro-btn" [ngClass]="{disabled: recordFlag}" (click)="handleExport()">
                             {{'common.export' | translate}}

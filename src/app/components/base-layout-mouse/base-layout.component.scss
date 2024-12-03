@@ -257,6 +257,19 @@
                 & > .device-connected-select {
                     width: 8.6rem;
                 }
+                & > .button-bule {
+                    position: relative;
+                    & > .upload {
+                        cursor: pointer;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        opacity: 0;
+                        z-index: 1;
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
             }
             .icon_square {
                 margin: 0 0.666rem;

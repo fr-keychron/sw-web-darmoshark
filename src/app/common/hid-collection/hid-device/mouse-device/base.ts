@@ -129,8 +129,8 @@ export class MouseDevice extends Mouse {
 		return this.commands.setReportRate(data)
 	}
 	
-	getMouseBtnsInfo(length: number): Observable<any> {
-		return this.commands.getMouseBtnsInfo(length)
+	getMouseBtnsInfo(): Observable<any> {
+		return this.commands.getMouseBtnsInfo()
 	}
 
 	setMouseBtn2KeyBoard(
@@ -169,6 +169,22 @@ export class MouseDevice extends Mouse {
 
 	switchConfig(index:number){
 		return this.commands.switchConfig(index)
+	}
+
+	setMouseBtnAll(){
+		return this.commands.setMouseBtnAll()
+	}
+
+	setMouseDpiAll(){
+		return this.commands.setMouseDpiAll()
+	}
+
+	setLightAll(){
+		return this.commands.setLightAll()
+	}
+	
+	setExtConfAll(){
+		return this.commands.setExtConfAll()
 	}
 
 	public setMouseBtn(mouseKey: number, e: any): Observable<any> {

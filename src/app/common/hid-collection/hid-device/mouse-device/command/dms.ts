@@ -21,26 +21,34 @@ export class MouseDeviceDMS {
 		this.mouse.profileCount = 0;
 		this.mouse.baseInfo = {
 			workMode: 0 ,
-			reportRate: 3,
-			levelCount: 5,
-			dpiCurrentLevel: 1,
 			dpiConf: {
-				levelEnable: 5,
-				levelVal: [400, 800, 1600, 3200, 4800]
+				reportRate: 3,
+				levelCount: 5,
+				dpiCurrentLevel: 1,
+				delay: 0,
+				sleep: 0,
+				levelList: [400, 800, 1600, 3200, 4800],
+				sys: {
+					lod: 1,
+					wave: 0,
+					line: 0,
+					motion: 1,
+					scroll: 1,
+					eSports: 1
+				},
 			},
-			delay: 0,
-			sleep: 0,
-			sys: {
-				lod: 1,
-				wave: 0,
-				line: 0,
-				motion: 1,
-				scroll: 1,
-				eSports: 1
+			lightConf: {
+				lightMode: 0,
+				brightness: 255,
+				speed: 4,
+				rgbArr: [255,255,255],
+				currentColor: 'rgb(255,255,255)',
 			},
+			mousebtnConf: [],
 			power:  { state: 0, value: 100 }, 
-			profile: 0
-		};;
+			profile: 0,
+			
+		};
 	}
 
 	private setbuf63(buf: Uint8Array): void {
@@ -64,6 +72,9 @@ export class MouseDeviceDMS {
 					await firstValueFrom(this.getBaseInfo());
 					await firstValueFrom(this.getVersion());
 					await firstValueFrom(this.getBaseInfoDpi());
+					await firstValueFrom(this.getMouseBtnsInfo());
+					await firstValueFrom(this.getLight());
+				
 					await firstValueFrom(this.mouse.loadJson()).catch((err) => {
 						s.error({code: "noHid", msg: err});
 					});
@@ -264,7 +275,7 @@ export class MouseDeviceDMS {
 			buf[0] = 0x04
 			buf[2] = 0x820|2
 			buf[3] = 0x01
-			this.mouse.report$
+			const sub = this.mouse.report$
 				.pipe(
 					filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x01),
 					map((v) => {
@@ -277,10 +288,7 @@ export class MouseDeviceDMS {
 						];
 						const dpiVal = dpiPosition.map((i) => (v[i[1]] << 8) | v[i[0]]);
 						return {
-							dpiConf: {
-								levelEnable: 5,
-								levelVal: dpiVal,
-							},
+							levelList: dpiVal,
 							delay:v[54],
 							reportRate: v[5],
 							levelCount: v[6].toString(2).split('1').length - 1,
@@ -297,14 +305,10 @@ export class MouseDeviceDMS {
 						};
 					})
 				)
-				.subscribe({
-					next: (v) => {
-						this.mouse.baseInfo = {...this.mouse.baseInfo,...v}
-						s.next(v)
-					},
-					error: () => {
-						s.next()
-					},
+				.subscribe((v) => {
+					this.mouse.baseInfo.dpiConf = v
+					sub.unsubscribe();
+					s.next(v);
 				});
 			this.setbuf0(buf)
 			this.setbuf63(buf)
@@ -385,17 +389,18 @@ export class MouseDeviceDMS {
 		});
 	}
 
-	public getMouseBtnsInfo(length: number): Observable<any> {
+	public getMouseBtnsInfo(): Observable<any> {
 		return new Observable((s) => {
 			const buf = MouseDevice.Buffer(64);
 			buf[0] = 3
 			buf[2] = 0x80|1
 			buf[3] = 1
-			this.mouse.report$
+			const sub = this.mouse.report$
 			.pipe(
 				filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 1),
 				map((v) => {
-					const result: any[] = [];
+					const result: any[] = []
+					const length= 9
 					for (let i = 0; i < length; i++) { 
 						const index = 4 + i * 4
 						if (index + 3 < v.length) {
@@ -412,17 +417,14 @@ export class MouseDeviceDMS {
 				}),
 				take(1)
 			)
-			.subscribe({
-				next: (result) => {
-					s.next(result);
-				},
-				error: (error) => {
-					s.next(error);
-				}
+			.subscribe((v) => {
+				this.mouse.baseInfo.mousebtnConf = v
+				sub.unsubscribe()
+				s.next(v)
 			});
 			this.setbuf0(buf)
-			this.setbuf63(buf);
-			this.mouse.write(0, buf).subscribe();
+			this.setbuf63(buf)
+			this.mouse.write(0, buf).subscribe()
 		});
 	}
 	
@@ -466,16 +468,12 @@ export class MouseDeviceDMS {
 				.pipe(filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 0x04))
 				.subscribe(() => {
 					this.saveData().subscribe((r) => {
-						console.log('111');
-						
 						s.next(r)
 						subj.unsubscribe()
 					})
 				})
 			this.setbuf0(buf)
 			this.setbuf63(buf)
-			console.log(buf);
-			
 			this.mouse.write(0, buf).subscribe()
 		});
 	}
@@ -704,7 +702,7 @@ export class MouseDeviceDMS {
 		return new Observable((s) => {
 			const buf = MouseDevice.Buffer(64);
 			buf[0] = 0x09
-			buf[2] = 0x82
+			buf[2] = options ? 0x82 : 0x81
 			buf[3] = value
 			buf[4] = options & 0xff
 			const subj = this.mouse.report$
@@ -757,13 +755,14 @@ export class MouseDeviceDMS {
 			.pipe(filter(v => (v[0] === 0x05 || v[0] === 0x45) && v[3] === 0x01))
 			.subscribe((v: any) => {
 				if (v) {
-						const data = {
+					const data = {
 						lightMode: v[5],
 						brightness: v[7],
 						speed: v[9],
 						rgbArr: [v[14], v[15], v[16]],
 						currentColor: `rgb(${v[14]},${v[15]},${v[16]})`
 					}
+					this.mouse.baseInfo.lightConf = data
 					s.next(data); 
 				}
 				subj.unsubscribe();
@@ -823,11 +822,11 @@ export class MouseDeviceDMS {
 		return new Observable((s) => {
 			let configByte = 0x00;
 			const bitMasks = [
-				{ bitPosition: 0, value: this.mouse.baseInfo.sys.line },
-				{ bitPosition: 4, value: this.mouse.baseInfo.sys.wave },
-				{ bitPosition: 5, value: this.mouse.baseInfo.sys.motion },
-				{ bitPosition: 6, value: this.mouse.baseInfo.sys.eSports },
-				{ bitPosition: 7, value: this.mouse.baseInfo.sys.scroll }
+				{ bitPosition: 0, value: this.mouse.baseInfo.dpiConf.sys.line },
+				{ bitPosition: 4, value: this.mouse.baseInfo.dpiConf.sys.wave },
+				{ bitPosition: 5, value: this.mouse.baseInfo.dpiConf.sys.motion },
+				{ bitPosition: 6, value: this.mouse.baseInfo.dpiConf.sys.eSports },
+				{ bitPosition: 7, value: this.mouse.baseInfo.dpiConf.sys.scroll }
 			];
 			const levelCountMap = [1,3,7,15,31];
 			// 遍历并设置每个位
@@ -836,7 +835,7 @@ export class MouseDeviceDMS {
 			});
 			
 			let dpiList: number[] = []
-			this.mouse.baseInfo.dpiConf.levelVal.forEach((e)=>{
+			this.mouse.baseInfo.dpiConf.levelList.forEach((e)=>{
 				const bytes = ByteUtil.numToHighLow(e, 2, 8, "LowToHigh"); 
 				dpiList.push(...bytes, ...bytes);
 			})
@@ -845,16 +844,16 @@ export class MouseDeviceDMS {
 			buf[2] = 0x80 | 53
 			buf[3] = 0x02
 			buf[4] = configByte & 0xff
-			buf[5] = this.mouse.baseInfo.reportRate
+			buf[5] = this.mouse.baseInfo.dpiConf.reportRate
 			buf[6] = levelCountMap[levelCount-1] & 0xFF
-			buf[7] = this.mouse.baseInfo.dpiCurrentLevel
+			buf[7] = this.mouse.baseInfo.dpiConf.dpiCurrentLevel
 			dpiList.forEach((n: number, i: number) => (buf[i + 8] = n));
-			buf[43] = this.mouse.baseInfo.sys.lod
-			buf[50] = (this.mouse.baseInfo.sleep) & 0xFF;
-			buf[51] = ((this.mouse.baseInfo.sleep) >> 8) & 0xFF;
-			buf[52] = (this.mouse.baseInfo.sleep) & 0xFF;
-			buf[53] = ((this.mouse.baseInfo.sleep) >> 8) & 0xFF;
-			buf[54] = (this.mouse.baseInfo.dpiCurrentLevel) & 0xFF;
+			buf[43] = this.mouse.baseInfo.dpiConf.sys.lod
+			buf[50] = (this.mouse.baseInfo.dpiConf.sleep) & 0xFF;
+			buf[51] = ((this.mouse.baseInfo.dpiConf.sleep) >> 8) & 0xFF;
+			buf[52] = (this.mouse.baseInfo.dpiConf.sleep) & 0xFF;
+			buf[53] = ((this.mouse.baseInfo.dpiConf.sleep) >> 8) & 0xFF;
+			buf[54] = (this.mouse.baseInfo.dpiConf.dpiCurrentLevel) & 0xFF;
 			const subj = this.mouse.report$
 				.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 2))
 				.subscribe(() => {
@@ -871,6 +870,7 @@ export class MouseDeviceDMS {
 
 	public saveData () {
 		return new Observable((s) => {
+			
 			const buf = MouseDevice.Buffer(64);
 			buf[0] = 0x0a;
 			buf[2] = 0x80 | 1
@@ -896,6 +896,153 @@ export class MouseDeviceDMS {
 			buf[4] = index
 			const subj = this.mouse.report$
 				.pipe(filter((v) => (v[0] === 0x02 || v[0] === 0x42) && v[3] === 1))
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
+				})
+			this.setbuf0(buf)
+			this.setbuf63(buf)
+			this.mouse.write(0, buf).subscribe()
+		});
+	}
+
+	public setMouseBtnAll(){
+		return new Observable((s) => {
+			const mousebtnConf = this.mouse.baseInfo.mousebtnConf
+			const buf = MouseDevice.Buffer(64);
+			buf[0] = 3
+			buf[2] = 0x80 | 37
+			buf[3] = 2
+			mousebtnConf.forEach((e) => {
+				const bytes = ByteUtil.numberToArray(e.data.value)
+				bytes.forEach((n: number, i: number) => (buf[i + (4 * (e.mouseKey +1))] = n))
+			})
+			const subj = this.mouse.report$
+				.pipe(filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 2))
+				.subscribe((v) => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
+				})
+			this.setbuf0(buf)
+			this.setbuf63(buf)
+			this.mouse.write(0, buf).subscribe()
+		})
+	}
+
+	public setMouseDpiAll(){
+		return new Observable((s) => {
+			let configByte = 0x00;
+			const bitMasks = [
+				{ bitPosition: 0, value: this.mouse.baseInfo.dpiConf.sys.line },
+				{ bitPosition: 4, value: this.mouse.baseInfo.dpiConf.sys.wave },
+				{ bitPosition: 5, value: this.mouse.baseInfo.dpiConf.sys.motion },
+				{ bitPosition: 6, value: this.mouse.baseInfo.dpiConf.sys.eSports },
+				{ bitPosition: 7, value: this.mouse.baseInfo.dpiConf.sys.scroll }
+			];
+			const levelCountMap = [1,3,7,15,31]
+			bitMasks.forEach(mask => {
+				configByte = mask.value ? (configByte | (1 << mask.bitPosition)) : (configByte & ~(1 << mask.bitPosition))
+			});
+			
+			let dpiList: number[] = []
+			this.mouse.baseInfo.dpiConf.levelList.forEach((e)=>{
+				const bytes = ByteUtil.numToHighLow(e, 2, 8, "LowToHigh")
+				dpiList.push(...bytes, ...bytes);
+			})
+			const buf = MouseDevice.Buffer(64)
+			buf[0] = 0x04;
+			buf[2] = 0x80 | 53
+			buf[3] = 0x02
+			buf[4] = configByte & 0xff
+			buf[5] = this.mouse.baseInfo.dpiConf.reportRate
+			buf[6] = levelCountMap[ this.mouse.baseInfo.dpiConf.levelCount-1] & 0xFF
+			buf[7] = this.mouse.baseInfo.dpiConf.dpiCurrentLevel
+			dpiList.forEach((n: number, i: number) => (buf[i + 8] = n));
+			buf[43] = this.mouse.baseInfo.dpiConf.sys.lod
+			buf[50] = (this.mouse.baseInfo.dpiConf.sleep) & 0xFF;
+			buf[51] = ((this.mouse.baseInfo.dpiConf.sleep) >> 8) & 0xFF;
+			buf[52] = (this.mouse.baseInfo.dpiConf.sleep) & 0xFF;
+			buf[53] = ((this.mouse.baseInfo.dpiConf.sleep) >> 8) & 0xFF;
+			buf[54] = (this.mouse.baseInfo.dpiConf.dpiCurrentLevel) & 0xFF;
+			const subj = this.mouse.report$
+				.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 2))
+				.subscribe((v) => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
+				})
+			this.setbuf0(buf)
+			this.setbuf63(buf)
+			this.mouse.write(0, buf).subscribe()
+		})
+	}
+
+	public setLightAll(){
+		return new Observable((s) => {
+			const {lightMode, brightness, speed, rgbArr} = this.mouse.baseInfo.lightConf
+			const buf = MouseDevice.Buffer(64);
+			buf[0] = 0x05
+			buf[2] = 0x80 | 14
+			buf[3] = 0x02
+			buf[4] = 0x01
+			buf[5] = lightMode
+			buf[6] = 0x07
+			buf[7] = brightness & 0xff
+			buf[8] = 0x01
+			buf[9] = speed 
+			buf[10] = 0x01
+			buf[11] = rgbArr[0]
+			buf[12] = rgbArr[1]
+			buf[13] = rgbArr[2]
+			buf[14] = rgbArr[0]
+			buf[15] = rgbArr[1]
+			buf[16] = rgbArr[2]
+			buf[17] = rgbArr[0]
+			buf[18] = rgbArr[1]
+			buf[19] = rgbArr[2]
+			const subj = this.mouse.report$
+			.pipe(filter(v => (v[0] === 0x05 || v[0] === 0x45) && v[3] === 0x02))
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
+				})
+			this.setbuf0(buf);
+			this.setbuf63(buf);
+			this.mouse.write(0, buf).subscribe();
+		})
+	}
+
+	public setExtConfAll() {
+		return new Observable((s) => {
+			const {line, wave, motion, eSports, scroll, lod} = this.mouse.baseInfo.dpiConf.sys
+			let configByte = 0x00;
+			const bitMasks = [
+				{ bitPosition: 0, value: line },
+				{ bitPosition: 4, value: wave },
+				{ bitPosition: 5, value: motion },
+				{ bitPosition: 6, value: eSports },
+				{ bitPosition: 7, value: scroll }
+			];
+			
+			// 遍历并设置每个位
+			bitMasks.forEach(mask => {
+				configByte = mask.value ? (configByte | (1 << mask.bitPosition)) : (configByte & ~(1 << mask.bitPosition));
+			});
+			const buf = MouseDevice.Buffer(64);
+			buf[0] = 4;
+			buf[2] = 0x80 | 4
+			buf[3] = 10
+			buf[4] = configByte & 0xff
+			buf[5] = lod
+			const subj = this.mouse.report$
+				.pipe(filter(v => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x0a))
 				.subscribe(() => {
 					this.saveData().subscribe((r) => {
 						subj.unsubscribe()

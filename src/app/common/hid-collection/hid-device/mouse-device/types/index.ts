@@ -3,29 +3,36 @@ import {EKey, EMouseBtnGameKey, PowerState} from "../enum";
 type IDpiReport = { dpi: number, reportRate: number }
 
 export interface IBaseInfo {
-	workMode: number ,
-	reportRate: number,
-	levelCount: number,
-	dpiCurrentLevel: number,
-	dpiConf: {
-		levelVal: number[],
-		levelEnable: number
-	},
-	delay: number,
-	sleep: number,
-	power: {
-		state: PowerState,
-		value: number
-	},
-	sys: {
-		lod: number ,
-		wave: number,
-		line: number,
-		motion: number,
-		scroll: number,
-		eSports?: number
-	},
-	profile: number
+    workMode: number;
+    dpiConf: {
+        reportRate: number;
+        levelCount: number;
+        dpiCurrentLevel: number;
+        delay: number;
+        sleep: number;
+        levelList: number[];
+        sys: {
+            lod: number;
+            wave: number;
+            line: number;
+            motion: number;
+            scroll: number;
+            eSports?: number;
+        };
+    };
+    lightConf: {
+        lightMode: number;
+        brightness: number;
+        speed: number;
+        rgbArr: number[];
+        currentColor: string;
+    };
+    power: {
+        state: number; 
+        value: number;
+    };
+    profile: number;
+    mousebtnConf: any[];
 }
 
 export type IMouseButtonKey = {
