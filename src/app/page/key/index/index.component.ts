@@ -33,7 +33,6 @@ export class IndexComponent implements OnInit {
 
 	public device: MouseDevice;
 	public keyConf: any;
-	public funKey: number
 	public currentMouseKey: number|string;
 	public keyChange: handleMouseKey = new handleMouseKey()
 	public mouseKeys = JSON.parse(JSON.stringify(EDmsMouseBtnAction.filter(item => item.mouseKey || item.mouseKey === 0)))
@@ -45,17 +44,10 @@ export class IndexComponent implements OnInit {
 	public activeMouseKey: number = 1;
 	public mouseButtons= EDmsMouseBtnAction 
 	public activeModal: string | null = null;
+	public leftLock:string = "1"
 	ngOnInit() {
 		this.keyChange.setMouseKey(this.activeMouseKey)
-		const leftLock = localStorage.getItem('leftLock')
 		
-		if (leftLock == '1') {
-			this.mouseKeys.forEach((e: any, index: number) => {
-				if (index === 0) {
-					e.disabled = true;
-				}
-			});
-		} 
 		const data = JSON.parse(localStorage.getItem('macroList'))
 		if (data && data.length > 0) {
 			this.macroList = data
@@ -77,21 +69,22 @@ export class IndexComponent implements OnInit {
 
 	/**父组件传递方法：鼠标值变化时执行 */
 	public load($e: number) {
-		if ($e) {
-			if (this.deviceSub) this.deviceSub.unsubscribe()
-			this.device = this.service.getCurrentHidDevice() as MouseDevice
-			this.device.event$
-			.pipe(
-				filter(v => v.type === HidDeviceEventType.ProfileChange)
-			)
-			.subscribe(() => {
-				this.init()
-			})
-			console.log('父组件传递方法：鼠标值变化时执行',$e);
-			this.funKey = $e
-			this.init()
+		if (this.deviceSub) this.deviceSub.unsubscribe()
+		this.device = this.service.getCurrentHidDevice() as MouseDevice
+		const profile = $e
+		const leftLockList = localStorage.getItem('leftLockList')
+		const parsedList = JSON.parse(leftLockList)
+		if (Array.isArray(parsedList) && parsedList[profile]) {
+			this.leftLock = parsedList[profile].leftLock
 		}
-		
+		if (this.leftLock == '1') {
+			this.mouseKeys.forEach((e: any, index: number) => {
+				if (index === 0) {
+					e.disabled = true;
+				}
+			});
+		} 
+		this.init()
 	}
 	public getMouseKays() {
 		this.keyConf.forEach((conf: any) => {
@@ -134,8 +127,7 @@ export class IndexComponent implements OnInit {
 	}
 	
 	public resetKey() {
-		const device = this.service.getCurrentHidDevice() as MouseDevice
-		device.recovery({value: 2, options:255}).subscribe(() => {
+		this.device.recovery({value: 2, options:255}).subscribe(() => {
 			this.msg.success(this.i18n.instant('notify.success'))
 			this.setActive(1)
 			this.init()
@@ -143,8 +135,7 @@ export class IndexComponent implements OnInit {
 	}
 
 	public resetFun() {
-		const device = this.service.getCurrentHidDevice() as MouseDevice
-		device.recovery({value: 2, options:this.activeMouseKey}).subscribe(() => {
+		this.device.recovery({value: 2, options:this.activeMouseKey}).subscribe(() => {
 			this.msg.success(this.i18n.instant('notify.success'))
 			this.init()
 		})
@@ -157,7 +148,7 @@ export class IndexComponent implements OnInit {
     }
 
 	public setActive(k: number) {
-		if (k === 0 && localStorage.getItem('leftLock') === "1") {
+		if (k === 0 && this.leftLock === "1") {
 			this.tipModal = true
 			return
 		}
@@ -197,6 +188,5 @@ export class IndexComponent implements OnInit {
 				this.msg.success(this.i18n.instant('notify.success'))
 			})
 		})
-		
 	}
 }

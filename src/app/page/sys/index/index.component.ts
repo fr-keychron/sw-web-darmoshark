@@ -19,10 +19,10 @@ export class IndexComponent implements OnInit {
 		private readonly msg: MsgService,
 	) {
 	}
-	public device:  MouseDevice
 	public activeLng = GLOBAL_CONFIG.lang
 	public lngEnum: ISelectEnums = GLOBAL_CONFIG.langs;
 	public resetModal = false
+	public profile = 0
 	public leftLock: string|null = '1'
 	public isStartUp: string = '1'
 	public mouseInfo = {
@@ -30,16 +30,20 @@ export class IndexComponent implements OnInit {
 		receiver: '',//接收器固件版本
 		launcher: '1.0.0-beta' //launcher版本
 	}
+	private deviceSub: Subscription;
+
+	ngOnDestroy() {
+		if (this.deviceSub) this.deviceSub.unsubscribe();
+	} 
+
 	ngOnInit(){
-		this.initMouse()
-		this.leftLock = localStorage.getItem('leftLock')
+		this.init()
 	}
-	private initMouse() {
+	private init() {
 		const device = this.service.getCurrentHidDevice() as MouseDevice
 		const parseInfo = (d: MouseDevice) => {
 			this.mouseInfo.mouse = d.firmware.mouse
 			this.mouseInfo.receiver = d.firmware.receiver
-			this.device = d;
 		}
 
 		if (device instanceof MouseDevice) {
@@ -70,14 +74,31 @@ export class IndexComponent implements OnInit {
 		const device = this.service.getCurrentHidDevice<MouseDevice>();
 		device.recovery({value: 255})
 			.subscribe( () => {
-				localStorage.setItem('leftLock', '1')
+				const leftLockList = localStorage.getItem('leftLockList')
+				const parsedList = JSON.parse(leftLockList)
+				parsedList[this.profile].leftLock = '1'
+				localStorage.setItem('leftLockList', JSON.stringify(parsedList));
+				this.leftLock = "1"
 				this.msg.success(this.i18n.instant('notify.success'))
 				this.resetModal = false
-				this.leftLock = "1"
 			})
 		localStorage.removeItem('macroList')
 	}
 	public setLeftLock(){
-		localStorage.setItem('leftLock', this.leftLock)
+		const leftLockList = localStorage.getItem('leftLockList')
+		const parsedList = JSON.parse(leftLockList)
+		parsedList[this.profile].leftLock = this.leftLock
+		localStorage.setItem('leftLockList', JSON.stringify(parsedList));
+	}
+	
+	/**父组件传递方法：鼠标值变化时执行 */
+	public load($e: number) {
+		if (this.deviceSub) this.deviceSub.unsubscribe()
+		this.profile = $e
+		const leftLockList = localStorage.getItem('leftLockList')
+		const parsedList = JSON.parse(leftLockList)
+		if (Array.isArray(parsedList) && parsedList[$e]) {
+			this.leftLock = parsedList[$e].leftLock
+		}
 	}
 }

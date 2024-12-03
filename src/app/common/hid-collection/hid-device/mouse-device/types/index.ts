@@ -25,6 +25,7 @@ export interface IBaseInfo {
 		scroll: number,
 		eSports?: number
 	},
+	profile: number
 }
 
 export type IMouseButtonKey = {

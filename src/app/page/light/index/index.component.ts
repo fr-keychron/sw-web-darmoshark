@@ -3,14 +3,13 @@ import { MsgService } from "src/app/service/msg/msg.service";
 import { TranslateService } from "@ngx-translate/core";
 import { MouseDevice} from "../../../common/hid-collection";
 import {DeviceConnectService} from "../../../common/device-conncet/device-connect.service";
-import { Subject } from 'rxjs';
+import { Subject, Subscription} from 'rxjs';
 @Component({
 	selector: "mouse-light-index",
 	templateUrl: './index.component.html',
 	styleUrls: ['./index.component.scss']
 })
 export class IndexComponent implements OnInit {
-	private setRGBSubject = new Subject<void>();
 	constructor(
 		private readonly service: DeviceConnectService,
 		private readonly msgService: MsgService,
@@ -91,7 +90,18 @@ export class IndexComponent implements OnInit {
 		this.setRGB()
 	}
 
-	
+	private deviceSub: Subscription;
+	private updateSub: Subscription;
+
+	ngOnDestroy() {
+		if (this.deviceSub) this.deviceSub.unsubscribe()
+		if (this.updateSub) this.updateSub.unsubscribe()
+	}
+
+	public load($e: number) {
+		if (this.deviceSub) this.deviceSub.unsubscribe()
+		this.init()
+	}
 	public setRGB(): void {
 		if (this.isInitialized) {
 			const [r, g, b] = this.rgbArr;

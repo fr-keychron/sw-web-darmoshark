@@ -39,6 +39,7 @@ export class MouseDeviceDMS {
 				eSports: 1
 			},
 			power:  { state: 0, value: 100 }, 
+			profile: 0
 		};;
 	}
 
@@ -60,7 +61,7 @@ export class MouseDeviceDMS {
 		return new Observable<any>((s) => {
 			const init = async () => {
 				try {
-					await firstValueFrom(this.getPower());
+					await firstValueFrom(this.getBaseInfo());
 					await firstValueFrom(this.getVersion());
 					await firstValueFrom(this.getBaseInfoDpi());
 					await firstValueFrom(this.mouse.loadJson()).catch((err) => {
@@ -200,14 +201,15 @@ export class MouseDeviceDMS {
 			this.mouse.write(0, buf).subscribe();
 		});
 	}
-	public getPower(): Observable<{
+	public getBaseInfo(): Observable<{
 		workMode: number;
 		power: {
 			state: number,
 			value: number
-		}
+		};
+		profile: number
 	}> {
-		return new Observable<{ workMode: number;power: { state: number, value: number }}>((s) => {
+		return new Observable<{ workMode: number; power: { state: number, value: number }; profile: number}>((s) => {
 			const buf = MouseDevice.Buffer(64);
 			buf[0] = 0x01
 			buf[2] = 0x81
@@ -224,13 +226,16 @@ export class MouseDeviceDMS {
 						}
 						return {
 							workMode,
-							power:power
+							power: power,
+							profile:  v[7]
 						};
-					})
+					}),
+					take(1)
 				)
 				.subscribe({
 					next: (v) => {
 						this.mouse.baseInfo.power = v.power
+						this.mouse.baseInfo.profile = v.profile
 						if(!this.mouse.baseInfo.workMode){
 							this.mouse.baseInfo.workMode = v.workMode
 						}
@@ -242,7 +247,8 @@ export class MouseDeviceDMS {
 							power: {
 								state: 0,
 								value: 0
-							}
+							},
+							profile: 0
 						})
 					},
 				});
@@ -319,28 +325,18 @@ export class MouseDeviceDMS {
 			buf[2] = 0x80 | (3 + bytes.length)
 			buf[3] = 6 
 			buf[4] = data.current  
-			newBytes.forEach((n: number, i: number) => (buf[i + 6] = n));
-			this.mouse.report$
-			.pipe(
-				filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x06),
-				take(1),
-				map((v) => {
-					return {
-						v
-					};
+			newBytes.forEach((n: number, i: number) => (buf[i + 6] = n))
+			const subj = this.mouse.report$
+				.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x06))
+				.subscribe((v) => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
 				})
-			)
-			.subscribe({
-				next: (v) => {
-					s.next(v)
-				},
-				error: () => {
-					s.next()
-				},
-			})
 			this.setbuf0(buf)
 			this.setbuf63(buf)
-			this.mouse.write(0, buf).subscribe();
+			this.mouse.write(0, buf).subscribe()
 		});
 	}
 
@@ -351,8 +347,16 @@ export class MouseDeviceDMS {
 			buf[2] = 0x82
 			buf[3] = 0x08
 			buf[4] = current
+			const subj = this.mouse.report$
+				.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x08))
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
+				})
 			this.setbuf0(buf)
-			this.setbuf63(buf);
+			this.setbuf63(buf)
 			this.mouse.write(0, buf).subscribe()
 		});
 	}
@@ -369,6 +373,14 @@ export class MouseDeviceDMS {
 			buf[4] = data.level
 			this.setbuf0(buf)
 			this.setbuf63(buf)
+			const subj = this.mouse.report$
+				.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x04))
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
+				})
 			this.mouse.write(0, buf).subscribe(() => s.next())
 		});
 	}
@@ -425,26 +437,16 @@ export class MouseDeviceDMS {
 			buf[3] = 4
 			buf[4] = mouseKey
 			if (buffer && buffer.length) buffer.forEach((k, i) => (buf[i + 5] = k))
-			
-			this.mouse.report$
-				.pipe(
-					filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 4),
-					map((v) => {
-						return v
+			const subj = this.mouse.report$
+				.pipe(filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 0x04))
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
 					})
-				)
-				.subscribe({
-					next: (result) => {
-						s.next(result)
-					},
-					error: (error) => {
-						s.next(error)
-					}
-				});
+				})
 			this.setbuf0(buf)
 			this.setbuf63(buf)
-			console.log(buf);
-			
 			this.mouse.write(0, buf).subscribe()
 		});
 	}
@@ -460,21 +462,16 @@ export class MouseDeviceDMS {
 			buf[3] = 4
 			buf[4] = mouseKey
 			buffer.forEach((n: number, i: number) => (buf[i + 5] = n & 0xff))
-			this.mouse.report$
-			.pipe(
-				filter((v) =>  (v[0] === 0x03 || v[0] === 0x43) && v[3] === 4),
-				map((v) => {
-					return v
+			const subj = this.mouse.report$
+				.pipe(filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 0x04))
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						console.log('111');
+						
+						s.next(r)
+						subj.unsubscribe()
+					})
 				})
-			)
-			.subscribe({
-				next: (result) => {
-					s.next(result)
-				},
-				error: (error) => {
-					s.next(error)
-				}
-			});
 			this.setbuf0(buf)
 			this.setbuf63(buf)
 			console.log(buf);
@@ -497,25 +494,17 @@ export class MouseDeviceDMS {
 			buf[6] = shiftKey & 0xff
 			buf[7] = keycodes[0] & 0xff
 			buf[8] = 0x00
-			
-			this.mouse.report$
-			.pipe(
-				filter((v) =>  (v[0] === 0x03 || v[0] === 0x43) && v[3] === 4),
-				map((v) => {
-					return v
+			const subj = this.mouse.report$
+				.pipe(filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 0x04))
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
 				})
-			)
-			.subscribe({
-				next: (result) => {
-					s.next(result);
-				},
-				error: (error) => {
-					s.next(error);
-				}
-			});
-			this.setbuf0(buf);
-			this.setbuf63(buf);
-			this.mouse.write(0, buf).subscribe();
+			this.setbuf0(buf)
+			this.setbuf63(buf)
+			this.mouse.write(0, buf).subscribe()
 		});
 	}
 	
@@ -533,23 +522,16 @@ export class MouseDeviceDMS {
 			buf[7] = 0x00
 			buf[8] = 0x00
 			this.setbuf63(buf)
-			this.mouse.report$
-			.pipe(
-				filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 0x04),
-				map((v) => {
-					return v
-				}),
-				take(1)
-				
-			)
-			.subscribe({
-				next: (result) => {
-					s.next(result);
-				},
-				error: (error) => {
-					s.next(error);
-				}
-			});
+			const subj = this.mouse.report$
+				.pipe(filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 0x04))
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
+				})
+			this.setbuf0(buf)
+			this.setbuf63(buf)
 			this.mouse.write(0, buf).subscribe();
 		});
 	}
@@ -632,11 +614,13 @@ export class MouseDeviceDMS {
 				const run = () => {
 					const data = section.shift();
 					data.subscribe();
-					const subj = this.mouse.report$.subscribe((r) => {
+					const subj = this.mouse.report$.subscribe(() => {
 						if (section.length) {
 							run();
 						} else {
-							s.next();
+							this.saveData().subscribe(() => {
+								s.next()
+							})
 						}
 						subj.unsubscribe();
 					});
@@ -674,11 +658,17 @@ export class MouseDeviceDMS {
 			buf[3] = 10
 			buf[4] = configByte & 0xff
 			buf[5] = data.lod
-			this.setbuf0(buf);
-			this.setbuf63(buf);
-			this.mouse.write(0, buf).subscribe((r) => {
-				s.next()
-			});
+			const subj = this.mouse.report$
+				.pipe(filter(v => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x0a))
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
+				})
+			this.setbuf0(buf)
+			this.setbuf63(buf)
+			this.mouse.write(0, buf).subscribe()
 		});
 	}
 
@@ -691,16 +681,22 @@ export class MouseDeviceDMS {
 			buf[0] = 4;
 			buf[2] = 0x80 | 6
 			buf[3] = 0x0E
-			buf[4] = (data.sleepTime) & 0xFF;
-			buf[5] = ((data.sleepTime) >> 8) & 0xFF;
-			buf[6] = (data.sleepTime) & 0xFF;
-			buf[7] = ((data.sleepTime) >> 8) & 0xFF;
-			buf[8] = (data.btnRespondTime) & 0xFF;
-			this.setbuf0(buf);
-			this.setbuf63(buf);
-			this.mouse.write(0, buf).subscribe((r) => {
-				s.next()
-			});
+			buf[4] = (data.sleepTime) & 0xFF
+			buf[5] = ((data.sleepTime) >> 8) & 0xFF
+			buf[6] = (data.sleepTime) & 0xFF
+			buf[7] = ((data.sleepTime) >> 8) & 0xFF
+			buf[8] = (data.btnRespondTime) & 0xFF
+			const subj = this.mouse.report$
+				.pipe(filter(v => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x0E))
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
+				})
+			this.setbuf0(buf)
+			this.setbuf63(buf)
+			this.mouse.write(0, buf).subscribe()
 		});
 	}
 	// 恢复出厂设置
@@ -711,11 +707,17 @@ export class MouseDeviceDMS {
 			buf[2] = 0x82
 			buf[3] = value
 			buf[4] = options & 0xff
-			this.setbuf0(buf);
-			this.setbuf63(buf);
-			this.mouse.write(0, buf).subscribe((r) => {
-				s.next()
-			});
+			const subj = this.mouse.report$
+				.pipe(filter(v => (v[0] === 0x09 || v[0] === 0x49) && v[3] === value))
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
+				})
+			this.setbuf0(buf)
+			this.setbuf63(buf)
+			this.mouse.write(0, buf).subscribe()
 		});
 	}
 
@@ -803,14 +805,12 @@ export class MouseDeviceDMS {
 			buf[19] = data.b
 			const subj = this.mouse.report$
 			.pipe(filter(v => (v[0] === 0x05 || v[0] === 0x45) && v[3] === 0x02))
-			.subscribe((v: any) => {
-				if (v) {
-					console.log(v);
-					
-					s.next(); 
-				}
-				subj.unsubscribe();
-			});
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
+				})
 			this.setbuf0(buf);
 			this.setbuf63(buf);
 			this.mouse.write(0, buf).subscribe();
@@ -856,15 +856,55 @@ export class MouseDeviceDMS {
 			buf[53] = ((this.mouse.baseInfo.sleep) >> 8) & 0xFF;
 			buf[54] = (this.mouse.baseInfo.dpiCurrentLevel) & 0xFF;
 			const subj = this.mouse.report$
-			.subscribe((v: any) => {
-				if (v) {
-					s.next(); 
-				}
-				subj.unsubscribe();
-			});
+				.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 2))
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
+				})
 			this.setbuf0(buf);
 			this.setbuf63(buf);
 			this.mouse.write(0, buf).subscribe();
 		})
+	}
+
+	public saveData () {
+		return new Observable((s) => {
+			const buf = MouseDevice.Buffer(64);
+			buf[0] = 0x0a;
+			buf[2] = 0x80 | 1
+			buf[3] = 0x01
+			const subj = this.mouse.report$
+				.pipe(filter(v => v[0] === 0x0a || v[0] === 0x4a))
+				.subscribe((v) => {
+					subj.unsubscribe()
+					s.next()
+				});
+			this.setbuf0(buf)
+			this.setbuf63(buf)
+			this.mouse.write(0, buf).subscribe()
+		});
+	}
+
+	public switchConfig(index: number) {
+		return new Observable((s) => {
+			const buf = MouseDevice.Buffer(64);
+			buf[0] = 2;
+			buf[2] = 0x80 | 2
+			buf[3] = 0x01
+			buf[4] = index
+			const subj = this.mouse.report$
+				.pipe(filter((v) => (v[0] === 0x02 || v[0] === 0x42) && v[3] === 1))
+				.subscribe(() => {
+					this.saveData().subscribe((r) => {
+						subj.unsubscribe()
+						s.next(r)
+					})
+				})
+			this.setbuf0(buf)
+			this.setbuf63(buf)
+			this.mouse.write(0, buf).subscribe()
+		});
 	}
 }

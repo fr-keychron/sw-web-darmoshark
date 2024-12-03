@@ -1,10 +1,9 @@
 import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
 import { Subscription } from "rxjs";
-import { filter } from 'rxjs/operators';
 import { MsgService } from "src/app/service/msg/msg.service";
 import { TranslateService } from "@ngx-translate/core";
-import {HidDeviceEventType, MouseDevice} from "../../../common/hid-collection";
-import {DeviceConnectService} from "../../../common/device-conncet/device-connect.service";
+import { MouseDevice } from "../../../common/hid-collection";
+import { DeviceConnectService } from "../../../common/device-conncet/device-connect.service";
 
 @Component({
 	selector: "mouse-dpi-index",
@@ -19,17 +18,16 @@ export class IndexComponent implements OnInit {
 	) {}
 
 	@ViewChild('sysBaseLayout') sysBaseLayout: ElementRef<HTMLImageElement>
-
-  ngOnInit(): void {
-		
-  }
+	private deviceSub: Subscription;
+	ngOnInit(): void {
+			
+	}
 
 	ngOnDestroy() {
 		if (this.deviceSub) this.deviceSub.unsubscribe()
 	}
 
-	private device: MouseDevice;
-	private deviceSub: Subscription;
+	
 	
 	public lodList = [
 		{
@@ -50,17 +48,9 @@ export class IndexComponent implements OnInit {
 	public mouseSleep: number = 15
 	public scrollType: number = 0
 	public dpiValues: Array<[]> = []
-	public load($e: boolean) {
-		if ($e) {
-			if (this.deviceSub) this.deviceSub.unsubscribe();
-			this.device = this.service.getCurrentHidDevice();
-			this.device.event$
-				.pipe(filter(v => v.type === HidDeviceEventType.ProfileChange))
-				.subscribe(() => {
-					this.init()
-				})
-			this.init()
-		}
+	public load($e: number) {
+		if (this.deviceSub) this.deviceSub.unsubscribe()
+		this.init()
 	}
 
 	public init() {

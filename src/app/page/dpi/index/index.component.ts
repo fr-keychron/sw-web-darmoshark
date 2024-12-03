@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Subscription} from "rxjs";
-import {filter, map, concatMap} from 'rxjs/operators';
+import {filter} from 'rxjs/operators';
 import {MsgService} from "src/app/service/msg/msg.service";
 import {TranslateService} from "@ngx-translate/core";
 import {EEventEnum, HidDeviceEventType, IMouseJson, MouseDevice} from "../../../common/hid-collection";
@@ -88,8 +88,12 @@ export class IndexComponent implements OnInit {
 		})
 	}
 
+	public load($e: number) {
+		if (this.deviceSub) this.deviceSub.unsubscribe()
+		this.init()
+	}
+
 	/**连接初始化 */
-	// private updateSub: Subscription;
 	private init() {
 		this.currentHidDevice = this.service.getCurrentHidDevice() as MouseDevice
 		const getHidConf = (h: MouseDevice) => {

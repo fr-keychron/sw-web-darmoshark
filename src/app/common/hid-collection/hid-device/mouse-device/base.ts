@@ -167,6 +167,10 @@ export class MouseDevice extends Mouse {
 		return this.commands.setLevelCount(levelCount)
 	}
 
+	switchConfig(index:number){
+		return this.commands.switchConfig(index)
+	}
+
 	public setMouseBtn(mouseKey: number, e: any): Observable<any> {
 		const buf = ByteUtil.numberToArray(e)
 		return this.commands.setMouseBtn(mouseKey,buf)

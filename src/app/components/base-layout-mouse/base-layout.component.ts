@@ -1,11 +1,10 @@
 import {Component, ElementRef, EventEmitter, Input, OnInit, Output, TemplateRef, ViewChild} from "@angular/core";
 import {MsgService} from "../../service/msg/msg.service";
-import {TranslateService} from "@ngx-translate/core";
-import {MerchandiseService} from "../../service/merchandise/merchandise.service";
-import {filter, map} from "rxjs/operators";
+import {filter} from "rxjs/operators";
 import {GLOBAL_CONFIG} from "../../config";
 import {GetScale, imageEl2Base64} from "../../utils";
 import {Subscription, fromEvent} from "rxjs";
+import {TranslateService} from "@ngx-translate/core";
 import {EEventEnum, HidDeviceEventType, IMouseJson, MouseDevice} from "../../common/hid-collection";
 import {DeviceConnectService} from "../../common/device-conncet/device-connect.service";
 
@@ -21,7 +20,9 @@ export class BaseLayoutMouseComponent implements OnInit {
 	@Input() left: TemplateRef<any>;
 	@Input() right: TemplateRef<any>;
 	constructor(
-		private readonly mouseService: DeviceConnectService
+		private readonly service: DeviceConnectService,
+		private readonly msg: MsgService,
+		private readonly i18n: TranslateService,
 	) {
 	}
 
@@ -34,34 +35,31 @@ export class BaseLayoutMouseComponent implements OnInit {
 	public workMode: number;
 	public leftLock: string;
 	public deviceOptions: Array<{ label: string; value: number }> = [];
-	public ConfigList = [1,2,3,4,5]
-	public Profile = 1
+	public ConfigList = [0,1,2,3,4]
+	public profile: number
 	ngOnInit() {
-		this.leftLock = localStorage.getItem('leftLock')
 		if (this.hidDevices) {
 			this.hidDeviceInit()
 		}
 		this.hidConnectEvent()
 	} 
 	private hidConnectEvent() {
-		this.mouseService.event$
+		this.service.event$
 			.pipe(
 				filter(v => v.type === EEventEnum.CONNECT)
 			)
 			.subscribe(() => {
-				this.hidDevices = this.mouseService.getHidDevices()
+				this.hidDevices = this.service.getHidDevices()
 				this.hidDeviceInit()
 			})
-		this.mouseService.event$
+		this.service.event$
 			.pipe(filter(v => v.type === EEventEnum.DISCONNECT))
 			.subscribe(() => this.currentHidDevice = undefined)
 
-		this.mouseService.event$
+		this.service.event$
 			.pipe(filter(v => v.type === EEventEnum.CLOSED))
 			.subscribe(() => {
-				this.currentHidDevice = this.mouseService.getCurrentHidDevice() as MouseDevice
-				console.log(this.currentHidDevice);
-				
+				this.currentHidDevice = this.service.getCurrentHidDevice() as MouseDevice
 			})
 	}
 
@@ -94,7 +92,7 @@ export class BaseLayoutMouseComponent implements OnInit {
 	private updateSub: Subscription;
 
 	private hidDeviceInit() {
-		const hidDevice = this.mouseService.getCurrentHidDevice() as MouseDevice
+		const hidDevice = this.service.getCurrentHidDevice() as MouseDevice
 		if (!hidDevice) return
 		if (this.updateSub) this.updateSub.unsubscribe();
 		this.updateSub = hidDevice.update$
@@ -112,7 +110,8 @@ export class BaseLayoutMouseComponent implements OnInit {
 			this.powerState = h.baseInfo.power.state
 			this.power = h.baseInfo.power.value
 			this.workMode = h.baseInfo.workMode
-			this.load(true)
+			this.profile = h.baseInfo.profile
+			this.load(this.profile)
 			this.getInfo()
 		}
 		if (hidDevice.loaded) {
@@ -141,6 +140,25 @@ export class BaseLayoutMouseComponent implements OnInit {
 				}, 100)
 			}
 		})
+		const leftLockList = localStorage.getItem('leftLockList');
+
+		if (!leftLockList) {
+			const arr = [
+				{ key: '0', leftLock: '1' },
+				{ key: '1', leftLock: '1' },
+				{ key: '2', leftLock: '1' },
+				{ key: '3', leftLock: '1' },
+				{ key: '4', leftLock: '1' }
+			];
+			localStorage.setItem('leftLockList', JSON.stringify(arr));
+		} else {
+			const parsedList = JSON.parse(leftLockList)
+			if (Array.isArray(parsedList) && parsedList[this.profile]) {
+				this.leftLock = parsedList[this.profile].leftLock
+			} else {
+				this.leftLock = "1"
+			}
+		}
 	}
 
 	public cover = '';
@@ -192,9 +210,9 @@ export class BaseLayoutMouseComponent implements OnInit {
 	}
 
 	@Output('load')
-	mouseLoad: EventEmitter<boolean> = new EventEmitter<boolean>()
+	mouseLoad: EventEmitter<number> = new EventEmitter<number>()
 
-	public load(v: boolean) {
+	public load(v: number) {
 		this.mouseLoad.next(v)
 	}
 
@@ -207,7 +225,31 @@ export class BaseLayoutMouseComponent implements OnInit {
 	}
 
 	public setConfig(e:number) {
-		console.log(e);
+		const device = this.service.getCurrentHidDevice() as MouseDevice
+		device.switchConfig(e).subscribe(() => {
+			device.getBaseInfo().subscribe(() => {
+				this.load(this.profile)
+				this.msg.success(this.i18n.instant('notify.success'))
+				localStorage.setItem('profile', JSON.stringify(this.profile))
+			})
+		})
+	}
+
+	public reset(){
+		const device = this.service.getCurrentHidDevice<MouseDevice>()
+		device.recovery({value: 255}).subscribe( () => {
+			this.msg.success(this.i18n.instant('notify.success'))
+			const leftLockList = localStorage.getItem('leftLockList')
+			const parsedList = JSON.parse(leftLockList)
+			parsedList[this.profile].leftLock = '1'
+			localStorage.setItem('leftLockList', JSON.stringify(parsedList))
+			this.load(this.profile)
+		})
+	}
+
+	public importConfig() {
+		const device = this.service.getCurrentHidDevice<MouseDevice>()
+		console.log(device);
 		
 	}
 }

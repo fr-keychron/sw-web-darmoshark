@@ -274,12 +274,14 @@
         border: 1px solid white;
         padding-left: .666rem;
         &:hover {
-            box-shadow: 0;
-            border-bottom: 1px solid $global-border-blue;
+            box-shadow: none;
+            border: 1px solid $global-border-blue;
+        }
+        & > .arrow {
+            background-image: url("../../../assets/icon/selact-arrow-down-white.png");
         }
     }
     & > .g-options {
-        top: 0;
-        bottom: 100%;
+        top: -6.666rem;
     }
 }

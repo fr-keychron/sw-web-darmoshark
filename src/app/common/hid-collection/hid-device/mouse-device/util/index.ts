@@ -22,8 +22,6 @@ const allArrays = [
 	EMdsMouseBtnDisabled
 ].flat();
 export const getMouseButtonInfo = (bufferArr: number[]) => {
-	console.log(allArrays);
-	
 	const value = ByteUtil.arrayToNumber(bufferArr);
 	const data =  allArrays.find(i => (i as unknown as { value: number }).value === value);
 	if(data){

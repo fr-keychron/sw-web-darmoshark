@@ -6,12 +6,12 @@ import { GOptionComponent } from './option.component';
     selector: 'g-select',
     template: `
         <div class="g-select" (click)="toggleDropdown($event)" [ngStyle]="{'text-align': gCenter ? 'center' : 'left'}">
-            <div class="g-select-box" tabindex="0"  >
+            <div class="g-select-box" tabindex="0" (blur)="onBlur()">
                 <span>{{ getSelectedLabel() | translate}}</span>
                 <div class="arrow"></div>
             </div>
             <div class="g-options" *ngIf="dropdownVisible">
-                <ng-content></ng-content> <!-- 渲染 g-option 组件 -->
+                <ng-content></ng-content>
             </div>
         </div>
     `,

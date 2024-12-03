@@ -1,4 +1,8 @@
-<base-layout-mouse [left]="left" [showMouseButton]="false" >
+<base-layout-mouse 
+    [left]="left" 
+    (load)="load($event)"
+    [showMouseButton]="false" 
+>
     <ng-template #left>
         <div class="container-title g-flex g-justify-between g-item-center">
             <span>RGB灯光设置</span>

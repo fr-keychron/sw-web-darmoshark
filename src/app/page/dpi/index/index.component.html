@@ -1,88 +1,92 @@
-<base-layout-mouse [left]="left" [showMouseButton]="false" >
-  <ng-template #left>
-    <div class="container-title g-flex g-justify-between g-item-center">
-        <span>指针设置</span>
-        <span class="icon_arrow"></span>
-    </div>
-    <!-- DPI设置 -->
-    <div class="dpi-container">
-        <div class="dpi-title g-flex g-item-center g-justify-between">
-            <div class="g-flex g-item-center g-justify-between">
+<base-layout-mouse 
+    [left]="left" 
+    (load)="load($event)"
+    [showMouseButton]="false" 
+>
+    <ng-template #left>
+        <div class="container-title g-flex g-justify-between g-item-center">
+            <span>指针设置</span>
+            <span class="icon_arrow"></span>
+        </div>
+        <!-- DPI设置 -->
+        <div class="dpi-container">
+            <div class="dpi-title g-flex g-item-center g-justify-between">
+                <div class="g-flex g-item-center g-justify-between">
+                    <span class="icon_square"></span>
+                    {{'DPI调节' | translate}}
+                    <span 
+                        class="icon_hint"
+                        nz-tooltip
+                        [nzTooltipTitle]="'mouse.dpi.dpiTip' | translate"
+                    ></span>
+                </div> 
+                <span 
+                    class="icon-reset-bule"
+                    (click)="reset()"
+                ></span> 
+            </div>
+            <div class="dpi-os">
+                <div class="os-left">
+                    <div class="os-item" *ngFor="let dpi of dpiValues;let i = index">
+                        <div (click)="changeLevel(i)" class="item-left" [ngStyle]="{background: dpiColors[i] || '#fff'}"></div>
+                        <span
+                            class="item-right"
+                            (click)="changeLevel(i)"
+                            [ngClass]="{'active-bgcolor': dpiLevel === i}"
+                        >
+                            {{dpiLevel !== i ? dpi : dpiValues[i]}}
+                        </span> 
+                    </div>
+                </div>
+                <div class="os-right g-flex g-item-end g-flex-col">
+                    <div class="g-flex">
+                        <span class="text-levelCount">{{'mouse.dpi.levelCount' | translate }}</span>
+                        <g-select
+                            class="dpi-select"
+                            [(ngModel)]="levelCount"
+                            [gCenter]="false"
+                            (ngModelChange)="setLevelCount()"
+                        >
+                            <g-option [gValue]="1" gLabel="1"></g-option>
+                            <g-option [gValue]="2" gLabel="2"></g-option>
+                            <g-option [gValue]="3" gLabel="3"></g-option>
+                            <g-option [gValue]="4" gLabel="4"></g-option>
+                            <g-option [gValue]="5" gLabel="5"></g-option>
+                        </g-select> 
+                    </div>
+                    <div class="scale-content g-flex g-item-center g-justify-between">
+                        <span>{{minDpi}}</span>
+                        <g-slider [(ngModel)]="dpiValue" [min]="minDpi" [max]="maxDpi" [step]="50"></g-slider>
+                        <span>{{maxDpi}}</span>
+                    </div>
+                    <div class="submit-btn" (click)="setDpi()">
+                        <span>{{'确定' | translate }}</span>
+                    </div>
+            </div>
+        </div>
+        </div>
+        <!-- 回报率设置 -->
+        <div class="report-container">
+            <div class="report-title g-flex g-item-center g-justify-start">
                 <span class="icon_square"></span>
-                {{'DPI调节' | translate}}
+                {{'mouse.dpi.reportRate' | translate}}
                 <span 
                     class="icon_hint"
                     nz-tooltip
-                    [nzTooltipTitle]="'mouse.dpi.dpiTip' | translate"
-                ></span>
-            </div> 
-            <span 
-                class="icon-reset-bule"
-                (click)="reset()"
-            ></span> 
-        </div>
-        <div class="dpi-os">
-            <div class="os-left">
-                <div class="os-item" *ngFor="let dpi of dpiValues;let i = index">
-                    <div (click)="changeLevel(i)" class="item-left" [ngStyle]="{background: dpiColors[i] || '#fff'}"></div>
-                    <span
+                    [nzTooltipTitle]="'mouse.dpi.reportTip' | translate"
+                ></span> 
+            </div>
+            <div class="report-os g-flex g-justify-start"> 
+                <div class="os-item" *ngFor="let item of reportRate;let i = index" (click)="setReportRate(i+1)">
+                    <div  class="item-left" [ngStyle]="{background: item.color || '#fff'}"></div>
+                    <div
                         class="item-right"
-                        (click)="changeLevel(i)"
-                        [ngClass]="{'active-bgcolor': dpiLevel === i}"
+                        [ngClass]="{'active-bgcolor': reportRateVal === transformIndex(i)}"
                     >
-                        {{dpiLevel !== i ? dpi : dpiValues[i]}}
-                    </span> 
-                </div>
-            </div>
-            <div class="os-right g-flex g-item-end g-flex-col">
-                <div class="g-flex">
-                    <span class="text-levelCount">{{'mouse.dpi.levelCount' | translate }}</span>
-                    <g-select
-                        class="dpi-select"
-                        [(ngModel)]="levelCount"
-                        [gCenter]="false"
-                        (ngModelChange)="setLevelCount()"
-                    >
-                        <g-option [gValue]="1" gLabel="1"></g-option>
-                        <g-option [gValue]="2" gLabel="2"></g-option>
-                        <g-option [gValue]="3" gLabel="3"></g-option>
-                        <g-option [gValue]="4" gLabel="4"></g-option>
-                        <g-option [gValue]="5" gLabel="5"></g-option>
-                    </g-select> 
-                </div>
-                <div class="scale-content g-flex g-item-center g-justify-between">
-                    <span>{{minDpi}}</span>
-                    <g-slider [(ngModel)]="dpiValue" [min]="minDpi" [max]="maxDpi" [step]="50"></g-slider>
-                    <span>{{maxDpi}}</span>
-                </div>
-                <div class="submit-btn" (click)="setDpi()">
-                    <span>{{'确定' | translate }}</span>
-                </div>
-        </div>
-      </div>
-    </div>
-    <!-- 回报率设置 -->
-    <div class="report-container">
-        <div class="report-title g-flex g-item-center g-justify-start">
-            <span class="icon_square"></span>
-            {{'mouse.dpi.reportRate' | translate}}
-            <span 
-                class="icon_hint"
-                nz-tooltip
-                [nzTooltipTitle]="'mouse.dpi.reportTip' | translate"
-            ></span> 
-        </div>
-        <div class="report-os g-flex g-justify-start"> 
-            <div class="os-item" *ngFor="let item of reportRate;let i = index" (click)="setReportRate(i+1)">
-                <div  class="item-left" [ngStyle]="{background: item.color || '#fff'}"></div>
-                <div
-                    class="item-right"
-                    [ngClass]="{'active-bgcolor': reportRateVal === transformIndex(i)}"
-                >
-                    {{ item.value + 'HZ'}}
+                        {{ item.value + 'HZ'}}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-  </ng-template>
+    </ng-template>
 </base-layout-mouse>

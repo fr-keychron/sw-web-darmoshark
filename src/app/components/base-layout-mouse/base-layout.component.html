@@ -41,27 +41,27 @@
 		</div> 
 		<div class="device-connected-bottom">
 			<div class="device-botton-box g-flex g-justify-end g-item-center">
-				<!-- <div class="icon_square"></div>
+				<div class="icon_square"></div>
 				<div class="device-connected-select">
 					<g-select
-					[(ngModel)]="Profile" 
+					[(ngModel)]="profile" 
 					[gCenter]="false"
 					(ngModelChange)="setConfig($event)"
 				>
 					<g-option *ngFor="let option of ConfigList" 
-						[gLabel]="('macro.config'| translate) + '0' + option" 
+						[gLabel]="('macro.config'| translate) + '0' + (option+1)" 
 						[gValue]="option"
 					>
 					</g-option>
 				</g-select> 
-				</div> -->
+				</div>
 				<div class="icon_square"></div>
-				<button class="button-bule">
+				<button class="button-bule" (click)="reset()">
 					<span class="icon-reset icon-button"></span>
 					重置
 				</button>
 				<div class="icon_square"></div>
-				<button class="button-bule">
+				<button class="button-bule" (click)="importConfig()">
 					<span class="icon-import icon-button"></span>
 					导出
 				</button>
