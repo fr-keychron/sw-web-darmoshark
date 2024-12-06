@@ -74,7 +74,6 @@ export class MouseDeviceDMS {
 					await firstValueFrom(this.getBaseInfoDpi());
 					await firstValueFrom(this.getMouseBtnsInfo());
 					await firstValueFrom(this.getLight());
-				
 					await firstValueFrom(this.mouse.loadJson()).catch((err) => {
 						s.error({code: "noHid", msg: err});
 					});
@@ -292,7 +291,7 @@ export class MouseDeviceDMS {
 							delay:v[54],
 							reportRate: v[5],
 							levelCount: v[6].toString(2).split('1').length - 1,
-							dpiCurrentLevel: 0x00,
+							dpiCurrentLevel: v[7],
 							sleep:  (v[53] << 8) | v[52] ,
 							sys: {
 								lod:  v[43],
@@ -752,9 +751,12 @@ export class MouseDeviceDMS {
 			buf[2] = 0x80|1
 			buf[3] = 0x01
 			const subj = this.mouse.report$
-			.pipe(filter(v => (v[0] === 0x05 || v[0] === 0x45) && v[3] === 0x01))
+			.pipe(filter(v => v[0] === 0x1F ||(v[0] === 0x05 || v[0] === 0x45) && v[3] === 0x01))
 			.subscribe((v: any) => {
-				if (v) {
+				if (v[0] === 0x1F){
+					s.next(false); 
+				}
+				if (v[0] === 0x05 || v[0] === 0x45) {
 					const data = {
 						lightMode: v[5],
 						brightness: v[7],
