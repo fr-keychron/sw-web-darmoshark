@@ -1,5 +1,5 @@
-import keyJsonJis from 'src/app/common/json/keycode-jis.json'
-import keyJsonEn from 'src/app/common/json/keycode-en.json'
+import keyJsonJis from 'src/assets/json/keycode-jis.json'
+import keyJsonEn from 'src/assets/json/keycode-en.json'
 import {IKeycode, IKeycodeMenu} from "../../model";
 import {BaseKeyboard} from '../../common/hid-collection'
 import {KeycodeEnumService} from './keycode-enum.service';
@@ -329,9 +329,9 @@ class KeycodeService {
 		const json = this.keyJson ? this.keyJson : keyJsonEn;
 		return json
 			.flat()
-			.map(i => i['keycodes'])
+			.map((i: { [x: string]: any; }) => i['keycodes'])
 			.flat()
-			.find(i => i.code === code) ?? null;
+			.find((i: { code: string; }) => i.code === code) ?? null;
 	}
 
 	public getByCategory(category: string): Record<string, any> {

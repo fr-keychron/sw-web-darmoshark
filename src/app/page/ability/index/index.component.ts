@@ -3,7 +3,7 @@ import { Subscription } from "rxjs";
 import { MsgService } from "src/app/service/msg/msg.service";
 import { TranslateService } from "@ngx-translate/core";
 import { MouseDevice } from "../../../common/hid-collection";
-import { DeviceConnectService } from "../../../common/device-conncet/device-connect.service";
+import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 
 @Component({
 	selector: "mouse-dpi-index",
@@ -55,16 +55,16 @@ export class IndexComponent implements OnInit {
 
 	public init() {
 		const device = this.service.getCurrentHidDevice<MouseDevice>()
-		device.getBaseInfoDpi().subscribe(()=>{
-			const {lod, motion, line, wave, scroll, eSports} = device.baseInfo.dpiConf.sys
+		device.getBaseInfo().subscribe(()=>{
+			const {lod, motion, line, wave, scroll, eSports} = device.baseInfo.sys
 			const {sys} = device.json as any
 				
 			this.lodValue = lod
 			this.eSports = eSports
 			this.scrollValue =  scroll
 			this.sensorValue = [!!wave, !!line, !!motion]
-			this.dalayTime = device.baseInfo.dpiConf.delay
-			this.sleepTime = device.baseInfo.dpiConf.sleep
+			this.dalayTime = device.baseInfo.delay
+			this.sleepTime = device.baseInfo.sleep
 			this.lodList = sys.lod
 		})
 	}
@@ -79,7 +79,9 @@ export class IndexComponent implements OnInit {
 			motion: sensorValue[2] ? 1 : 0 ,
 			scroll: scrollValue,
 			eSports: eSports,
-		}).subscribe()
+		}).subscribe(()=>{
+			this.init()
+		})
 	}
 	public submitTime() {
 		const device = this.service.getCurrentHidDevice<MouseDevice>()

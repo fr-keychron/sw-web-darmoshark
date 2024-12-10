@@ -48,6 +48,7 @@ export class RecverTransceiver extends Transceiver {
 			this.sendFlag = false
 			return
 		}
+		let time: string | number | NodeJS.Timeout
 		const [reportId, data, receiveWay] = this.commands.shift()
 		
 		switch(receiveWay){
@@ -76,27 +77,26 @@ export class RecverTransceiver extends Transceiver {
 						const state = new Uint8Array(r.data.buffer)
 						if(state[0]===0xe4){
 	
-							const stateStr =['0 发送成功','1 接收成功','2 未连接','3 发送失败','4 busy','5 参数错误','6 flash空间不足']
-							console.log('Report Flag:', stateStr[state[1]]);
-							console.log(state);
-
-							if (state[1] === 0&& receiveWay === 3){
-								finishFlag = true
-								this.report$.next(r)
-								this.featureNext(s)
-								s.next()
+							// const stateStr =['0 发送成功','1 接收成功','2 未连接','3 发送失败','4 busy','5 参数错误','6 flash空间不足']
+							// console.log('Report Flag:', stateStr[state[1]]);
+							// console.log(state);
+							if (state[1] === 0){
+								clearTimeout(time)
+								time = setTimeout(()=> {
+									this.sendReport(reportId, data).subscribe(()=>{})
+								}, 1000)
 							}
 							if (state[1] === 1) {
+								clearTimeout(time)
 								this.receiveReport(reportId).subscribe(() => {
 									s.next()
 								})
 								this.receive.unsubscribe()
 							} else if(state[1] === 4) {
-								setTimeout(()=>{
-									if(this.receive){
-										this.receive.unsubscribe()
-									}
-								}, 6000)
+								clearTimeout(time)
+								time = setTimeout(()=> {
+									this.sendReport(reportId, data).subscribe(()=>{})
+								}, 1000)
 							}
 						}
 					})

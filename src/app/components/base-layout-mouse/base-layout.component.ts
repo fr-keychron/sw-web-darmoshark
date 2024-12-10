@@ -5,8 +5,8 @@ import {GLOBAL_CONFIG} from "../../config";
 import {GetScale, imageEl2Base64} from "../../utils";
 import {Subscription, fromEvent, firstValueFrom} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
-import {EEventEnum, HidDeviceEventType, IMouseJson, MouseDevice} from "../../common/hid-collection";
-import {DeviceConnectService} from "../../common/device-conncet/device-connect.service";
+import {EEventEnum, EMouseBtn, HidDeviceEventType, IMouseJson, MouseDevice} from "../../common/hid-collection";
+import {DeviceConnectService} from "../../service/device-conncet/device-connect.service";
 
 @Component({
 	selector: 'base-layout-mouse',
@@ -226,8 +226,8 @@ export class BaseLayoutMouseComponent implements OnInit {
 
 	public setConfig(e:number) {
 		const device = this.service.getCurrentHidDevice() as MouseDevice
-		device.switchConfig(e).subscribe(() => {
-			device.getBaseInfo().subscribe(() => {
+		device.switchProfile(e).subscribe(() => {
+			device.getProtocolVersion().subscribe(() => {
 				this.load(this.profile)
 				this.msg.success(this.i18n.instant('notify.success'))
 				localStorage.setItem('profile', JSON.stringify(this.profile))
@@ -237,7 +237,7 @@ export class BaseLayoutMouseComponent implements OnInit {
 
 	public reset(){
 		const device = this.service.getCurrentHidDevice<MouseDevice>()
-		device.recovery({value: 1, options: this.profile}).subscribe( () => {
+		device.recovery({tagVal: 1, profile: this.profile}).subscribe( () => {
 			this.msg.success(this.i18n.instant('notify.success'))
 			const leftLockList = localStorage.getItem('leftLockList')
 			const parsedList = JSON.parse(leftLockList)
@@ -247,14 +247,48 @@ export class BaseLayoutMouseComponent implements OnInit {
 		})
 	}
 
-	public importConfig() {
+	public getMousebtnConf(): Promise<Object[]> {
+		return new Promise((resolve, reject) => {
+			const device = this.service.getCurrentHidDevice<MouseDevice>();
+			const obs: any[] = device.json.keys
+				.filter((v) => v.custom)
+				.map((k) => [device.getMouseBtnInfo(k.index), k]);
+	
+			const obj: Object[] = [];
+			const run = () => {
+				if (obs.length === 0) {
+					resolve(obj);
+					return;
+				}
+				const info = obs.shift();
+				info[0].subscribe({
+					next: (v: any) => {
+						obj.push({ ...v });
+						run();
+					},
+				});
+			};
+			run();
+		});
+	}
+	public getLightConf(): Promise<Object[]> {
+		return new Promise((resolve, reject) => {
+			const device = this.service.getCurrentHidDevice<MouseDevice>();
+			device?.getLight().subscribe((r: any)=>{
+				resolve(r);
+				return;
+			})
+		});
+	}
+	public async importConfig() {
 		const device = this.service.getCurrentHidDevice<MouseDevice>()
 		const data = {
-			mousebtnConf: device.baseInfo.mousebtnConf,
-			dpiConf: device.baseInfo.dpiConf,
-			lightConf:  device.baseInfo.lightConf,
+			mousebtnConf: await this.getMousebtnConf(),
+			baseInfo: device.baseInfo,
+			lightConf: await this.getLightConf(),
 			leftLock: this.leftLock,
 		}
+		
         const filename = `${device?.name} 配置0${this.profile+1}.json`;
         const link = document.createElement('a')
         const json = JSON.stringify(data)
@@ -278,16 +312,57 @@ export class BaseLayoutMouseComponent implements OnInit {
 			reader.readAsText(file)
 			reader.onload = async () => {
 				try {
-					const data = JSON.parse(reader.result as string)
-					device.baseInfo.mousebtnConf = data.mousebtnConf
-					device.baseInfo.dpiConf = data.dpiConf
-					device.baseInfo.lightConf = data.lightConf
-					await firstValueFrom(device.setMouseBtnAll())
-					await firstValueFrom(device.setMouseDpiAll())
-					await firstValueFrom(device.setLightAll())
-					await firstValueFrom(device.setExtConfAll())
+					const data = JSON.parse(reader.result as string);
+					
+					for (const e of data.mousebtnConf) {
+						if (e.type == EMouseBtn.Mouse) {
+							await firstValueFrom(device.setMouseBtn2Action(e.mouseKey, e.data.value));
+						}
+						if (e.type == EMouseBtn.Keyboard) {
+							await firstValueFrom(device.setMouseBtn2KeyBoard(e.mouseKey, e.data.shiftKey, e.data.key1.value));
+						}
+						if (e.type == EMouseBtn.GameReinforce) {
+							await firstValueFrom(device.setMouseBtn2Game(e.mouseKey, e.data));
+						}
+						if (e.type == EMouseBtn.ShortCut) {
+							await firstValueFrom(device.setMouseBtn2ShortCut(e.mouseKey, e.data.value));
+						}
+						if (e.type == EMouseBtn.Light) {
+							await firstValueFrom(device.setMouseBtn2Light(e.mouseKey, e.data.value));
+						}
+						if (e.type == EMouseBtn.disable) {
+							await firstValueFrom(device.disableMouseBtn(e.mouseKey));
+						}
+						if (e.type == EMouseBtn.Dpi) {
+							await firstValueFrom(device.setMouseBtn2Dpi(e.mouseKey, e.data.value));
+						}
+						if (e.type == EMouseBtn.Media) {
+							await firstValueFrom(device.setMouseBtn2Media(e.mouseKey, e.data.value));
+						}
+					}
+					const { lightMode, brightness, speed, rgbArr } =  data.lightConf
+					const lightInfo = {
+						i: lightMode,
+						l: brightness,
+						s: speed,
+						r: rgbArr[0],
+						g: rgbArr[1],
+						b: rgbArr[2]
+					}
+					const { sleep, delay, usb, gears, dpiConf, sys  } =  data.baseInfo
+					await firstValueFrom(device.setLight(lightInfo))
+					await firstValueFrom(device.setExtConf(sys))
+					await firstValueFrom(device.setDpi({
+						current: usb.dpi,
+						level: 0,
+						gears: gears,
+						values: dpiConf.levelVal
+					}))
+					await firstValueFrom(device.setExtConf(sys))
+					await firstValueFrom(device.setBtnTime({btnRespondTime: delay, sleepTime: sleep}))
 					this.load(this.profile)
 					input.value = ''
+					this.msg.success(this.i18n.instant('notify.success'))
 		
 				} catch (error) {
 					console.error("Error processing configuration:", error)

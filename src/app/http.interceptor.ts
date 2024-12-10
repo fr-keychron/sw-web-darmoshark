@@ -3,7 +3,7 @@ import {HttpInterceptor, HttpEvent, HttpResponse, HttpRequest, HttpHandler} from
 import {Observable, throwError} from 'rxjs';
 import {catchError, filter} from 'rxjs/operators'
 import {LogService} from "./service/log/log.service";
-import {DeviceConnectService} from "./common/device-conncet/device-connect.service";
+import {DeviceConnectService} from "./service/device-conncet/device-connect.service";
 import BuildInfo from 'src/app/version.json'
 @Injectable()
 export class ResponseInterceptor implements HttpInterceptor {

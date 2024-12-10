@@ -39,4 +39,8 @@ export interface IRgbCommand {
 		mask: number,
 		color: { h: number, s: number, v: number }
 	}): void
+
+	GetRgbEffect(): Observable<number>
+
+	SetRgbEffect(e: number): void
 }

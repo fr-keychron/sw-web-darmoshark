@@ -29,20 +29,15 @@
                     (!item?.disabled ? ' hover' : ' disabled')"
                 >
                     <b class="key-text">
-                        {{  item.key === 'upScroll' 
-                            ? ('mouse.key_basic.onRoller' | translate)  
-                            : item.key === 'downScroll' 
-                            ? ('mouse.key_basic.underRoller' | translate)
-                            : (('mouse.button' | translate) +" "+ (i+1))
-                        }}
+                        {{item.title ? (('mouse.key_basic.' + item.title) | translate) : (('mouse.button' | translate) + " " + (i + 1))}}
                     </b>
                     <b class="key-text">
                         {{
-                            item.key === 'disabled' ? ('mouse.key.9' | translate) :
-                            item.type === 'mouseMacro' ? ('mouse.key.4' | translate) :
-                            item.type === 'mouseKeyboard'? ('mouse.key.2' | translate) :
-                            item.type === 'mouseGame' ||  item.type === 'keyboardGame' ||  item.type === 'modifierGame' ? ('mouse.key.7' | translate) :
-                            ( 'mouse.key_basic.' + item.key | translate) 
+                            [2, 4, 7, 9].includes(item?.type)
+                                ? (('mouse.key.' + item.type) | translate)
+                                : item?.key
+                                    ? ('mouse.key_basic.' + item.key | translate)
+                                    : ''
                         }}
                     </b>
                 
@@ -53,9 +48,10 @@
             <div class="g-flex g-justify-between g-item-center">
                 <div class="g-flex g-item-center">
                     <span class="icon_square"></span>
-                    {{  activeMouseKey === 7 ? ('mouse.key_basic.onRoller' | translate) :
-                        activeMouseKey === 8 ?('mouse.key_basic.underRoller' | translate):
-                        (('mouse.button' )| translate) + (activeMouseKey+1)}}
+                    {{  
+                         [5, 6, 9, 10].includes(activeMouseKey) ? ('mouse.key_basic.' + getActiveMouseName() | translate) :
+                        (('mouse.button' )| translate) + (activeMouseKey+1)
+                    }}
                 </div>
                 <span (click)="resetFun()" class="icon-reset-bule "></span>
             </div>
@@ -68,11 +64,11 @@
                     <g-select
                         class="fun-select"
                         [(ngModel)]="currentMouseKey" 
-                        [ngClass]="transform(mouseButtons,currentMouseKey)  ? 'active-bgfun' : ''"
+                        [ngClass]="funType === funBtnKeys.Mouse ? 'active-bgfun' : ''"
                         [gCenter]="false"
-                        (ngModelChange)="setSelectActive($event)"
+                        (ngModelChange)="setSelectActive($event,1)"
                     >
-                        <g-option *ngFor="let option of mouseButtons" 
+                        <g-option *ngFor="let option of mouseAction" 
                             [gLabel]="'mouse.key_basic.' + option.key" 
                             [gValue]="option.value"
                         >
@@ -86,10 +82,10 @@
                     </div>
                     <g-select
                         class="fun-select"
-                        [ngClass]="transform(sensitiveAction,currentMouseKey) ? 'active-bgfun' : ''"
+                        [ngClass]="funType === funBtnKeys.Dpi ? 'active-bgfun' : ''"
                         [(ngModel)]="currentMouseKey" 
                         [gCenter]="false"
-                        (ngModelChange)="setSelectActive($event)"
+                        (ngModelChange)="setSelectActive($event,5)"
                     >
                         <g-option *ngFor="let option of sensitiveAction" 
                             [gLabel]="'mouse.key_basic.' + option.key" 
@@ -105,10 +101,10 @@
                     </div>
                     <g-select
                         class="fun-select"
-                        [ngClass]="transform(mediaAction,currentMouseKey) ? 'active-bgfun' : ''"
+                        [ngClass]="funType === funBtnKeys.Media ? 'active-bgfun' : ''"
                         [(ngModel)]="currentMouseKey" 
                         [gCenter]="false"
-                        (ngModelChange)="setSelectActive($event)"
+                        (ngModelChange)="setSelectActive($event,3)"
                     >
                         <g-option *ngFor="let option of mediaAction" 
                             [gLabel]="'mouse.key_basic.' + option.key" 
@@ -124,7 +120,7 @@
                     </div>
                     <g-select
                         class="fun-select"
-                        [ngClass]="transform(macroList,currentMouseKey)  ? 'active-bgfun' : ''"
+                        [ngClass]="funType === funBtnKeys.Macro  ? 'active-bgfun' : ''"
                         [(ngModel)]="currentMouseKey" 
                         [gCenter]="false"
                         (ngModelChange)="setMacro($event)"
@@ -143,10 +139,10 @@
                     </div>
                     <g-select
                         class="fun-select"
-                        [ngClass]="transform(shortcutAction,currentMouseKey)? 'active-bgfun' : ''"
+                        [ngClass]="funType === funBtnKeys.ShortCut ? 'active-bgfun' : ''"
                         [(ngModel)]="currentMouseKey" 
                         [gCenter]="false"
-                        (ngModelChange)="setSelectActive($event)"
+                        (ngModelChange)="setSelectActive($event,8)"
                     >
                         <g-option *ngFor="let option of shortcutAction" 
                             [gLabel]="'mouse.key_basic.' + option.key" 
@@ -162,10 +158,10 @@
                     </div>
                     <g-select
                         class="fun-select"
-                        [ngClass]="transform(lightAction,currentMouseKey)? 'active-bgfun' : ''"
+                        [ngClass]="funType === funBtnKeys.Light ? 'active-bgfun' : ''"
                         [(ngModel)]="currentMouseKey" 
                         [gCenter]="false"
-                        (ngModelChange)="setSelectActive($event)"
+                        (ngModelChange)="setSelectActive($event,6)"
                     >
                         <g-option *ngFor="let option of lightAction" 
                             [gLabel]="'mouse.key_basic.' + option.key" 
@@ -180,8 +176,8 @@
                         {{ 'mouse.key.2' | translate}}
                     </div>
                     <button 
-                        (click)="activeModal = 'combination';"
-                        [ngClass]="currentMouseKey === 'mouseKeyboard' ? 'active-bgfun' : ''"
+                        (click)="funType = 2;"
+                        [ngClass]="funType === funBtnKeys.Keyboard ? 'active-bgfun' : ''"
                     > 
                         {{ 'menu.setting' | translate}}
                     </button>
@@ -195,8 +191,8 @@
                         <span class="icon_hint"></span>
                     </div>
                     <button 
-                        (click)="activeModal = 'gameReinforce';"
-                        [ngClass]="currentMouseKey === 'mouseGame' || currentMouseKey === 'keyboardGame' || currentMouseKey === 'modifierGame' ? 'active-bgfun' : ''"
+                        (click)="funType = 7;"
+                        [ngClass]="funType === funBtnKeys.GameReinforce  ? 'active-bgfun' : ''"
                     > 
                         {{ 'menu.setting' | translate}}
                     </button>
@@ -207,8 +203,8 @@
                         {{ 'mouse.key.9' | translate}}
                     </div>
                     <button 
-                        (click)="setSelectActive(0)"
-                        [ngClass]="!currentMouseKey ? 'active-bgfun' : ''"
+                        (click)="setSelectActive(null,9)"
+                        [ngClass]="funType === funBtnKeys.disable ? 'active-bgfun' : ''"
                     > 
                         {{ 'mouse.key.9' | translate}}
                     </button>
@@ -217,7 +213,7 @@
         </div>
         <div class="nested-container">
             <mouse-button-keyboard 
-                *ngIf="activeModal === 'combination'" 
+                *ngIf="funType === funBtnKeys.Keyboard" 
                 class="keyboard-content"
                 (update)="load($event)" 
                 [keyChange]="keyChange"
@@ -226,7 +222,7 @@
             ></mouse-button-keyboard>
             <mouse-button-game 
                 class="game-content"
-                *ngIf="activeModal === 'gameReinforce'" 
+                *ngIf="funType === funBtnKeys.GameReinforce" 
                 (update)="load($event)" 
                 [keyChange]="keyChange"
                 [data]="keyConf"

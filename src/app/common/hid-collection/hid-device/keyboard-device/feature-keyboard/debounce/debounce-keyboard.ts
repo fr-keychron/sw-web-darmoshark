@@ -54,7 +54,7 @@ export class DebounceKeyboard extends BaseKeyboard {
 
 		if (this.debounceVersion === EDebounceVersion.new) {
 			const buf: Uint8Array = BaseKeyboard.Buffer()
-			buf[0] = EKeyboardCommand.KC_DEBOUNCE;
+			buf[0] = EKeyboardCommand.KC_OTHER_SETTING_VERSION;
 			buf[1] = 0x80
 			buf[2] = 1
 			buf[3] = data.subType
@@ -65,7 +65,7 @@ export class DebounceKeyboard extends BaseKeyboard {
 
 		if (this.debounceVersion === EDebounceVersion.QMK) {
 			const buf: Uint8Array = BaseKeyboard.Buffer()
-			buf[0] = EKeyboardCommand.KC_DEBOUNCE;
+			buf[0] = EKeyboardCommand.KC_OTHER_SETTING_VERSION;
 			buf[1] = 0x03
 			buf[2] = data.subType
 			buf[3] = data.press
@@ -75,8 +75,14 @@ export class DebounceKeyboard extends BaseKeyboard {
 
 
 	protected override onGetConf(): Observable<any> {
-		return this.getDebounceTime()
-			.pipe(concatMap(v => this.getDebounceByNewVersion()))
+		return new Observable((s) => {
+			super.onGetConf().subscribe(() => {
+				this.getDebounceTime()
+					.pipe(concatMap(v => this.getDebounceByNewVersion()))
+					.subscribe(() => s.next())
+			})
+		})
+
 	}
 
 	public debounceVersion: EDebounceVersion = EDebounceVersion.null
@@ -92,11 +98,11 @@ export class DebounceKeyboard extends BaseKeyboard {
 		return new Observable(s => {
 			if (this.debounceVersion !== EDebounceVersion.null) return s.next(this.debounce);
 			const buf = BaseKeyboard.Buffer()
-			buf[0] = EKeyboardCommand.KC_DEBOUNCE;
+			buf[0] = EKeyboardCommand.KC_OTHER_SETTING_VERSION;
 			if (this.instruction_set === 2) buf[1] = 0x02
 			const subj = this.report$
 				.pipe(
-					filter(i => i[0] === EKeyboardCommand.KC_DEBOUNCE ),
+					filter(i => i[0] === EKeyboardCommand.KC_OTHER_SETTING_VERSION),
 					map(v => {
 						const data = {
 							type: EDebounceType.TeLink,

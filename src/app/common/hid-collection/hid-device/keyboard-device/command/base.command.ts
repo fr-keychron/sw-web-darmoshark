@@ -2,13 +2,13 @@ import {filter, map, Observable, switchMap, throwError, timeout, timeoutWith, zi
 import {EKeyboardCommand, EKnobDirection, IKeyBoardDef, IKeycode, IKeyMacros, Result} from "../../../../../model";
 import {HidDeviceEventType, IKeyBufferResult} from "../types";
 import {BaseKeyboard} from "../base-keyboard";
-import {keycodeService} from "src/app/common/keycode/keycode.service";
+import {keycodeService} from "../../../../../service/keycode/keycode.service";
 import {ByteUtil, ConsoleUtil} from "../../../../../utils";
 import {SerialTransceiver} from "../../../transceiver";
 import {EDeviceConnectState} from "../../../enum";
 import {Color} from "ng-antd-color-picker";
 import {macroDecodeForV11, macroDecodeForV9} from "../general";
-import {KeycodeEnumService} from "src/app/common/keycode/keycode-enum.service";
+import {KeycodeEnumService} from "../../../../../service/keycode/keycode-enum.service";
 import {tap} from "rxjs/operators";
 
 export interface IBaseCommand {
@@ -64,7 +64,7 @@ export interface IBaseCommand {
 
 	setMacro(data: Array<any>): Observable<Result>
 
-	getKnobVal(knobId: number, direction: EKnobDirection): Observable<{
+	getKnobVal(knobId: number, direction: EKnobDirection, layer?: number): Observable<{
 		keyCode: string,
 		keyName: string,
 		keyTitle: string,
@@ -72,7 +72,7 @@ export interface IBaseCommand {
 		keyHex: string,
 	}>
 
-	setKnobVal(knobId: number, direction: EKnobDirection, key: IKeycode): Observable<Result>
+	setKnobVal(knobId: number, direction: EKnobDirection, key: IKeycode, l?: number): Observable<Result>
 
 	getKeyboardVal(): Observable<string[][]>
 
@@ -193,6 +193,9 @@ export class BaseCommand implements IBaseCommand {
 					}
 					if (str[0] === 'v') {
 						this.keyboard.firmwareVersion = str.join('')
+					} else if (str.length >= 2) {
+						const v = str.join('')
+						this.keyboard.firmwareVersion = 'v' + v.replace(/(\d\.\d\.\d)/, '$1 ');
 					} else {
 						this.keyboard.firmwareVersion = ''
 					}
@@ -358,7 +361,7 @@ export class BaseCommand implements IBaseCommand {
 		})
 	}
 
-	public getKnobVal(knobId: number, direction: EKnobDirection): Observable<{
+	public getKnobVal(knobId: number, direction: EKnobDirection, layer?: number): Observable<{
 		keyCode: string,
 		keyName: string,
 		keyTitle: string,
@@ -368,7 +371,7 @@ export class BaseCommand implements IBaseCommand {
 		return new Observable(s => {
 			const buf = BaseKeyboard.Buffer()
 			buf[0] = EKeyboardCommand.DYNAMIC_KEYMAP_GET_ENCODER;
-			buf[1] = this.keyboard.selectLayer
+			buf[1] = layer === undefined ? this.keyboard.selectLayer : layer
 			buf[2] = knobId
 			buf[3] = direction
 
@@ -662,12 +665,13 @@ export class BaseCommand implements IBaseCommand {
 		return this.keyboard.write(payload)
 	}
 
-	public setKnobVal(knobId: number, direction: EKnobDirection, key: IKeycode): Observable<Result> {
+	public setKnobVal(knobId: number, direction: EKnobDirection, key: IKeycode, l?: number): Observable<Result> {
 		return new Observable<Result>(s => {
 			const r = Result.build()
 			const buf = BaseKeyboard.Buffer()
 			buf[0] = EKeyboardCommand.DYNAMIC_KEYMAP_SET_ENCODER;
-			buf[1] = this.keyboard.selectLayer
+			buf[1] = l === undefined ? this.keyboard.selectLayer : l
+			console.log(l);
 			buf[2] = knobId
 			buf[3] = direction
 			const tarKeycode = keycodeService.code2Byte(key.code)
@@ -678,7 +682,9 @@ export class BaseCommand implements IBaseCommand {
 					filter(v => v[0] === EKeyboardCommand.DYNAMIC_KEYMAP_SET_ENCODER && v[3] === direction),
 				)
 				.subscribe(d => {
-					this.keyboard.event$.next({type: HidDeviceEventType.KnobUpdate, data: {id: knobId, direction}})
+					if (l === undefined) {
+						this.keyboard.event$.next({type: HidDeviceEventType.KnobUpdate, data: {id: knobId, direction}})
+					}
 					s.next(r)
 					subj.unsubscribe()
 				})

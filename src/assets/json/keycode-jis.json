@@ -19,197 +19,197 @@
 				"keys": "esc"
 			},
 			{
-				"name": "A",
+				"name": "&nbsp;&nbsp;A<br/>ち",
 				"code": "KC_A",
 				"keys": "a"
 			},
 			{
-				"name": "B",
+				"name": "&nbsp;&nbsp;B<br/>こ",
 				"code": "KC_B",
 				"keys": "b"
 			},
 			{
-				"name": "C",
+				"name": "&nbsp;&nbsp;C<br/>そ",
 				"code": "KC_C",
 				"keys": "c"
 			},
 			{
-				"name": "D",
+				"name": "&nbsp;&nbsp;D<br/>し",
 				"code": "KC_D",
 				"keys": "d"
 			},
 			{
-				"name": "E",
+				"name": "&nbsp;&nbsp;E<br/>い&nbsp;&nbsp;<small>い</small>",
 				"code": "KC_E",
 				"keys": "e"
 			},
 			{
-				"name": "F",
+				"name": "&nbsp;&nbsp;F<br/>は",
 				"code": "KC_F",
 				"keys": "f"
 			},
 			{
-				"name": "G",
+				"name": "&nbsp;&nbsp;G<br/>き",
 				"code": "KC_G",
 				"keys": "g"
 			},
 			{
-				"name": "H",
+				"name": "&nbsp;&nbsp;H<br/>く",
 				"code": "KC_H",
 				"keys": "h"
 			},
 			{
-				"name": "I",
+				"name": "&nbsp;&nbsp;I<br/>に",
 				"code": "KC_I",
 				"keys": "i"
 			},
 			{
-				"name": "J",
+				"name": "&nbsp;&nbsp;J<br/>ま",
 				"code": "KC_J",
 				"keys": "j"
 			},
 			{
-				"name": "K",
+				"name": "&nbsp;&nbsp;K<br/>の",
 				"code": "KC_K",
 				"keys": "k"
 			},
 			{
-				"name": "L",
+				"name": "&nbsp;&nbsp;L<br/>り",
 				"code": "KC_L",
 				"keys": "l"
 			},
 			{
-				"name": "M",
+				"name": "&nbsp;&nbsp;M<br/>り",
 				"code": "KC_M",
 				"keys": "m"
 			},
 			{
-				"name": "N",
+				"name": "&nbsp;&nbsp;N<br/>み",
 				"code": "KC_N",
 				"keys": "n"
 			},
 			{
-				"name": "O",
+				"name": "&nbsp;&nbsp;O<br/>ら",
 				"code": "KC_O",
 				"keys": "o"
 			},
 			{
-				"name": "P",
+				"name": "&nbsp;&nbsp;P<br/>せ",
 				"code": "KC_P",
 				"keys": "p"
 			},
 			{
-				"name": "Q",
+				"name": "&nbsp;&nbsp;Q<br/>た",
 				"code": "KC_Q",
 				"keys": "q"
 			},
 			{
-				"name": "R",
+				"name": "&nbsp;&nbsp;R<br/>す",
 				"code": "KC_R",
 				"keys": "r"
 			},
 			{
-				"name": "S",
+				"name": "&nbsp;&nbsp;S<br/>と",
 				"code": "KC_S",
 				"keys": "s"
 			},
 			{
-				"name": "T",
+				"name": "&nbsp;&nbsp;T<br/>か",
 				"code": "KC_T",
 				"keys": "t"
 			},
 			{
-				"name": "U",
+				"name": "&nbsp;&nbsp;U<br/>な",
 				"code": "KC_U",
 				"keys": "u"
 			},
 			{
-				"name": "V",
+				"name": "&nbsp;&nbsp;U<br/>ひ",
 				"code": "KC_V",
 				"keys": "v"
 			},
 			{
-				"name": "W",
+				"name": "&nbsp;&nbsp;W<br/>て",
 				"code": "KC_W",
 				"keys": "w"
 			},
 			{
-				"name": "X",
+				"name": "&nbsp;&nbsp;X<br/>さ",
 				"code": "KC_X",
 				"keys": "x"
 			},
 			{
-				"name": "Y",
+				"name": "&nbsp;&nbsp;Y<br/>ん",
 				"code": "KC_Y",
 				"keys": "y"
 			},
 			{
-				"name": "Z",
+				"name": "&nbsp;&nbsp;Z<br/>つ&nbsp;&nbsp;<small>つ</small>",
 				"code": "KC_Z",
 				"keys": "z"
 			},
 			{
-				"name": "!<br/>1",
+				"name": "1&nbsp;&nbsp;!<br/>ぬ",
 				"code": "KC_1",
 				"keys": "1"
 			},
 			{
-				"name": "@<br/>2",
+				"name": "2&nbsp;&nbsp;\"<br/>ふ",
 				"code": "KC_2",
 				"keys": "2"
 			},
 			{
-				"name": "#<br/>3",
+				"name": "3&nbsp;&nbsp#<br/>あ&nbsp<small>あ</small>",
 				"code": "KC_3",
 				"keys": "3"
 			},
 			{
-				"name": "$<br/>4",
+				"name": "4&nbsp;&nbsp$<br/>う&nbsp<small>う</small>",
 				"code": "KC_4",
 				"keys": "4"
 			},
 			{
-				"name": "%<br/>5",
+				"name": "5&nbsp;&nbsp%<br/>え&nbsp<small>え</small>",
 				"code": "KC_5",
 				"keys": "5"
 			},
 			{
-				"name": "^<br/>6",
+				"name": "6&nbsp;&nbsp&<br/>お&nbsp<small>お</small>",
 				"code": "KC_6",
 				"keys": "6"
 			},
 			{
-				"name": "&<br/>7",
+				"name": "7&nbsp;&nbsp`<br/>や&nbsp<small>や</small>",
 				"code": "KC_7",
 				"keys": "7"
 			},
 			{
-				"name": "*<br/>8",
+				"name":"8&nbsp;&nbsp(<br/>ゆ&nbsp<small>ゆ</small>",
 				"code": "KC_8",
 				"keys": "8"
 			},
 			{
-				"name": "(<br/>9",
+				"name": "9&nbsp;&nbsp)<br/>よ&nbsp<small>よ</small>",
 				"code": "KC_9",
 				"keys": "9"
 			},
 			{
-				"name": ")<br/>0",
+				"name": "0<br/>わ&nbsp<small>を</small>",
 				"code": "KC_0",
 				"keys": "0"
 			},
 			{
-				"name": "_<br/>-",
+				"name": "_<br/>=&nbsp<small>ほ</small>",
 				"code": "KC_MINS",
 				"keys": "-"
 			},
 			{
-				"name": "+<br/>=",
+				"name": "^<br/>~&nbsp<small>へ</small>",
 				"code": "KC_EQL",
 				"keys": "="
 			},
 			{
-				"name": "~<br/>`",
+				"name": "<small>半角/全角</small><br/><small>漢字</small>",
 				"code": "KC_GRV",
 				"keys": "`"
 			},
@@ -224,33 +224,33 @@
 				"keys": "]"
 			},
 			{
-				"name": "|<br/>\\",
+				"name": "}&nbsp;&nbsp;」<br/>]&nbsp;&nbsp;む",
 				"code": "KC_BSLS",
 				"keys": "\\",
 				"width": 1500
 			},
 			{
-				"name": ":<br/>;",
+				"name": "+&nbsp;&nbsp;<br/>；&nbsp;&nbsp;れ",
 				"code": "KC_SCLN",
 				"keys": ";"
 			},
 			{
-				"name": "\"<br/>'",
+				"name": "*&nbsp;&nbsp;<br/>：&nbsp;&nbsp;け",
 				"code": "KC_QUOT",
 				"keys": "'"
 			},
 			{
-				"name": "<<br/>,",
+				"name": "<&nbsp;&nbsp;`<br/>,&nbsp;&nbsp;ね",
 				"code": "KC_COMM",
 				"keys": ","
 			},
 			{
-				"name": "><br/>.",
+				"name": ">&nbsp;&nbsp;。<br/>・&nbsp;&nbsp;る",
 				"code": "KC_DOT",
 				"keys": "."
 			},
 			{
-				"name": "?<br/>/",
+				"name": "?&nbsp;&nbsp;.<br/>/&nbsp;&nbsp;ぬ",
 				"code": "KC_SLSH",
 				"keys": "/"
 			},
@@ -335,7 +335,7 @@
 				"code": "KC_BSPC",
 				"keys": "backspace",
 				"width": 2000,
-				"shortName": "Backspace"
+				"shortName": "⭠"
 			},
 			{
 				"name": "Insert",
@@ -971,12 +971,12 @@
 				"title": "Non-US \\ and |"
 			},
 			{
-				"name": "Ro",
+				"name": "-<br/>\\&nbsp;&nbsp;ろ",
 				"code": "KC_RO",
 				"title": "JIS \\ and |"
 			},
 			{
-				"name": "¥",
+				"name": "¥<br/>|&nbsp;&nbsp;_",
 				"code": "KC_JYEN",
 				"title": "JPN Yen"
 			},
@@ -986,12 +986,12 @@
 				"title": "JIS Muhenkan"
 			},
 			{
-				"name": "漢字",
+				"name": "英数",
 				"code": "KC_HANJ",
 				"title": "Hanja"
 			},
 			{
-				"name": "한영",
+				"name": "かな",
 				"code": "KC_HAEN",
 				"title": "HanYeong"
 			},
@@ -1012,37 +1012,37 @@
 			},
 			{
 				"name": "LS (",
-				"code": "KC_LSPO",
+				"code": "SC_LSPO",
 				"title": "Left Shift when held, ( when tapped"
 			},
 			{
 				"name": "RS )",
-				"code": "KC_RSPC",
+				"code": "SC_RSPC",
 				"title": "Right Shift when held, ) when tapped"
 			},
 			{
 				"name": "LC (",
-				"code": "KC_LCPO",
+				"code": "SC_LCPO",
 				"title": "Left Control when held, ( when tapped"
 			},
 			{
 				"name": "RC )",
-				"code": "KC_RCPC",
+				"code": "SC_RCPC",
 				"title": "Right Control when held, ) when tapped"
 			},
 			{
 				"name": "LA (",
-				"code": "KC_LAPO",
+				"code": "SC_LAPO",
 				"title": "Left Alt when held, ( when tapped"
 			},
 			{
 				"name": "RA )",
-				"code": "KC_RAPC",
+				"code": "SC_RAPC",
 				"title": "Right Alt when held, ) when tapped"
 			},
 			{
 				"name": "SftEnt",
-				"code": "KC_SFTENT",
+				"code": "SC_SFTENT",
 				"title": "Right Shift when held, Enter when tapped"
 			},
 			{
@@ -1413,12 +1413,6 @@
 				"title": "Launch Pad in macOS",
 				"code": "KC_LPAD" ,
 				"plat": ["Mac"]
-			},
-			{
-				"name": "Lock Win",
-				"title": "Lock Win",
-				"code": "QK_MAGIC_TOGGLE_GUI" ,
-				"plat": ["Win"]
 			}
 		]
 	},

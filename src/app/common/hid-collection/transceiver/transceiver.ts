@@ -23,7 +23,7 @@ export abstract class Transceiver {
 	public write(reportId: number, data: Uint32Array | Uint8Array, cb?: any): Observable<any> {
 		return new Observable<any>(s => s.next())
 	}
-	
+
 	protected handleReport($event: any) {
 		const buf = $event.data;
 		const uint8Arr = new Uint8Array(buf.buffer, 0, buf.byteLength);

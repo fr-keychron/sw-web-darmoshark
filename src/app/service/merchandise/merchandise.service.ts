@@ -7,7 +7,9 @@ import {Delete, Get, Post, Put} from '../../decorator/request.decorator';
 const api = {
 	info: 'merchandise/product/vpId/#{id}' ,
 	firmwareList: 'merchandise/firmware/list' ,
-	issue: "merchandise/product/issue"
+	issue: "merchandise/product/issue",
+	notify: `merchandise/firmware/notify/#{id}`,
+	launcher: 'launcher'
 }
 
 @Injectable({providedIn: 'root'})
@@ -26,5 +28,13 @@ export class MerchandiseService {
 
 	@Post(api.issue)
 	public issue(q?: any): Observable< any > | any {
+	}
+
+	@Post(api.notify)
+	public notify(q?: any): Observable< any > | any {
+	}
+
+	@Get(api.launcher)
+	launcher(q?: any): Observable< any > | any {
 	}
 }

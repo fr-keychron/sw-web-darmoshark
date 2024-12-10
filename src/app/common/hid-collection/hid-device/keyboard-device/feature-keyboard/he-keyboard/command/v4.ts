@@ -14,9 +14,8 @@ import {
 	IProfileBuffer, ISnapTap
 } from 'src/app/common/hid-collection'
 import {filter, map, Observable, switchMap, zip} from "rxjs";
-import {keycodeService} from "src/app/common/keycode/keycode.service";
+import {keycodeService} from "src/app/service/keycode/keycode.service";
 import {ByteUtil, gen2dMatrix} from "src/app/utils";
-import {differenceBy} from "lodash";
 
 export class HECommandV4 implements IHeCommand {
 
@@ -24,6 +23,11 @@ export class HECommandV4 implements IHeCommand {
 
 	constructor(d: HeKeyBoard) {
 		this.keyboard = d
+	}
+
+
+	public getCommandVersion(): number {
+		return 4
 	}
 
 	public setHeDistance(d: {
@@ -399,7 +403,7 @@ export class HECommandV4 implements IHeCommand {
 							const bytes = byteArr.slice(startPosition + i * size, startPosition + size + i * size);
 							const bytes1_bits = ByteUtil.oct2Bin(bytes[0]);
 							const bytes2_bits = ByteUtil.oct2Bin(bytes[1]);
-							if (bytes1_bits !== ByteUtil.oct2Bin(0) && bytes2_bits !== ByteUtil.oct2Bin(0)) {
+							if (bytes1_bits !== ByteUtil.oct2Bin(0) || bytes2_bits !== ByteUtil.oct2Bin(0)) {
 								const maxCol = this.keyboard.definition.matrix.cols;
 								const findKey = (col: number, row: number) => {
 									const position = row * maxCol + col
@@ -713,6 +717,24 @@ export class HECommandV4 implements IHeCommand {
 					sub.unsubscribe()
 				})
 			this.keyboard.write(buf).subscribe()
+		})
+	}
+
+	public clearAdvanceKey (): Observable<any> {
+		return new Observable( s => {
+			const buffer = this.keyboard.keyBufferResult.filter( i => i.code !== "KC_NO")
+			const task = () => {
+				const key = buffer.shift();
+				this.keyboard.removeDks(key.row, key.col)
+					.subscribe( () => {
+						if( buffer.length ) {
+							task()
+						} else {
+							s.next()
+						}
+					})
+			}
+			task()
 		})
 	}
 }

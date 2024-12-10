@@ -2,10 +2,9 @@ import {Component, EventEmitter, OnInit, Output, ViewChild} from "@angular/core"
 import {TranslateService} from "@ngx-translate/core";
 import {MsgService} from "../../service/msg/msg.service";
 import BuildInfo from 'src/app/version.json'
-import {debounceTime, Subscription} from "rxjs";
+import {Subscription} from "rxjs";
 import {NzNotificationService} from "ng-zorro-antd/notification";
-import {sessionStorage} from "../../service/storage";
-import {DeviceConnectService} from "src/app/common/device-conncet/device-connect.service";
+import {DeviceConnectService} from "../../service/device-conncet/device-connect.service";
 import {BaseKeyboard, EEventEnum, MouseDevice, HidDeviceEventType} from "../../common/hid-collection";
 import {ActivatedRoute, Route, Router} from "@angular/router";
 import {BridgeDevice} from "src/app/common/hid-collection/hid-device/device-dfu/bridge-device";

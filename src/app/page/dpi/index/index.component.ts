@@ -4,7 +4,7 @@ import {filter} from 'rxjs/operators';
 import {MsgService} from "src/app/service/msg/msg.service";
 import {TranslateService} from "@ngx-translate/core";
 import {EEventEnum, HidDeviceEventType, IMouseJson, MouseDevice} from "../../../common/hid-collection";
-import {DeviceConnectService} from "../../../common/device-conncet/device-connect.service";
+import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 
 
 @Component({
@@ -23,10 +23,11 @@ export class IndexComponent implements OnInit {
 	public jsonConf: IMouseJson;
 	public hidDevices: Array<MouseDevice> = [];
 	public currentHidDevice?: MouseDevice;
-	public dpiValues: any = []
-	public levelCount:number = 5
+	public dpiValues: number[]= []
+	public oldLevelVal: number[]= []
+	public dpiGears:number = 5
 	public dpiColors = ['#ff3643', '#003cb8', '#00f78c', '#8726f1', '#fe7f3e', '#e218ff']
-
+	public currentProfile = 0
 	public scaleArr = Array(10);
 	public dpiLevel = 0 // 当前DPI层级
 	public _dpiValue = 0// 当前DPI值
@@ -96,19 +97,32 @@ export class IndexComponent implements OnInit {
 	/**连接初始化 */
 	private init() {
 		this.currentHidDevice = this.service.getCurrentHidDevice() as MouseDevice
+
 		const getHidConf = (h: MouseDevice) => {
-			const {json, baseInfo: {dpiConf, workMode}} = h
+			const {json, baseInfo: {
+				gears,
+				dpiConf, 
+				workMode, 
+				usb, rf, bt, 
+				profile
+			}} = h
+			
+			const drValue = [usb, rf, bt]
+			const value = drValue[workMode]
 			this.jsonConf = json; // 鼠标json信息（鼠标名、键位标识。。）
-			this.reportRateVal = dpiConf.reportRate;
-			this.dpiLevel = dpiConf.dpiCurrentLevel;
-			this.dpiValue = dpiConf.levelList[dpiConf.dpiCurrentLevel];
-			this.levelCount = dpiConf.levelCount
-			this.dpiValues = dpiConf.levelList.slice(0,dpiConf.levelCount)
+			this.reportRateVal = value?.reportRate;
+			this.dpiLevel = value.dpi;
+			this.dpiValue = dpiConf.levelVal[value.dpi];
+			this.currentProfile = profile;
+			this.oldLevelVal = JSON.parse(JSON.stringify(json.dpi.level));
+			this.dpiValues = dpiConf.levelVal.slice(0, gears)
+			
+			this.dpiGears = gears || json.dpi.level.length
 			if (json?.dpi) {
 				const {dpi} = json
 				this.minDpi = dpi.limit[0] || 100
-				this.maxDpi = dpi.limit[1] || 30000
-				
+				this.maxDpi = dpi.limit[1] || 26000
+
 				if (dpi.colors) {
 					this.dpiColors = dpi.colors
 				}
@@ -122,10 +136,9 @@ export class IndexComponent implements OnInit {
 						}))
 				}
 			}
-			
 		}
-
-		const sub = this.currentHidDevice.getBaseInfoDpi().subscribe(v => {
+		
+		const sub = this.currentHidDevice?.getBaseInfo().subscribe(v => {
 			if (this.currentHidDevice.loaded) {
 				getHidConf(this.currentHidDevice)
 			} else {
@@ -182,22 +195,19 @@ export class IndexComponent implements OnInit {
 	public setDpi() {
 		if (this.loading.dpi) return;
 		this.loading.dpi = true;
+		this.dpiValues.forEach((value, index) => {
+			this.oldLevelVal[index] = value;
+		});
 		this.currentHidDevice.setDpi({
-			current: this.dpiLevel ,
+			current: this.dpiLevel,
 			level: this.dpiValue,
-			values: this.dpiValues
-		}).subscribe({
-			next: () => {
-				this.currentHidDevice.setDpiLevel(this.dpiLevel).subscribe();
-				this.loading.dpi = false;
-				const m = this.i18n.instant('notify.success');
-				this.msgService.success(m);
-			},
-			error: (error) => {
-				this.loading.dpi = false;
-				console.error('Error setting DPI level:', error);
-			}
-		}); 
+			gears: this.dpiGears,
+			values: this.oldLevelVal,
+		}).subscribe(() => {
+			this.loading.dpi = false;
+			this.msgService.success(this.i18n.instant('notify.success'));
+			this.init()
+		})
 	}
 	
 
@@ -206,33 +216,20 @@ export class IndexComponent implements OnInit {
 		if (this.loading.reportRate) return;
 		this.loading.reportRate = true
 		return this.currentHidDevice.setReportRate({
-			level: i === 1 ? 0 : i,
+			level: i,
 			values: this.reportRate.map(i => i.value)
 		}).subscribe(() => {
 			this.loading.reportRate = false
 			const m = this.i18n.instant('notify.success')
 			this.msgService.success(m)
-			this.reportRateVal = i === 1 ? 0 : i
+			this.init()
 		})
 	}
-	public transformIndex(i: number): number {
-        if (i === 0) return 0; 
-        if (i === 1) return 2;
-        if (i === 2) return 3;
-        return i;
-    }
+	
 	// 恢复出厂设置
 	public reset() {
 		const device = this.service.getCurrentHidDevice() as MouseDevice
-		device.resetToDpi([400,800,1600,3200,4800]).subscribe(() => {
-			this.init()
-			this.msgService.success(this.i18n.instant('notify.success'))
-		})
-	}
-	//档位数调节
-	public setLevelCount() {
-		const device = this.service.getCurrentHidDevice() as MouseDevice
-		device.setLevelCount(this.levelCount).subscribe(() => {
+		device.recovery({profile: this.currentProfile, tagVal: 0x22}).subscribe(() => {
 			this.init()
 			this.msgService.success(this.i18n.instant('notify.success'))
 		})

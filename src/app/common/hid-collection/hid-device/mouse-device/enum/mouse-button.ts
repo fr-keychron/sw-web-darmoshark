@@ -1,3 +1,5 @@
+import { EDmsMouseBtnActionKey, EDmsMouseBtnDpiKey, EDmsMouseBtnMediaKey, EDmsMouseBtnShortcutKey } from "./dms-mouse"
+
 export enum EMouseBtn {
 	remove,
 	Mouse,
@@ -65,25 +67,23 @@ export enum EMouseBtnActionKey {
 }
 
 export let EMouseBtnAction = [
-	{key: 'leftClick', value: EMouseBtnActionKey.leftClick, mouseKey: 0},
-	{key: 'rightClick', value: EMouseBtnActionKey.rightClick, mouseKey: 2},
-	{key: 'middleClick', value: EMouseBtnActionKey.middleClick, mouseKey: 1}, 
-	{key: 'button4Click', value: EMouseBtnActionKey.button5Click, mouseKey: 3},
-	{key: 'button5Click', value: EMouseBtnActionKey.button4Click, mouseKey: 4},
+	{key: 'leftClick', value: EMouseBtnActionKey.leftClick},
+	{key: 'rightClick', value: EMouseBtnActionKey.rightClick},
+	{key: 'middleClick', value: EMouseBtnActionKey.middleClick}, 
+	{key: 'button4Click', value: EMouseBtnActionKey.button5Click},
+	{key: 'button5Click', value: EMouseBtnActionKey.button4Click},
 	{key: 'scrollLeftClick', value: ''},
 	{key: 'scrollRightClick', value: ''},
 	{key: 'rightScroll', value: EMouseBtnActionKey.rightScroll},
 	{key: 'leftScroll', value: EMouseBtnActionKey.leftScroll},
-	{key: 'swichLight', value: '', mouseKey: 7},
-	{key: 'downScroll', value: EMouseBtnActionKey.downScroll, mouseKey: 13},
-	{key: 'upScroll', value: EMouseBtnActionKey.upScroll, mouseKey: 14},
+	{key: 'downScroll', value: EMouseBtnActionKey.downScroll},
+	{key: 'upScroll', value: EMouseBtnActionKey.upScroll},
 	{key: 'lickDoubleClick', value: EMouseBtnActionKey.lickDoubleClick},
 	// {key: 'leftScrollSustain', value: EMouseBtnActionKey.leftScrollSustain},
 	// {key: 'rightScrollSustain', value: EMouseBtnActionKey.rightScrollSustain},
 ]
-
 export const setEMouseBtnAction = (key: string, value: number) => {
-  EMouseBtnAction = EMouseBtnAction.map(b => b.key === key ? {key, value, ...b}:b)
+  EMouseBtnAction = EMouseBtnAction.map(b => b.key === key ? {key, value}:b)
 }
 
 export enum EMouseBtnDpiKey {
@@ -169,3 +169,37 @@ export const EMousseBtnShortcut = [
 //     return ['Mac', 0x070a16 ]
 //   }
 // }
+
+
+export const convertMousseBtnShortcut = () => {
+    return EMousseBtnShortcut.forEach(item => {
+        const newValue = EDmsMouseBtnShortcutKey[item.key as keyof typeof EDmsMouseBtnShortcutKey]
+		if (newValue !== undefined) {
+            item.value = newValue as unknown as EMousseBtnShortcutKey
+        }
+    })
+};
+export const convertMouseBtnDpi = () => {
+    return EMouseBtnDpi.forEach(item => {
+        const newValue = EDmsMouseBtnDpiKey[item.key as keyof typeof EDmsMouseBtnDpiKey]
+		if (newValue !== undefined) {
+            item.value = newValue as unknown as EMouseBtnDpiKey
+        }
+    })
+};
+export const convertMouseBtnMedia = () => {
+    return EMouseBtnMedia.forEach(item => {
+        const newValue = EDmsMouseBtnMediaKey[item.key as keyof typeof EDmsMouseBtnMediaKey]
+		if (newValue !== undefined) {
+            item.value = newValue as unknown as EMouseBtnMediaKey
+        }
+    })
+};
+export const convertMouseBtnActionEnum = () => {
+    return EMouseBtnAction.forEach(item => {
+        const newValue = EDmsMouseBtnActionKey[item.key as keyof typeof EDmsMouseBtnActionKey]
+		if (newValue !== undefined) {
+            item.value = newValue as unknown as EMouseBtnActionKey;
+        }
+    })
+};

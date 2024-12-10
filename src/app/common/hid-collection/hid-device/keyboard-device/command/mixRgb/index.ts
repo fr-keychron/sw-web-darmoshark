@@ -9,6 +9,7 @@ export class MixRgbConf implements IMixRgbConf {
 	vp: number = null
 	region: Array<Array<IMixEffect>> = []
 	current = false;
+	level: Array<number> = []
 
 	constructor(d?: IMixRgbConf) {
 		if (!d) return
@@ -16,6 +17,7 @@ export class MixRgbConf implements IMixRgbConf {
 		if (d.name) this.name = d.name
 		if (d.region && d.region.length) this.region = d.region
 		if (d.current) this.current = d.current;
+		if (d.level) this.level = d.level;
 	}
 
 	buildName(n: string): this {
@@ -44,7 +46,15 @@ export class MixRgbConf implements IMixRgbConf {
 	}
 
 	addRegion(e: Array<IMixEffect>): this {
-		if (e) this.region.push(e);
+		if (e) {
+			this.region.push(e);
+			this.level.push(e.length - 1)
+		}
+		return this
+	}
+
+	buildLevel(n: Array<number>): this {
+		this.level = n;
 		return this
 	}
 }

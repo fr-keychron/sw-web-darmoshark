@@ -1,12 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from "@angular/core";
+import { Component, OnInit, } from "@angular/core";
 import { Subscription } from "rxjs";
 import {ISelectEnums} from "../../../model";
 import {GLOBAL_CONFIG, setConfVal} from 'src/app/config';
 import { MsgService } from "src/app/service/msg/msg.service";
 import { TranslateService } from "@ngx-translate/core";
-import {ILog, LogService} from "../../../service/log/log.service";
-import {HidDeviceEventType, MouseDevice, EEventEnum} from "../../../common/hid-collection";
-import {DeviceConnectService} from "../../../common/device-conncet/device-connect.service";
+import { MouseDevice, EEventEnum} from "../../../common/hid-collection";
+import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 @Component({
 	selector: "mouse-sys-index",
 	templateUrl: './index.component.html',

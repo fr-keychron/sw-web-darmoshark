@@ -16,7 +16,7 @@ export class TaskQueueService {
 		cancel: Observable<any>
 	}> = {}
 
-	private last: string = "";
+	private last: string;
 
 	public getLen(): number {
 		return Object.keys(this.queue).length
@@ -51,9 +51,7 @@ export class TaskQueueService {
 			const runOb = () => {
 				if (!queue.length) return complete();
 				const ob = queue.shift();
-				if(ob){
-					ob.subscribe(() => runOb())
-				}
+				ob.subscribe(() => runOb())
 			}
 			runOb()
 		})
@@ -89,7 +87,7 @@ export class TaskQueueService {
 			const last = this.queue[this.last]
 			if (last.cancel) last.cancel.subscribe()
 			delete this.queue[this.last];
-			this.last = "";
+			this.last = null;
 		}
 	}
 }

@@ -1,13 +1,22 @@
 import {filter, map, Observable, Subject, Subscription, switchMap, timeout} from "rxjs";
 import {HidDeviceEventType, IHidDeviceEvent, IHidOpen, IKeyBufferResult} from "./types";
 import {TranslateService} from "@ngx-translate/core";
-import {EKeyboardCommand, EKnobDirection, IKeyBoardDef, IKeycode, IKeyConf, IKeyMacros, Result} from "src/app/model";
-import {keycodeService} from "src/app/common/keycode/keycode.service";
+import {
+	EHECommand,
+	EKeyboardCommand,
+	EKnobDirection,
+	IKeyBoardDef,
+	IKeycode,
+	IKeyConf,
+	IKeyMacros,
+	Result
+} from "src/app/model";
+import {keycodeService} from "src/app/service/keycode/keycode.service";
 import {ByteUtil} from "src/app/utils/byte.util";
 import {commonMenus, getLightingDefinition} from '@the-via/reader';
 import {BacklightControls, UnderglowControls} from './general'
 import {GLOBAL_CONFIG} from "src/app/config";
-import KeyCover from 'src/app/common/json/key-cover.json'
+import KeyCover from 'src/assets/json/key-cover.json'
 import lodash from 'lodash';
 import {Transceiver} from "../../transceiver/transceiver";
 import {EDeviceConnectState} from "../../enum";
@@ -15,6 +24,8 @@ import {BaseCommand, IBaseCommand} from "./command/base.command";
 import {IRgbCommand, RGB_V1} from "./command/rgb";
 import {IMixRgb, MixRgbV1} from "./command/mixRgb";
 import {tap} from "rxjs/operators";
+import {ISleep} from "./command/sleep";
+import {Sleep_V1} from "./command/sleep/V1";
 
 export interface ISupportFeature {
 	Get_Default_Layer: boolean,
@@ -40,7 +51,9 @@ export class BaseKeyboard {
 	public productInfo: any
 	public kcVersion: any
 	public state: EDeviceConnectState = EDeviceConnectState.USB;
-	public feature: { rgb: IRgbCommand, mixRgb: IMixRgb } = {rgb: null, mixRgb: null}
+	public feature: { rgb: IRgbCommand, mixRgb: IMixRgb, sleep: ISleep } = {
+		rgb: null, mixRgb: null, sleep: null
+	}
 	private baseCommand: IBaseCommand;
 	public transceiver: Transceiver;
 	public instruction_set: number;
@@ -302,9 +315,13 @@ export class BaseKeyboard {
 		return this.getHidDeviceConf()
 	}
 
-	public changeLayer(layer: number) {
+	public changeLayer(layer: number, fn?: () => void) {
 		this.selectLayer = layer;
-		this.baseCommand.loadKeyMapBuffer().subscribe()
+		this.baseCommand.loadKeyMapBuffer().subscribe(() => {
+			if (fn) {
+				fn()
+			}
+		})
 	}
 
 	public keymapReset() {
@@ -433,9 +450,32 @@ export class BaseKeyboard {
 	}
 
 
+	private detect(): Observable<any> {
+		const sleepDetect = () => {
+			return new Observable((s) => {
+				const cmd = new Sleep_V1(this);
+				const sub = cmd.getSleep().subscribe((v) => {
+					this.feature.sleep = cmd
+					s.next()
+					sub.unsubscribe()
+				}, () => {
+					s.next()
+					sub.unsubscribe()
+				})
+			})
+		}
+		return new Observable(s => {
+			sleepDetect().subscribe(() => {
+				s.next()
+			})
+		})
+	}
+
 	protected onGetConf(): Observable<any> {
 		return new Observable(s => {
-			s.next()
+			this.detect().subscribe(() => {
+				s.next()
+			})
 		})
 	}
 
@@ -581,7 +621,7 @@ export class BaseKeyboard {
 	public setKeyMap(layer: number, keyConfig: { col: number, row: number, code: number }): Observable<boolean> {
 		return this.baseCommand.setKeyMap(layer, keyConfig)
 	}
-	
+
 	public exchangeKeys(data: {
 		source: IKeyBufferResult,
 		target: IKeycode
@@ -652,18 +692,18 @@ export class BaseKeyboard {
 		return menus
 	}
 
-	public getKnobVal(knobId: number, direction: EKnobDirection): Observable<{
+	public getKnobVal(knobId: number, direction: EKnobDirection, layer?: number): Observable<{
 		keyCode: string,
 		keyName: string,
 		keyTitle: string,
 		keyVal: number
 		keyHex: string,
 	}> {
-		return this.baseCommand.getKnobVal(knobId, direction)
+		return this.baseCommand.getKnobVal(knobId, direction, layer)
 	}
 
-	public setKnobVal(knobId: number, direction: EKnobDirection, key: IKeycode): Observable<Result> {
-		return this.baseCommand.setKnobVal(knobId, direction, key)
+	public setKnobVal(knobId: number, direction: EKnobDirection, key: IKeycode, l?: number): Observable<Result> {
+		return this.baseCommand.setKnobVal(knobId, direction, key, l)
 	}
 
 

@@ -13,7 +13,7 @@ import {
   EDmsMacroLoop
 } from 'src/app/common/hid-collection/hid-device/mouse-device'
 import keyJson from 'src/assets/json/mouse.json';
-import {DeviceConnectService} from "../../../common/device-conncet/device-connect.service";
+import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 
 const unit = ' ms'
 

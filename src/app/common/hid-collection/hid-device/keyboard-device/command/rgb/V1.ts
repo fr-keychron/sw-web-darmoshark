@@ -12,8 +12,10 @@ enum Command {
 	LedIndicationSet,
 	LedCount = 0x5,
 	LedNumber,
+	GetEffect,
+	SetEffect,
 	GetLedColor,
-	SetLedColor
+	SetLedColor,
 }
 
 export class RGB_V1 implements IRgbCommand {
@@ -22,6 +24,41 @@ export class RGB_V1 implements IRgbCommand {
 
 	constructor(keyboard: BaseKeyboard) {
 		this.keyboard = keyboard
+	}
+
+	GetRgbEffect(): Observable<number> {
+		return new Observable(s => {
+			const buf = BaseKeyboard.Buffer()
+			buf[0] = EKeyboardCommand.KC_RGB
+			buf[1] = Command.GetEffect
+			const sub = this.keyboard.report$
+				.pipe(
+					filter(v => v[0] === EKeyboardCommand.KC_RGB && v[1] === Command.GetEffect),
+					map(v => v[3])
+				)
+				.subscribe((v) => {
+					s.next(v)
+					sub.unsubscribe()
+				})
+			this.keyboard.write(buf).subscribe()
+		})
+	}
+
+	SetRgbEffect(e: number): void {
+		const buf = BaseKeyboard.Buffer()
+		buf[0] = EKeyboardCommand.KC_RGB
+		buf[1] = Command.SetEffect
+		buf[2] = e
+		const sub = this.keyboard.report$
+			.pipe(
+				filter(v => v[0] === EKeyboardCommand.KC_RGB && v[1] === Command.GetEffect),
+				map(v => v[2])
+			)
+			.subscribe((v) => {
+				this.SaveLedConf().subscribe()
+				sub.unsubscribe()
+			})
+		this.keyboard.write(buf).subscribe()
 	}
 
 	public getLedColor(start: number, count: number): Observable<any> {
@@ -36,8 +73,8 @@ export class RGB_V1 implements IRgbCommand {
 					filter(v => v[0] === EKeyboardCommand.KC_RGB && v[1] === Command.GetLedColor),
 					map(v => Array.from(v.slice(3, count * 3 + 3))),
 					map(v => ByteUtil.splitArray(v, 3).map(v => {
-						const s = '#' + v.map(i => ByteUtil.oct2Hex(i, 2, '')).join('')
-						return s === '#000000' ? '' : s;
+						const color = new Color({h: v[0] / 255 * 360, s: v[1] / 255, b: v[2] / 255})
+						return '#' + color.toHex()
 					}))
 				)
 				.subscribe(v => {
@@ -209,7 +246,6 @@ export class RGB_V1 implements IRgbCommand {
 		buf[3] = d.color.h
 		buf[4] = d.color.s
 		buf[5] = d.color.v
-		console.log(buf);
 		this.keyboard.write(buf).subscribe(() => {
 			this.SaveLedConf().subscribe()
 		})

@@ -1,8 +1,7 @@
-import { cloneDeep } from 'lodash';
 export class VersionFactory {
   static rules: Array<{rule: (s: number|string) => boolean , instance: (device:any) => any }> = []
-  static inject(rule: (s: number | string) => boolean, instance: any) {
-      VersionFactory.rules.push({ rule, instance });
+  static inject(rule: (s: number|string) => boolean , instance: any ) {
+    VersionFactory.rules.push({rule , instance})
   }
 
   get(name: number|string, device: any): any {

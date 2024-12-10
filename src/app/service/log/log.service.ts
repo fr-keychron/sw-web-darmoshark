@@ -1,5 +1,5 @@
 import {ErrorHandler, Injectable, OnInit} from "@angular/core";
-import {DeviceConnectService} from "../../common/device-conncet/device-connect.service";
+import {DeviceConnectService} from "../device-conncet/device-connect.service";
 
 export interface ILog {
 	type: "Js" | "Net",

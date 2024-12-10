@@ -1,11 +1,10 @@
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@angular/core";
+import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from "@angular/core";
 import keyJson from 'src/assets/json/mouse.json';
-import {MsgService} from "src/app/service/msg/msg.service";
-import {TranslateService} from "@ngx-translate/core";
-import {Subscription, fromEvent} from 'rxjs';
-import { EDmsMouseKeycodeDefault, MouseDevice} from "../../../../common/hid-collection";
-import {DeviceConnectService} from "../../../../common/device-conncet/device-connect.service";
-
+import { MsgService } from "src/app/service/msg/msg.service";
+import { TranslateService } from "@ngx-translate/core";
+import { Subscription, fromEvent } from 'rxjs';
+import { EDmsMouseKeycodeDefault, MouseDevice } from "../../../../common/hid-collection";
+import { DeviceConnectService } from "../../../../service/device-conncet/device-connect.service";
 @Component({
 	selector: 'mouse-button-keyboard',
 	templateUrl: './keyboard.component.html',
@@ -101,7 +100,9 @@ export class KeyboardComponent {
 		const device = this.mouseService.getCurrentHidDevice<MouseDevice>();
 		const shift = this.currentShift ?? 0;
 		const keycodes: number[] = []
-		const keyCodeValue = EDmsMouseKeycodeDefault.find((i: { key: string; }) => i.key === this.firstKey.code);
+		const keyCodeValue = EDmsMouseKeycodeDefault.find((i: { code: string; }) => i.code === this.firstKey.code);
+		console.log(this.firstKey,keyCodeValue);
+		
 		if (this.firstKey.code) keycodes.push(keyCodeValue.value)
 		device.setMouseBtn2KeyBoard(
 			this.mouseKey,

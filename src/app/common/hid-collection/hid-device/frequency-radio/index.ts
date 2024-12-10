@@ -108,14 +108,14 @@ export class FrequencyRadio {
 						map(v => v[2]),
 						timeout(2500)
 					)
-					.subscribe(v => {
+					.subscribe({next: v => {
 						this.viaVersion = v;
 						s.next(v)
 						sub.unsubscribe()
-					}, () => {
+					}, error:() => {
 						s.error(this.i18n.instant('notify.keyboard_not_support_wireless'))
 						sub.unsubscribe()
-					})
+					}})
 				this.write(buf).subscribe()
 			} else {
 				s.error(this.i18n.instant('notify.fr_not_connect'))

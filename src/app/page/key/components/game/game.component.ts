@@ -9,7 +9,7 @@ import {
 	MouseDevice,
 	EDmsMouseKeycodeDefault
 } from "../../../../common/hid-collection";
-import {DeviceConnectService} from "../../../../common/device-conncet/device-connect.service";
+import {DeviceConnectService} from "../../../../service/device-conncet/device-connect.service";
 import {MsgService} from "src/app/service/msg/msg.service";
 import {TranslateService} from "@ngx-translate/core";
 
@@ -98,21 +98,16 @@ export class GameComponent {
 
 	public submit() {
 		if (!this.mouseKey && this.mouseKey!==0) return;
-		const type = this.keyType === 1 
-		? 0x10 + Math.floor(this.count / 255)
-		: 0x30 + Math.floor(this.count / 255)
-		const rate = Number(this.rate)
-		const count = this.count > 255 ? 255 : Number(this.count) 
 		const device = this.mouseService.getCurrentHidDevice<MouseDevice>()
 			device.setMouseBtn2Game(
 				this.mouseKey, {
-					type: Number(type),
+					type: this.keyType,
 					keycode:  Number(this.currentSelectKey),
-					speed: rate,
-					count: count
+					speed: Number(this.rate),
+					count: Number(this.count)
 				}
 			).subscribe(() => {
-				this.update.next(7)
+				this.update.next(true)
 				this.msg.success(this.i18n.instant('notify.success'))
 			})
 	}
@@ -131,10 +126,8 @@ export class GameComponent {
 		
 		if (!this.mouseKey && this.mouseKey !== 0) return
 		const item = this.data.find((element: any) => element.mouseKey === this.mouseKey);
-		console.log(item);
 		if (!Object.values(EDmsMouseGame).includes(item.data.type))return;
 		const {type, count, speed, value} = item.data;
-		console.log(item);
 		this.currentSelectKey = value
 		if (type === EDmsMouseGame[EDmsMouseGame.mouseGame]) {
 			this.keyType = 1
@@ -155,19 +148,4 @@ export class GameComponent {
             event.preventDefault()
         }
     }
-
-    // 验证范围
-    // public checkRange(event: Event, max: number, min: number,key:string): void {
-    //     const input = event.target as HTMLInputElement
-    //     const value = parseInt(input.value, 10)
-    //     if (value < min) {
-    //         input.value = min.toString()
-    //         this[key] = min
-    //     } else if (value > max) {
-    //         input.value = max.toString()
-	// 		this[key] = max
-    //     } else {
-    //         this[key]= value
-    //     }
-    // }
 }

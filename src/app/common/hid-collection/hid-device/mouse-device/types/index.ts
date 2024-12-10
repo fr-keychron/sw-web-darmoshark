@@ -1,38 +1,43 @@
+import { TranslateService } from "@ngx-translate/core";
 import {EKey, EMouseBtnGameKey, PowerState} from "../enum";
+import { HttpClient } from "@angular/common/http";
+import { Transceiver } from "../../../transceiver/transceiver";
 
-type IDpiReport = { dpi: number, reportRate: number }
+export type IDpiReport = { dpi: number, reportRate: number }
 
 export interface IBaseInfo {
-    workMode: number;
-    dpiConf: {
-        reportRate: number;
-        levelCount: number;
-        dpiCurrentLevel: number;
-        delay: number;
-        sleep: number;
-        levelList: number[];
-        sys: {
-            lod: number;
-            wave: number;
-            line: number;
-            motion: number;
-            scroll: number;
-            eSports?: number;
-        };
-    };
-    lightConf: {
-        lightMode: number;
-        brightness: number;
-        speed: number;
-        rgbArr: number[];
-        currentColor: string;
-    };
-    power: {
-        state: number; 
-        value: number;
-    };
-    profile: number;
-    mousebtnConf: any[];
+	workMode: number ,
+	feature?: number,
+	profile: number,
+	usb: IDpiReport,
+	rf: IDpiReport,
+	bt: IDpiReport,
+	dpiConf: {
+		levelVal: number[],
+		levelEnable: number
+	},
+	gears: number,
+	delay: number,
+	sleep: number,
+	power: {
+		state: PowerState,
+		value: number
+	},
+	sys: {
+		lod: number ,
+		wave: number,
+		line: number,
+		motion: number,
+		scroll: number,
+		eSports?: number,
+	},
+	supportFeat?: Array<string>,
+	scroll?: {
+		speed: number,
+		inertia: number,
+		spl: number
+	},
+	debounce?: number[]
 }
 
 export type IMouseButtonKey = {
@@ -43,26 +48,34 @@ export type IMouseButtonKey = {
 	index: number,
 	custom: false,
 	name?: string,
-	keyKeep?: boolean
+	title?: string
 }
 
 export interface IMouseJson {
+	name: string,
+	type: string,
+	device?: {
+			usagePage: string | number,
+			usage: string | number,
+			contract?: string | number
+	},
+	light?:{ value: number, name: string }[],
+	size: number[],
+	keys: IMouseButtonKey[],
 	dpi: {
-		colors?: any;
-		limit: number[],
+		limit: [number, number],
 		level: number[],
+    colors?: string[],
 		reportRate: {
-			color: string|string[],
-			value: number
-			type?: number[]
+			type?: number[], // 0  1 2
+			value: number,
+			color: string
 		}[]
 	},
-	name: string,
 	sys: {
-		lod: object[]
-	},
-	size: [number, number],
-	keys: Array<IMouseButtonKey>
+		lod: { index: number, value: string }[],
+		sencor?: any
+	}
 }
 
 export interface IMacroItem {
@@ -88,6 +101,15 @@ export interface MacroList {
   loopNum: number,
   loopMode: string,
   list: RecordList[]
+}
+
+export interface MouseBase {
+	product: any, 
+	json: IMouseJson,
+	hid: any,
+	i18n: TranslateService,
+	http: HttpClient,
+	transceiver?: Transceiver
 }
 
 export interface Light {i: number, l: number, s: number, r: number, g: number, b: number, type?: number}

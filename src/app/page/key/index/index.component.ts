@@ -13,9 +13,10 @@ import {
 	handleMouseKey,
 	EDmsMouseBtnDpi,
 	EDmsMouseGame,
-	EDmsMousseBtnLight
+	EDmsMousseBtnLight,
+	EMouseBtn
 } from "../../../common/hid-collection";
-import {DeviceConnectService} from "../../../common/device-conncet/device-connect.service";
+import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 import {TranslateService} from "@ngx-translate/core";
 import {MsgService} from "src/app/service/msg/msg.service";
 @Component({
@@ -33,16 +34,43 @@ export class IndexComponent implements OnInit {
 
 	public device: MouseDevice;
 	public keyConf: any;
-	public currentMouseKey: number|string;
+	public currentMouseKey: number;
+	public funType: number;
 	public keyChange: handleMouseKey = new handleMouseKey()
-	public mouseKeys = JSON.parse(JSON.stringify(EDmsMouseBtnAction.filter(item => item.mouseKey || item.mouseKey === 0)))
+	public mouseKeys: any = [{
+		mouseKey: 0,
+		key: EDmsMouseBtnAction[0].key,
+		value: EDmsMouseBtnAction[0].value,
+		keyType: 0,
+	}, {
+		mouseKey: 1,
+		key: EDmsMouseBtnAction[2].key,
+		value: EDmsMouseBtnAction[2].value,
+		keyType: 0,
+	}, {
+		mouseKey: 2,
+		key: EDmsMouseBtnAction[1].key,
+		value: EDmsMouseBtnAction[1].value,
+		keyType: 0,
+	}, {
+		mouseKey: 3,
+		key: EDmsMouseBtnAction[3].key,
+		value: EDmsMouseBtnAction[3].value,
+		keyType: 0,
+	}, {
+		mouseKey: 4,
+		key: EDmsMouseBtnAction[4].key,
+		value: EDmsMouseBtnAction[4].value,
+		keyType: 0,
+	}];
 	public sensitiveAction = EDmsMouseBtnDpi
 	public mediaAction = EDmsMouseBtnMedia
 	public shortcutAction = EDmsMouseBtnShortcut
 	public lightAction = EDmsMousseBtnLight
+	public funBtnKeys = EMouseBtn
 	public macroList: MacroList[]
 	public activeMouseKey: number = 1;
-	public mouseButtons= EDmsMouseBtnAction 
+	public mouseAction = EDmsMouseBtnAction 
 	public activeModal: string | null = null;
 	public leftLock:string = "1"
 	ngOnInit() {
@@ -87,65 +115,58 @@ export class IndexComponent implements OnInit {
 		this.init()
 	}
 	public getMouseKays() {
-		this.keyConf.forEach((conf: any) => {
-			this.mouseKeys.forEach((e: any) => {
-				if (e.mouseKey === conf.mouseKey) {
-					e.key = conf.data?.key 
-					e.value = conf.data?.value 
-					e.type = conf.data?.type 
-					e.data = conf.data?.data 
-				}
-			});
-		});
-		this.mouseKeys.sort((a: { mouseKey: number }, b: { mouseKey: number }) => a.mouseKey - b.mouseKey);
-		const currentMouseType = this.mouseKeys.find((e:{ mouseKey: number, type: string})=>{
-			return e.mouseKey === this.activeMouseKey
+		this.keyConf?.forEach((k: any, i: number) => {
+			this.mouseKeys[i] = {
+				...k,
+				key: k.data?.key || k.name || EDmsMouseBtnAction[i].key,
+				value: k.data?.value || EDmsMouseBtnAction[i].value,
+			}
+			if (k.mouseKey === this.activeMouseKey) {
+				this.funType = k.type
+				this.currentMouseKey = k.data.value
+			}
 		})
-		if(currentMouseType?.type != 'mouseMacro' ){
-			this.currentMouseKey =  currentMouseType?.type  || currentMouseType.value
-		}
-		if (Object.values(EDmsMouseGame).includes(currentMouseType?.type)){
-			this.activeModal = 'gameReinforce'
-		}
-		if(currentMouseType?.type === 'mouseKeyboard' ){
-			this.activeModal = 'combination'
-		}
-		console.log(this.mouseKeys);
-		
 	}	
-	public init(): Promise<void> {
-		return new Promise((resolve) => {
-			if(!this.device) return
-			this.device.getMouseBtnsInfo().subscribe(
-				(v: any) => {
-					this.keyConf = this.device.baseInfo.mousebtnConf
+	public init() {
+		const obs: any = this.device.json.keys
+			.filter(v => v.custom)
+			.map(k => [this.device.getMouseBtnInfo(k.index), k])
+		
+		const obj: Object[] = []
+		const run = () => {
+			const info = obs.shift()
+			info[0].subscribe((v: any) => {
+				obj.push({...info[1], ...v});
+				if (obs.length) {
+					run()
+				} else {
+					this.keyConf = obj;
 					this.getMouseKays()
 				}
-			)
-			resolve();
-		});
+			})
+		}
+		run()
 	}
 	
 	public resetKey() {
-		this.device.recovery({value: 2, options:255}).subscribe(() => {
-			this.msg.success(this.i18n.instant('notify.success'))
-			this.setActive(1)
-			this.init()
+		this.device.recovery({tagVal: 1, profile: this.device.profile}).subscribe(() => {
+			this.device.getBaseInfo().subscribe(() => {
+				this.msg.success(this.i18n.instant('notify.success'))
+				this.init()
+			})
 		})
 	}
 
 	public resetFun() {
-		this.device.recovery({value: 2, options:this.activeMouseKey}).subscribe(() => {
-			this.msg.success(this.i18n.instant('notify.success'))
-			this.init()
+		this.device.recovery({tagVal: 2, value: this.activeMouseKey}).subscribe(() => {
+			this.device.getBaseInfo().subscribe(() => {
+				this.msg.success(this.i18n.instant('notify.success'))
+				this.init()
+			})
 		})
 	}
 
 	public tipModal = false
-
-	public transform(array: any[], value: any): boolean {
-        return array.some(item => item.value === value);
-    }
 
 	public setActive(k: number) {
 		if (k === 0 && this.leftLock === "1") {
@@ -158,35 +179,73 @@ export class IndexComponent implements OnInit {
 		this.init()
 	}
 
-	public setSelectActive(active: any ) {
-		this.device.setMouseBtn(this.activeMouseKey, active)
-			.subscribe(() => {
-				this.init()
-				this.msg.success(this.i18n.instant('notify.success'))
-			})
+	public getActiveMouseName() {
+		const name = this.mouseKeys.find((e: { mouseKey: number; })=>{
+			return e.mouseKey === this.activeMouseKey
+		})
+		return name.title
 	}
-
+	public setSelectActive(active: number, type: number) {
+		let v = this.activeMouseKey;
+		if (v || v === 0) {
+			if (type=== this.funBtnKeys.Mouse) { // 基础按键
+				this.device.setMouseBtn2Action(v, active)
+					.subscribe(() => {
+						this.init()
+						this.msg.success(this.i18n.instant('notify.success'))
+					})
+			} else if (type === this.funBtnKeys.Dpi) { // 灵敏度
+				this.device.setMouseBtn2Dpi(v, active)
+					.subscribe(() => {
+						this.init()
+						this.msg.success(this.i18n.instant('notify.success'))
+					})
+			} else if (type === this.funBtnKeys.Media) { // 多媒体
+				this.device.setMouseBtn2Media(v, active)
+					.subscribe(() => {
+						this.init()
+						this.msg.success(this.i18n.instant('notify.success'))
+					})
+			} else if (type === this.funBtnKeys.ShortCut) { // 快捷键
+				this.device.setMouseBtn2ShortCut(v, active)
+					.subscribe(() => {
+						this.init()
+						this.msg.success(this.i18n.instant('notify.success'))
+					})
+			} else if (type === this.funBtnKeys.disable) { // 禁用
+				this.device.disableMouseBtn(v)
+					.subscribe(() => {
+						this.init()
+						this.msg.success(this.i18n.instant('notify.success'))
+					})
+			} else if (type === this.funBtnKeys.Light) { //切换灯光
+				this.device.setMouseBtn2Light(v, active)
+					.subscribe(() => {
+						this.init()
+						this.msg.success(this.i18n.instant('notify.success'))
+					})
+			}
+		}
+	}
 	public setMacro(value: string) {
 		const m = this.macroList.find((e)=>e.id===value)
-		const {list, delayMode, delayNum, loopMode, loopNum, name} = m
+		
+		const { list, delayMode, delayNum, loopMode, loopNum } = m
 		if (list.length > 200) {
 			this.msg.warn(this.i18n.instant('notify.macroSizeLimit'))
 			return
 		}
 		const delay = ['none', 'dynamic'].includes(delayMode) ? 0 : delayNum
-		this.device.setMouseMacro(this.activeMouseKey)
-		.subscribe(() => {
-			this.device.setMacro({
-				mouseKey: this.activeMouseKey,
-				// @ts-ignore
-				loopType: EDmsMacroLoopKey[loopMode],
-				loopCount: loopNum,
-				delay,
-				macro: dmsSerializeMacro(list)
-			}).subscribe(() => {
-				this.init()
-				this.msg.success(this.i18n.instant('notify.success'))
-			})
+		this.device.setMacro({
+			mouseKey: this.activeMouseKey,
+			// @ts-ignore
+			loopType: EDmsMacroLoopKey[loopMode],
+			loopCount: loopNum,
+			delay,
+			macro: dmsSerializeMacro(list)
+		}).subscribe(() => {
+			this.init()
+			this.msg.success(this.i18n.instant('notify.success'))
 		})
 	}
 }

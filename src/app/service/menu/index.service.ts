@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Subject} from "rxjs";
 import {AppInitService} from "../../app-init.service";
-import {DeviceConnectService} from "src/app/common/device-conncet/device-connect.service";
+import {DeviceConnectService} from "../../service/device-conncet/device-connect.service";
 
 @Injectable({providedIn: 'root'})
 export class MenuService {
@@ -22,7 +22,7 @@ export class MenuService {
 			id: 'mouse_setKey'
 		}, {
 			i18n: 'mouse.menu.pointer',
-			path: 'mouse/pointer',
+			path: 'mouse/dpi',
 			icon: 'assets/menu/pointer.png',
 			id: 'mouse_pointer'
 		}, {

@@ -1,5 +1,5 @@
 import {KeyboardDevice} from "../hid-device/keyboard-device";
-import {MouseDevice} from "../hid-device/mouse-device";
+import {MouseDevice, IMouseJson} from "../hid-device/mouse-device";
 import {EDeviceType} from "../enum";
 import {IKeyBoardDef} from "../../../model";
 
@@ -35,6 +35,12 @@ export interface IEvent {
 
 
 export interface IKeyboardOptions {
-	loadByJson?: boolean
-	json?: IKeyBoardDef
+	loadByJson?: boolean,
+	json?: IKeyBoardDef,
+	product?: any
+}
+
+export interface IMouseOptions {
+	product?: any,
+	json?: IMouseJson
 }

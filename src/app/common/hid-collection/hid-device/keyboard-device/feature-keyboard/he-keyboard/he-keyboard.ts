@@ -9,9 +9,15 @@ import {HECommandV1} from "./command/v1";
 import {HECommandV2} from "./command/v2";
 import {HECommandV3} from "./command/v3";
 import {HECommandV4} from "./command/v4";
+import {HECommandV5} from "./command/v5";
 
 export class HeKeyBoard extends BaseKeyboard implements IHeCommand {
 	private command: IHeCommand;
+	public unit: number = 0.1
+	public axis = {
+		min: 0.2,
+		max: 3.8
+	}
 
 	static override build(
 		s: any,
@@ -29,10 +35,16 @@ export class HeKeyBoard extends BaseKeyboard implements IHeCommand {
 		destination: IKeyBoardDef
 	) {
 		super(s, i18n, protocol, destination)
+		if (destination && destination.extra && destination.extra.he) {
+			this.axis = destination.extra.he.distance
+		}
 	}
 
 	public heVersion: number;
 
+	public getCommandVersion(): number {
+		return this.command.getCommandVersion()
+	}
 
 	protected override onGetConf(): Observable<any> {
 		return new Observable<any>(s => {
@@ -41,7 +53,11 @@ export class HeKeyBoard extends BaseKeyboard implements IHeCommand {
 				if (v === 2) this.command = new HECommandV2(this)
 				if (v === 3) this.command = new HECommandV3(this)
 				if (v === 4) this.command = new HECommandV4(this)
-				s.next()
+				if (v === 5) this.command = new HECommandV5(this)
+				this.command.getProfileInfo()
+					.subscribe(() => {
+						s.next()
+					})
 			})
 		})
 	}
@@ -116,6 +132,10 @@ export class HeKeyBoard extends BaseKeyboard implements IHeCommand {
 
 	public removeDks(row: number, col: number): Observable<null> {
 		return this.command.removeDks(row, col);
+	}
+
+	public clearAdvanceKey (): Observable<any> {
+		return this.command.clearAdvanceKey()
 	}
 
 	public saveProfile(): Observable<Result> {

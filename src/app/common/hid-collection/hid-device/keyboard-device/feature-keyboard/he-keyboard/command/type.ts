@@ -52,4 +52,8 @@ export interface IHeCommand {
 	getJoyKeyboard?(): Observable<number[]>
 
 	setSnapTap?(data: { wordMode: number, keys: Array<[number, number]>, index: number }): Observable<any>;
+
+	getCommandVersion(): number
+
+	clearAdvanceKey(): Observable<any>
 }

@@ -43,9 +43,9 @@
                         <span class="text-levelCount">{{'mouse.dpi.levelCount' | translate }}</span>
                         <g-select
                             class="dpi-select"
-                            [(ngModel)]="levelCount"
+                            [(ngModel)]="dpiGears"
                             [gCenter]="false"
-                            (ngModelChange)="setLevelCount()"
+                            (ngModelChange)="setDpi()"
                         >
                             <g-option [gValue]="1" gLabel="1"></g-option>
                             <g-option [gValue]="2" gLabel="2"></g-option>
@@ -77,11 +77,11 @@
                 ></span> 
             </div>
             <div class="report-os g-flex g-justify-start"> 
-                <div class="os-item" *ngFor="let item of reportRate;let i = index" (click)="setReportRate(i+1)">
+                <div class="os-item" *ngFor="let item of reportRate;let i = index" (click)="setReportRate(i)">
                     <div  class="item-left" [ngStyle]="{background: item.color || '#fff'}"></div>
                     <div
                         class="item-right"
-                        [ngClass]="{'active-bgcolor': reportRateVal === transformIndex(i)}"
+                        [ngClass]="{'active-bgcolor': reportRateVal === i}"
                     >
                         {{ item.value + 'HZ'}}
                     </div>

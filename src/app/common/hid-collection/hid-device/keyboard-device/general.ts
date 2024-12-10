@@ -3,9 +3,9 @@ import {
 	LightingValue,
 	VIADefinitionV2,
 } from '@the-via/reader';
-import {keycodeService} from "../../../keycode/keycode.service";
+import {keycodeService} from "src/app/service/keycode/keycode.service";
 import {EMacro} from "src/app/model/enum/macro";
-import {KeycodeEnumService} from "../../../keycode/keycode-enum.service";
+import {KeycodeEnumService} from "src/app/service/keycode/keycode-enum.service";
 
 export const BacklightControls: [
 	LightingValue,

@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { MsgService } from "src/app/service/msg/msg.service";
 import { TranslateService } from "@ngx-translate/core";
 import { MouseDevice} from "../../../common/hid-collection";
-import {DeviceConnectService} from "../../../common/device-conncet/device-connect.service";
+import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 import { Subject, Subscription} from 'rxjs';
 @Component({
 	selector: "mouse-light-index",
@@ -107,30 +107,25 @@ export class IndexComponent implements OnInit {
 			const [r, g, b] = this.rgbArr;
 			this.currentColor = `rgb(${r},${g},${b})`;
 			const device = this.service.getCurrentHidDevice<MouseDevice>();
-
 			device.setLight({
-				type: this.lightMode,
-				brightness: this.brightness,
-				speed: this.speed,
+				i: this.lightMode,
+				l: this.brightness,
+				s: this.speed,
 				r, 
 				g, 
 				b,
 			}).subscribe();
-			
 			this.saturationUpdata();
 		}
-		
 	}
 
 	// 恢复出厂设置
 	public reset(){
-		const [r, g, b] = this.rgbArr;
-		this.currentColor = `rgb(${r},${g},${b})`;
 		const device = this.service.getCurrentHidDevice<MouseDevice>();
 		device.setLight({
-			type: 0,
-			brightness: 0,
-			speed: 0,
+			i: 0,
+			l: 255,
+			s: 4,
 			r:255, 
 			g:255, 
 			b:255,

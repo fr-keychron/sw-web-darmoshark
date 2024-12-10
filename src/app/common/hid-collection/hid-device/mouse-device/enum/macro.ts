@@ -1,3 +1,5 @@
+import { EDmsMacroLoopKey } from "./dms-mouse";
+
 // 触发事件
 export enum EKey {
   delay = 0b00001111, // 延时，触发着的时间（ms）
@@ -65,3 +67,12 @@ export const EMacroMouseButton = [
 	{key: 'front', value: EMacroMouseButtonKey.front, event: 4},
 	{key: 'back', value: EMacroMouseButtonKey.back, event: 3}
 ]
+
+export const convertMacroLoop = () => {
+	return  EMacroLoop.forEach(item => {
+	    const newValue = EDmsMacroLoopKey[item.key as keyof typeof EDmsMacroLoopKey]
+	    if (newValue !== undefined) {
+        item.value = newValue as unknown as EMacroLoopKey
+      }
+  })
+};

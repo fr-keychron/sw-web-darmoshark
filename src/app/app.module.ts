@@ -10,21 +10,14 @@ import {LayoutComponent} from "./layout/layout.component";
 import {ShareModule} from "./share.module";
 import {AsideComponent} from "./layout/aside/aside.component";
 import {TranslateLoader, TranslateModule, TranslateService} from '@ngx-translate/core';
-// import {TranslateHttpLoader} from '@ngx-translate/http-loader';
 import {GLOBAL_CONFIG, setConfVal} from 'src/app/config';
 import {ErrorComponent} from './components/error/error.component';
 import {HashLocationStrategy, LocationStrategy, NgOptimizedImage} from '@angular/common';
 import {ResponseInterceptor} from './http.interceptor';
 import {NzConfig, provideNzConfig} from 'ng-zorro-antd/core/config';
-// import {SettingComponent} from "./pages-keyboard/setting/setting.component";
 import {LogService} from "./service/log/log.service";
 import {appInitializerFactory, AppInitService} from "./app-init.service";
 import {CustomLoader} from './app.custom-translate'
-// export function HttpLoaderFactory(http: HttpClient) {
-// 	console.dir(TranslateHttpLoader);
-	
-// 	return new TranslateHttpLoader(http);
-// }
 
 const ngZorroConfig: NzConfig = {
 	message: {nzMaxStack: 1, nzTop: 50},
@@ -46,7 +39,6 @@ const ngZorroConfig: NzConfig = {
 			loader: {
 				provide: TranslateLoader,
 				useClass: CustomLoader,
-				// useFactory: HttpLoaderFactory,
 				deps: [HttpClient]
 			}
 		}),

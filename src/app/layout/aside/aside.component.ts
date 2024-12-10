@@ -6,7 +6,7 @@ import {NavigationEnd, Router} from "@angular/router";
 import {GLOBAL_CONFIG} from "src/app/config";
 import {Subscription} from "rxjs";
 import { EDeviceConnectState, EEventEnum, MouseDevice} from "src/app/common/hid-collection";
-import {DeviceConnectService} from "src/app/common/device-conncet/device-connect.service";
+import {DeviceConnectService} from "../../service/device-conncet/device-connect.service";
 
 interface Menu {
 	i18n: string,

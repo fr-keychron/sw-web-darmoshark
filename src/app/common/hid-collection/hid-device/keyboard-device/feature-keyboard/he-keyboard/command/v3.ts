@@ -14,7 +14,7 @@ import {
 	IProfileBuffer, ISnapTap
 } from 'src/app/common/hid-collection'
 import {filter, map, Observable, switchMap, zip} from "rxjs";
-import {keycodeService} from "src/app/common/keycode/keycode.service";
+import {keycodeService} from "src/app/service/keycode/keycode.service";
 import {ByteUtil, gen2dMatrix} from "src/app/utils";
 import {differenceBy} from "lodash";
 
@@ -24,6 +24,11 @@ export class HECommandV3 implements IHeCommand {
 
 	constructor(d: HeKeyBoard) {
 		this.keyboard = d
+	}
+
+
+	public getCommandVersion(): number {
+		return 3
 	}
 
 	public setHeDistance(d: {
@@ -713,6 +718,24 @@ export class HECommandV3 implements IHeCommand {
 					sub.unsubscribe()
 				})
 			this.keyboard.write(buf).subscribe()
+		})
+	}
+
+	public clearAdvanceKey (): Observable<any> {
+		return new Observable( s => {
+			const buffer = this.keyboard.keyBufferResult.filter( i => i.code !== "KC_NO")
+			const task = () => {
+				const key = buffer.shift();
+				this.keyboard.removeDks(key.row, key.col)
+					.subscribe( () => {
+						if( buffer.length ) {
+							task()
+						} else {
+							s.next()
+						}
+					})
+			}
+			task()
 		})
 	}
 }
