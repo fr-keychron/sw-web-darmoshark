@@ -386,6 +386,7 @@ export class MouseDeviceV4 {
 		return new Observable<any>((s) => {
 			if(action === 0) {
 				this.recovery({tagVal: 2, value: mouseKey}).subscribe(() => {s.next()});
+				return
 			}
 			const buf = MouseDevice.Buffer(64)
 			buf[0] = 3

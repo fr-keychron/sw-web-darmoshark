@@ -183,7 +183,7 @@ export class IndexComponent implements OnInit {
 		const name = this.mouseKeys.find((e: { mouseKey: number; })=>{
 			return e.mouseKey === this.activeMouseKey
 		})
-		return name.title
+		return name.name
 	}
 	public setSelectActive(active: number, type: number) {
 		let v = this.activeMouseKey;

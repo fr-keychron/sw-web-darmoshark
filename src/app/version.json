@@ -1,5 +1,5 @@
 {
   "api": "cn",
-  "env": "DEV",
+  "env": "PROD",
   "apiHost": "https://launcher.keychron.cn/"
 }
