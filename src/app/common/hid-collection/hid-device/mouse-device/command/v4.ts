@@ -39,17 +39,16 @@ export class MouseDeviceV4 {
 	public open(): Observable<any> {
 		return new Observable<any>((s) => {
 			const init = async () => {			
-				await firstValueFrom(this.getBaseInfo());
+				const { workMode, version } = this.mouse
 				const protocol = await firstValueFrom(this.getProtocolVersion());
-				
-				if (protocol.workMode === 1) {
+				if (workMode === 1) {
 					this.mouse.setTransceiver(new SerialTransceiver(this.mouse.hidRaw))
 					const receiver = await firstValueFrom(this.getReceiverState());
 					if (receiver?.state === 0) {
 						return s.error({
 							...receiver, 
-							version: protocol.version, 
-							workMode: protocol.workMode
+							version: version, 
+							workMode: workMode
 						})
 					}
 					this.mouse.state = EDeviceConnectState.G;
@@ -57,7 +56,7 @@ export class MouseDeviceV4 {
 				} else {
 					await firstValueFrom(this.getBaseInfo());
 				}
-				this.mouse.baseInfo.workMode = protocol.workMode
+				this.mouse.baseInfo.workMode = workMode
 				this.mouse.baseInfo.profile = protocol.profile
 				this.mouse.loaded = true;
 				this.mouse.event$.next({
@@ -125,7 +124,6 @@ export class MouseDeviceV4 {
 					})
 				)
 				.subscribe((v) => {
-					this.mouse.baseInfo.workMode = 2;
 					s.next(v);
 					sub.unsubscribe();
 				});
@@ -143,14 +141,14 @@ export class MouseDeviceV4 {
 		return new Observable<{ version: number; workMode: number; profile: number;}>((s) => {
 			const buf = MouseDevice.Buffer(64);
 			buf[0] = 0x01
-			buf[2] = 0x81
+			buf[2] = 0x80 | 1
 			buf[3] = 0x01
 			const obj = this.mouse.report$
 				.pipe(
-					filter((v) => (v[0] === 0x01 || v[0] === 0x41) && v[3] === 0x01),
+					filter((v) => (v[0] === 0x1 || v[0] === 0x41) &&  v[3] === 0x01),
 					map((v) => {
 						const bits = ByteUtil.oct2Bin(v[4])
-						const workMode = Number(bits[4])
+						const workMode = Number(bits[3])
 						const power = {
 							state: v[5],
 							value: v[6]
@@ -169,9 +167,11 @@ export class MouseDeviceV4 {
 				.subscribe({
 					next: (v) => {
 						obj.unsubscribe()
-						s.next(v);
+						s.next();
 					},
-					error: () => {
+					error: (e) => {
+						console.log(e);
+						
 						s.next({
 							version: 1,
 							workMode: 0,
@@ -181,7 +181,7 @@ export class MouseDeviceV4 {
 				});
 			this.setbuf0(buf)
 			this.setbuf63(buf)
-			this.mouse.write(0, buf).subscribe();
+			this.mouse.write(0, buf).subscribe(()=>s.next());
 		});
 	}
 
@@ -349,25 +349,17 @@ export class MouseDeviceV4 {
 
 	public handleUpdate(buf: Uint8Array) {
 		return new Observable(s => {
-			if (buf[0] === 0xe1) {
-				this.mouse.update$.next({type: "light"})
-			}
-			if (buf[0] === 0xe2) {
-				// workMode: 0: usb, 1: 2.4g, 2: BT
+			if ((buf[0] === 0x41 ) && buf[3] === 0x01) {
 				const obj = {
-					workMode: buf[1],
-					connect: buf[2],
 					power: {
-						state: buf[3],
-						percent: buf[4]
+						state: buf[5],
+						percent: buf[6]
 					},
 					dpi: {
-						value: buf[5],
-						report: buf[6],
-						level: buf[7]
+						report: buf[9],
+						level: buf[8]
 					}
 				}
-
 				this.mouse.update$.next({
 					type: "base",
 					data: obj

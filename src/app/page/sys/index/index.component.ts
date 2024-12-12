@@ -23,7 +23,6 @@ export class IndexComponent implements OnInit {
 	public resetModal = false
 	public profile = 0
 	public leftLock: string|null = '1'
-	public isStartUp: string = '1'
 	public mouseInfo = {
 		mouse: '',//鼠标固件版本
 		receiver: '',//接收器固件版本

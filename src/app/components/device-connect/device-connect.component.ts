@@ -107,8 +107,6 @@ export class DeviceConnectComponent implements OnInit {
 		this.service.requestDevice()
 			.subscribe(
 				(r: any) => {
-					console.log(r);
-					
 					setTimeout(() => this.loading = false, 1000)
 				},
 				(err: any) => {
@@ -136,11 +134,15 @@ export class DeviceConnectComponent implements OnInit {
 
 	private hidDeviceInit() {
 		const hidDevice = this.service.getCurrentHidDevice() as MouseDevice
+		console.log(hidDevice);
+		
 		if (!hidDevice) return
 		if (this.updateSub) this.updateSub.unsubscribe();
 		this.updateSub = hidDevice.update$
 			.pipe(filter(v => v.type === 'base'))
 			.subscribe(v => {
+				console.log(v);
+				
 				const {state, percent,} = v.data.power
 				if (state === 3) this.power = percent
 				this.powerState = state;

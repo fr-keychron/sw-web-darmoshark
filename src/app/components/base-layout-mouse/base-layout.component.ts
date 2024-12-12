@@ -93,26 +93,19 @@ export class BaseLayoutMouseComponent implements OnInit {
 
 	private hidDeviceInit() {
 		const hidDevice = this.service.getCurrentHidDevice() as MouseDevice
-		if (!hidDevice) return
-		if (this.updateSub) this.updateSub.unsubscribe();
-		this.updateSub = hidDevice.update$
-			.pipe(filter(v => v.type === 'base'))
-			.subscribe(v => {
-				const {state, percent,} = v.data.power
-				if (state === 3) this.power = percent
-				this.powerState = state;
-				this.workMode = v.data.workMode
-			})
+		if (!hidDevice) return 
 		const getHidConf = (h: MouseDevice) => {
 			this.currentHidDevice = h;
 			this.currentHidDeviceId = h.id;
 			this.jsonConf = h.json;
 			this.powerState = h.baseInfo.power.state
 			this.power = h.baseInfo.power.value
-			this.workMode = h.baseInfo.workMode
+			this.workMode = h.workMode
 			this.profile = h.baseInfo.profile
 			this.load(this.profile)
 			this.getInfo()
+			console.log(this.workMode);
+			
 		}
 		if (hidDevice.loaded) {
 			getHidConf(hidDevice)

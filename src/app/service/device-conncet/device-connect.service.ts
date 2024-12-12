@@ -260,9 +260,7 @@ export class DeviceConnectService {
 						statusBuf[63] =  0xA1 - (statusBuf[0] + statusBuf[2] + statusBuf[3])
 						const sub = fromEvent(hid, 'inputreport')
 						.pipe(
-							map((r: any) => { console.log(r);
-							
-							 return	new Uint8Array(r.data.buffer)}),
+							map((r: any) => new Uint8Array(r.data.buffer)),
 							filter((r: Uint8Array) => r[0]===0x01)
 						)
 						.subscribe((v: any) => {
@@ -275,8 +273,6 @@ export class DeviceConnectService {
 							this.merchandise.info({ variable: {id: vpId} })
 								.subscribe(({data}: any) => {
 									const mouseData = {...data, workMode: 1}
-									console.log(colls);
-									
 									if (mouseData.category.type === 1){
 										this.createByMouse(colls, mouseData, vpId)
 										s.next()

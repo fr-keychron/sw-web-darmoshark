@@ -201,8 +201,6 @@ export class HidCollection implements IHidCollection {
 	public createMouse(hid: any, { product, json }: IMouseOptions = {}): Observable<this> {
 		return new Observable<this>(s => {
 			let hidDevice: MouseDevice
-			
-			
 			const getDevice = ({version, workMode}: any) => {
 				const v = { version, workMode }
 				console.log(v);
@@ -246,8 +244,6 @@ export class HidCollection implements IHidCollection {
 				}
 				
 				hidDevice.productInfo = {raw: product}
-				console.log(hidDevice);
-				
 				hidDevice?.open().subscribe({
 					next: () => {
 						this.currentHidDevice = hidDevice
