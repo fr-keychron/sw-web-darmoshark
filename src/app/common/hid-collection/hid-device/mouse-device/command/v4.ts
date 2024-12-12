@@ -31,8 +31,8 @@ export class MouseDeviceV4 {
     }
 
 	public setbuf0(buf: Uint8Array): void {
-		if(this.mouse.workMode === 2) {
-			buf[0] |= (this.mouse.workMode << 5);
+		if(this.mouse.workMode === 1) {
+			buf[0] |= (this.mouse.workMode << 6);
 		}
     }
 
@@ -40,8 +40,8 @@ export class MouseDeviceV4 {
 		return new Observable<any>((s) => {
 			const init = async () => {			
 				await firstValueFrom(this.getBaseInfo());
-				
 				const protocol = await firstValueFrom(this.getProtocolVersion());
+				
 				if (protocol.workMode === 1) {
 					this.mouse.setTransceiver(new SerialTransceiver(this.mouse.hidRaw))
 					const receiver = await firstValueFrom(this.getReceiverState());
@@ -66,6 +66,7 @@ export class MouseDeviceV4 {
 				});
 				s.next();
 			};
+			
 			if (this.mouse.hidRaw.opened) {
 				if (this.mouse.loaded) {
 					s.next();
@@ -255,7 +256,7 @@ export class MouseDeviceV4 {
 		return new Observable<IBaseInfo>((s) => {
 			const buf = MouseDevice.Buffer(64);
 			buf[0] = 0x04
-			buf[2] = 0x820|2
+			buf[2] = 0x80 | 1
 			buf[3] = 0x01
 			const sub = this.mouse.report$
 				.pipe(
@@ -389,14 +390,14 @@ export class MouseDeviceV4 {
 				return
 			}
 			const buf = MouseDevice.Buffer(64)
-			buf[0] = 3
+			buf[0] = 0x03
 			buf[2] = 0x80 | (buffer.length +1)
-			buf[3] = 4
+			buf[3] = 0x04
 			buf[4] = mouseKey
 			buffer.forEach((n: number, i: number) => (buf[i + 5] = n & 0xff))
 			const subj = this.mouse.report$
 				.pipe(filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 0x04))
-				.subscribe(() => {
+				.subscribe((v) => {
 					this.saveData().subscribe((r) => {
 						s.next(r)
 						subj.unsubscribe()
@@ -404,7 +405,7 @@ export class MouseDeviceV4 {
 				})
 			this.setbuf0(buf)
 			this.setbuf63(buf)
-			this.mouse.write(0, buf).subscribe(() => s.next())
+			this.mouse.write(0, buf).subscribe()
 		});
 	}
 
@@ -519,7 +520,7 @@ export class MouseDeviceV4 {
 						s.next(r)
 					})
 				})
-			this.mouse.write(0, buf).subscribe(() => s.next())
+			this.mouse.write(0, buf).subscribe()
 		});
 	}
 	public setDpi(data: {
@@ -597,7 +598,7 @@ export class MouseDeviceV4 {
 						s.next(r)
 					})
 				})
-			this.mouse.write(0, buf).subscribe(() => s.next())
+			this.mouse.write(0, buf).subscribe()
 		});
 	}
 
@@ -643,7 +644,7 @@ export class MouseDeviceV4 {
 						s.next(r)
 					})
 				})
-			this.mouse.write(0, buf).subscribe(() => s.next())
+			this.mouse.write(0, buf).subscribe()
 		});
 	}
 	
@@ -660,7 +661,7 @@ export class MouseDeviceV4 {
 			buf[8] = v & 0xFF
 			this.setbuf0(buf)
 			this.setbuf63(buf)
-			this.mouse.write(0, buf).subscribe(() => s.next())
+			this.mouse.write(0, buf).subscribe()
 		});
 	}
 	public recovery(opt: {profile?:number, tagVal?: any, value?:number}) {
@@ -701,7 +702,7 @@ export class MouseDeviceV4 {
 						s.next(r)
 					})
 				})
-			this.mouse.write(0, buf).subscribe(() => s.next())
+			this.mouse.write(0, buf).subscribe()
 		});
 	}
 

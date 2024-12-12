@@ -201,8 +201,12 @@ export class HidCollection implements IHidCollection {
 	public createMouse(hid: any, { product, json }: IMouseOptions = {}): Observable<this> {
 		return new Observable<this>(s => {
 			let hidDevice: MouseDevice
+			
+			
 			const getDevice = ({version, workMode}: any) => {
 				const v = { version, workMode }
+				console.log(v);
+				
 				Object.keys(EMouseBtnActionKey).forEach(key => {
 					const enumKey = key as keyof typeof EMouseBtnActionKey;
 					setEMouseBtnAction(enumKey, EMouseBtnActionKey[enumKey]);
@@ -242,10 +246,14 @@ export class HidCollection implements IHidCollection {
 				}
 				
 				hidDevice.productInfo = {raw: product}
+				console.log(hidDevice);
+				
 				hidDevice?.open().subscribe({
 					next: () => {
 						this.currentHidDevice = hidDevice
 						this.collection.mouse.push(hidDevice)
+						console.log(this.currentHidDevice);
+						
 						this.event$.next({type: EEventEnum.CONNECT, data: this})
 						s.next(this)
 					},
@@ -259,32 +267,7 @@ export class HidCollection implements IHidCollection {
 				})
 			} 
 			if(product?.contract === 4){
-				const report = fromEvent(hid, 'inputreport').subscribe(($event: any) => {
-					const v = new Uint8Array($event.data.buffer)
-					
-					if (v[0] === 1 && v[3] === 0x01) {
-						const version = 4
-						const bits = ByteUtil.oct2Bin(v[4])
-						const workMode = Number(bits[4])
-						getDevice({version, workMode})
-						report.unsubscribe()
-					}
-				})
-	
-				const buf = MouseDevice.Buffer(64)
-				buf[0] = 1;
-				buf[2] = 0x81
-				buf[3] = 1
-				buf[63] =  0xa1 - ( buf[0]  + buf[2] + buf[3])
-				if(product?.contract){
-					getDevice({version: product.contract, workMode: product.workMode || 0})
-				} else if (hid.opened) {
-					hid.sendReport(0, buf)
-				} else {
-					hid.open().then(() => {
-						hid.sendReport(0, buf)
-					})
-				}
+				getDevice({version: product.contract, workMode: product.workMode || 0})
 			} else{
 				const report = fromEvent(hid, 'inputreport').subscribe(($event: any) => {
 					const v = new Uint8Array($event.data.buffer)

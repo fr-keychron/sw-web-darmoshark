@@ -139,6 +139,8 @@ export class DeviceConnectService {
 	}
 	// 鼠标
 	private createByMouse(colls: any, product: any, id?: number){
+		console.log(colls);
+		
 		const usageId = (n1: number, n2: number) => n1 << 16 | n2;
 		let mHid: any
 		if (colls.length === 1) {
@@ -171,6 +173,8 @@ export class DeviceConnectService {
 					} else{
 						product.contract = "M"
 					}
+					console.log(mHid);
+					
 					this.device.createMouse(mHid, { product: JSON.parse(JSON.stringify(product)), json }).subscribe()
 				}, error: () => {
 					this.msg.error(this.i18n.instant('notify.hidConfNotFound'))
@@ -243,6 +247,46 @@ export class DeviceConnectService {
 						})
 
 						hid.sendReport(0xb5, statusBuf)
+					})
+				}
+			} else if (usagePage === 0xff0a && usage === 0x01) {
+				run[1]={
+					hid,
+					cb: new Observable((s) => {
+						let statusBuf = MouseDevice.Buffer(64)
+						statusBuf[0] = 0x01;
+						statusBuf[2] = 0x81
+						statusBuf[3] = 0x01
+						statusBuf[63] =  0xA1 - (statusBuf[0] + statusBuf[2] + statusBuf[3])
+						const sub = fromEvent(hid, 'inputreport')
+						.pipe(
+							map((r: any) => { console.log(r);
+							
+							 return	new Uint8Array(r.data.buffer)}),
+							filter((r: Uint8Array) => r[0]===0x01)
+						)
+						.subscribe((v: any) => {
+							const vid = `0x${ByteUtil.oct2Hex(v[6], 2, "")}${ByteUtil.oct2Hex(v[5], 2, "")}`;
+							// const pid = `0x${ByteUtil.oct2Hex(v[12], 2, "")}${ByteUtil.oct2Hex(v[11], 2, "")}`;
+							const pid = '0x073a'
+							console.log(vid, pid);
+							
+							const vpId = BridgeDevice.vendorProductId(ByteUtil.hex2Oct(vid), ByteUtil.hex2Oct(pid));
+							this.merchandise.info({ variable: {id: vpId} })
+								.subscribe(({data}: any) => {
+									const mouseData = {...data, workMode: 1}
+									console.log(colls);
+									
+									if (mouseData.category.type === 1){
+										this.createByMouse(colls, mouseData, vpId)
+										s.next()
+									} else {
+										s.next(2)
+									}
+								})
+							sub.unsubscribe()
+						})
+						hid.sendReport(0, statusBuf)
 					})
 				}
 			} else {
@@ -322,6 +366,9 @@ export class DeviceConnectService {
 						if(type === 2 && [usageId(0x61, 0xff60), usageId(0x01, 0xffc1)].includes(usageId(usage, usagePage))){
 							colls.push({hid, usage, usagePage})
 						}
+						if(type === 2 && usageId(0x01, 0xff0a) === usageId(usage, usagePage)){
+							colls.push({hid, usage, usagePage})
+						}
 					})
 				})
 				const create = [
@@ -331,6 +378,7 @@ export class DeviceConnectService {
 				][type]
 
 				const bridge = colls.find(({usage, usagePage}: any) => usageId(0x01, 0x8c) === usageId(usage, usagePage))
+				
 				if(bridge){
 					this.device.createBridgeDevice(bridge.hid).subscribe(() => {
 						create(colls, JSON.parse(JSON.stringify(data)), id)

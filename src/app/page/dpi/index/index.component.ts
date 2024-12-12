@@ -195,11 +195,23 @@ export class IndexComponent implements OnInit {
 	public setDpi() {
 		if (this.loading.dpi) return;
 		this.loading.dpi = true;
-		this.dpiValues.forEach((value, index) => {
-			this.oldLevelVal[index] = value;
-		});
 		this.currentHidDevice.setDpi({
 			current: this.dpiLevel,
+			level: this.dpiValue,
+			gears: this.dpiGears,
+			values: this.dpiValues,
+		}).subscribe(() => {
+			this.loading.dpi = false;
+			this.msgService.success(this.i18n.instant('notify.success'));
+			this.init()
+		})
+	}
+	
+	public levelCount() {
+		if (this.loading.dpi) return;
+		this.loading.dpi = true;
+		this.currentHidDevice.setDpi({
+			current: 0,
 			level: this.dpiValue,
 			gears: this.dpiGears,
 			values: this.oldLevelVal,
@@ -209,7 +221,6 @@ export class IndexComponent implements OnInit {
 			this.init()
 		})
 	}
-	
 
 	// 设置回报率
 	public setReportRate(i: number) {
