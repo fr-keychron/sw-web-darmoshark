@@ -16,7 +16,10 @@ export class LayoutComponent implements OnInit {
 	) { 
 		this.global.loading.subscribe(v => this.globalLoading = v)
 	}
-
+	public icp = {
+		no: "粤ICP备2024348347号-1",
+		copyRight: "Copyright © 2024.MySite Ltd.All Rights Reserved. "
+	}
 	public layoutConf: { leftHide: boolean } = {
 		leftHide: false
 	}
@@ -29,5 +32,8 @@ export class LayoutComponent implements OnInit {
 		});
 	}
 
+	public icpOpen() {
+		window.location.href = 'https://beian.miit.gov.cn/#/Integrated/index'
+	}
 	public globalLoading = false
 }

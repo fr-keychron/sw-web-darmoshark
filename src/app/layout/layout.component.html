@@ -8,6 +8,10 @@
 			<div class="layout-right-body" [@fadeAnimation]="outlet.isActivated ? outlet.activatedRoute : ''">
 				<router-outlet #outlet="outlet"></router-outlet>
 			</div>
+			<div class="icp" >
+				<span>{{icp.copyRight}} </span>
+				<span (click)="icpOpen()">{{ icp.no }}</span>
+			</div>
 		</div>
 	</div>
 </div>

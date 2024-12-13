@@ -99,3 +99,14 @@
     background: rgba(0, 0, 0, 0.5);
     z-index: 9;
 }
+.icp {
+    color: $global-light-gray;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+    text-align: center;
+    width: 100%;
+
+    & > span:nth-of-type(2) {
+        cursor: pointer;
+    }
+}
