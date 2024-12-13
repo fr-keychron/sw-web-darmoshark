@@ -149,7 +149,7 @@ export class IndexComponent implements OnInit {
 	}
 	
 	public resetKey() {
-		this.device.recovery({tagVal: 1, profile: this.device.profile}).subscribe(() => {
+		this.device.recovery({tagVal: 2, value: 255}).subscribe(() => {
 			this.device.getBaseInfo().subscribe(() => {
 				this.msg.success(this.i18n.instant('notify.success'))
 				this.init()

@@ -34,7 +34,8 @@
                             (click)="changeLevel(i)"
                             [ngClass]="{'active-bgcolor': dpiLevel === i}"
                         >
-                            {{dpiLevel !== i ? dpi : dpiValues[i]}}
+                            X:{{ dpi[0] }} <br>
+                            Y:{{ dpi[1] }} <br> 
                         </span> 
                     </div>
                 </div>
@@ -56,7 +57,28 @@
                     </div>
                     <div class="scale-content g-flex g-item-center g-justify-between">
                         <span>{{minDpi}}</span>
-                        <g-slider [(ngModel)]="dpiValue" [min]="minDpi" [max]="maxDpi" [step]="50"></g-slider>
+                        <g-slider 
+                            [(ngModel)]="dpiValues[this.dpiLevel][0]" 
+                            [min]="minDpi" 
+                            [max]="maxDpi" 
+                            [step]="50" 
+                            [isRealTimeUpdate]="true"
+                            [tip]="'X: ' + dpiValues[dpiLevel][0]"
+                        >
+                        </g-slider>
+                        <span>{{maxDpi}}</span>
+                    </div>
+                    <div class="scale-content g-flex g-item-center g-justify-between">
+                        <span>{{minDpi}}</span>
+                        <g-slider 
+                            [(ngModel)]="dpiValues[this.dpiLevel][1]" 
+                            [min]="minDpi" 
+                            [max]="maxDpi" 
+                            [step]="50" 
+                            [isRealTimeUpdate]="true"
+                            [tip]="'Y: ' + dpiValues[dpiLevel][1]"
+                        >
+                        </g-slider>
                         <span>{{maxDpi}}</span>
                     </div>
                     <div class="submit-btn" (click)="setDpi()">

@@ -91,8 +91,6 @@ export class DeviceConnectService {
 					usagePage: 0xff0a,
 				}]
 			}).then((r: any) => {
-				console.log(r);
-				
 				if (!r.length) {
 					s.error(this.i18n.instant('notify.emptyHid'))
 					return
@@ -139,8 +137,6 @@ export class DeviceConnectService {
 	}
 	// 鼠标
 	private createByMouse(colls: any, product: any, id?: number){
-		console.log(colls);
-		
 		const usageId = (n1: number, n2: number) => n1 << 16 | n2;
 		let mHid: any
 		if (colls.length === 1) {
@@ -173,8 +169,6 @@ export class DeviceConnectService {
 					} else{
 						product.contract = "M"
 					}
-					console.log(mHid);
-					
 					this.device.createMouse(mHid, { product: JSON.parse(JSON.stringify(product)), json }).subscribe()
 				}, error: () => {
 					this.msg.error(this.i18n.instant('notify.hidConfNotFound'))
@@ -267,8 +261,6 @@ export class DeviceConnectService {
 							const vid = `0x${ByteUtil.oct2Hex(v[6], 2, "")}${ByteUtil.oct2Hex(v[5], 2, "")}`;
 							// const pid = `0x${ByteUtil.oct2Hex(v[12], 2, "")}${ByteUtil.oct2Hex(v[11], 2, "")}`;
 							const pid = '0x073a'
-							console.log(vid, pid);
-							
 							const vpId = BridgeDevice.vendorProductId(ByteUtil.hex2Oct(vid), ByteUtil.hex2Oct(pid));
 							this.merchandise.info({ variable: {id: vpId} })
 								.subscribe(({data}: any) => {
@@ -341,8 +333,6 @@ export class DeviceConnectService {
 				hids.forEach((hid: any) => {
 					const { collections } = hid;
 					collections.forEach(({usage, usagePage}: any) => {
-						console.log(usage, usagePage);
-						
 						if(usageId(0x01, 0x8c) === usageId(usage, usagePage)) {
 							colls.push({hid, usage, usagePage})
 						}

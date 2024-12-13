@@ -127,8 +127,8 @@ export class MouseDevice extends Mouse {
 	setDpi(data: {
 		current: number,
 		level: number,
-		gears: number,
-		values: number[],
+		gears?: number,
+		values: number[] | number[][],
 	}): Observable<any> {
 		return this.commands.setDpi(data)
 	}

@@ -5,8 +5,14 @@
             class="slider-handle"
             [style.left.%]="progress"
             (mousedown)="onMouseDown($event)"
+            (mouseenter)="hovering = true"
+            (mouseleave)="hovering = false"
             (touchstart)="onTrackClick($event)"
         ></div>
+        <div  *ngIf="(tip && hovering) || dragging"  class="tooltip" [style.left.%]="progress">
+            {{ tip }}
+            <div class="tooltip-arrow"></div>
+        </div>
     </div>
 </div>
 <div class="slider-container" (click)="onTrackClick($event)" *ngIf="type === 'Thumb'">

@@ -17,11 +17,14 @@ export class SliderComponent implements ControlValueAccessor {
   @Input() min = 0;
   @Input() max = 1000;
   @Input() step = 50;
-  @Input() type = 'Track';
-  progress = 0;
+  @Input() type = 'Track'; //进度条类型
+  @Input() isRealTimeUpdate = false;  // 控制是否实时更新值
+  @Input() tip = '';
+
+  public progress = 0;
   private innerValue = this.min;
   private dragging = false;
-
+  private hovering  = false;
   get value(): number {
     return this.innerValue;
   }
@@ -57,7 +60,7 @@ export class SliderComponent implements ControlValueAccessor {
   }
 
   onTrackClick(event: MouseEvent): void {
-    // 只有点击时更新值，不再拖动中实时更新
+    // 点击时根据 isRealTimeUpdate 控制是否更新值
     this.updateValueFromEvent(event.clientX);
   }
 
@@ -69,19 +72,23 @@ export class SliderComponent implements ControlValueAccessor {
       this.onTouched();
       if (event) {
         const clientX = event instanceof MouseEvent ? event.clientX : (event.touches[0] && event.touches[0].clientX);
-        this.updateValueFromEvent(clientX);
+        this.updateValueFromEvent(clientX); // 停止拖动时更新值
       }
     }
   }
-  
 
   @HostListener('window:mousemove', ['$event'])
   @HostListener('window:touchmove', ['$event'])
   onDrag(event: MouseEvent | TouchEvent): void {
     if (this.dragging) {
-      // 在拖动过程中只更新进度条，不更新值
-      const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
-      this.updateProgressFromEvent(clientX); // 仅更新进度条
+      // 根据 isRealTimeUpdate 判断是否实时更新值
+      if (this.isRealTimeUpdate) {
+        const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+        this.updateValueFromEvent(clientX);  // 拖动时实时更新值
+      } else {
+        const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
+        this.updateProgressFromEvent(clientX);  // 仅更新进度条
+      }
     }
   }
 
@@ -114,9 +121,7 @@ export class SliderComponent implements ControlValueAccessor {
     if (this.progress > 100) {
       this.progress = 100;
     } else if (this.progress < 0) {
-        this.progress = 0;
+      this.progress = 0;
     }
   }
 }
-
-

@@ -203,8 +203,6 @@ export class HidCollection implements IHidCollection {
 			let hidDevice: MouseDevice
 			const getDevice = ({version, workMode}: any) => {
 				const v = { version, workMode }
-				console.log(v);
-				
 				Object.keys(EMouseBtnActionKey).forEach(key => {
 					const enumKey = key as keyof typeof EMouseBtnActionKey;
 					setEMouseBtnAction(enumKey, EMouseBtnActionKey[enumKey]);
@@ -231,7 +229,7 @@ export class HidCollection implements IHidCollection {
 						json,
 						hid,
 						i18n: this.i18n,
-						http: this.http
+						http: this.http,
 					})
 				} else {
 					hidDevice = new MouseDevice({
@@ -248,8 +246,6 @@ export class HidCollection implements IHidCollection {
 					next: () => {
 						this.currentHidDevice = hidDevice
 						this.collection.mouse.push(hidDevice)
-						console.log(this.currentHidDevice);
-						
 						this.event$.next({type: EEventEnum.CONNECT, data: this})
 						s.next(this)
 					},

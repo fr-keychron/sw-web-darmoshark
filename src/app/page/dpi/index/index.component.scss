@@ -28,7 +28,7 @@
                 }
                 & > .item-left {
                     width: 1.333rem;
-                    height: 1.333rem;
+                    height: 2.666rem;
                     border-radius: 5px;
                     margin-right: .2rem;
                     cursor: pointer;
@@ -37,13 +37,14 @@
 
                 & > .item-right {
                     width: 5.4rem;
-                    height: 1.333rem;
+                    height: 2.666rem;
                     line-height: 1.15rem;
                     border-radius: 5px;
                     padding-left: .8rem;
                     border: 1px solid $global-border-gray;
                     cursor: pointer;
                     display: flex;
+                    align-items: center;
                     z-index: 2;
                     &:hover {
                         border: 1px solid $global-border-blue;

@@ -23,23 +23,15 @@ export class IndexComponent implements OnInit {
 	public jsonConf: IMouseJson;
 	public hidDevices: Array<MouseDevice> = [];
 	public currentHidDevice?: MouseDevice;
-	public dpiValues: number[]= []
+	public  dpiValues: number[][] = [[0, 0]]
 	public oldLevelVal: number[]= []
 	public dpiGears:number = 5
 	public dpiColors = ['#ff3643', '#003cb8', '#00f78c', '#8726f1', '#fe7f3e', '#e218ff']
 	public currentProfile = 0
 	public scaleArr = Array(10);
 	public dpiLevel = 0 // 当前DPI层级
-	public _dpiValue = 0// 当前DPI值
-	set dpiValue(v) {
-		this._dpiValue = v
-		this.changeScale()
-	}
-
-	get dpiValue() {
-		return this._dpiValue
-	}
-
+	public dpiValueX = 0 // 当前DPI值X
+	public dpiValueY = 0 // 当前DPI值Y
 	public minDpi = 100 // 刻度尺最小DPI
 	public maxDpi = 30000 // 刻度尺最大DPI
 	public reportRateVal = 0; // 当前回报率
@@ -109,13 +101,28 @@ export class IndexComponent implements OnInit {
 			
 			const drValue = [usb, rf, bt]
 			const value = drValue[workMode]
+			console.log(h);
+			
 			this.jsonConf = json; // 鼠标json信息（鼠标名、键位标识。。）
 			this.reportRateVal = value?.reportRate;
 			this.dpiLevel = value.dpi;
-			this.dpiValue = dpiConf.levelVal[value.dpi];
+			if (Array.isArray(dpiConf.levelVal) && dpiConf.levelVal.length > 0 && Array.isArray(dpiConf.levelVal[0])) {
+				console.log(dpiConf.levelVal[0][0]);
+			} else {
+				console.log('Invalid dpiConf.levelVal structure');
+			}
+			
+			this.dpiValueX = dpiConf.levelVal[value.dpi];
+			this.dpiValueY = dpiConf.levelVal[value.dpi + 1];
 			this.currentProfile = profile;
 			this.oldLevelVal = JSON.parse(JSON.stringify(json.dpi.level));
-			this.dpiValues = dpiConf.levelVal.slice(0, gears)
+			const convertedLevelVal = dpiConf.levelVal.reduce((acc, value, index, array) => {
+				if (index % 2 === 0) {
+				  acc.push([array[index], array[index + 1]]);
+				}
+				return acc;
+			  }, []);
+			this.dpiValues = convertedLevelVal.slice(0, gears)
 			
 			this.dpiGears = gears || json.dpi.level.length
 			if (json?.dpi) {
@@ -167,23 +174,23 @@ export class IndexComponent implements OnInit {
 		this.dpiValues[this.dpiLevel] = this.dpiValue
 	} 
 
-	public handleDpiValue(type: string, val: number) {
-		let dpiValue = this.dpiValue
-		if (type === 'add') {
-			dpiValue += 50
-		} else if (type === 'sub') {
-			dpiValue -= 50
-		} else {
-			dpiValue = val
-		}
-		if (dpiValue >= this.maxDpi) {
-			this.dpiValue = this.maxDpi
-		} else if (dpiValue <= this.minDpi) {
-			this.dpiValue = this.minDpi
-		} else {
-			this.dpiValue = dpiValue
-		}
-	}
+	// public handleDpiValue(type: string, val: number) {
+	// 	let dpiValue = this.dpiValue
+	// 	if (type === 'add') {
+	// 		dpiValue += 50
+	// 	} else if (type === 'sub') {
+	// 		dpiValue -= 50
+	// 	} else {
+	// 		dpiValue = val
+	// 	}
+	// 	if (dpiValue >= this.maxDpi) {
+	// 		this.dpiValue = this.maxDpi
+	// 	} else if (dpiValue <= this.minDpi) {
+	// 		this.dpiValue = this.minDpi
+	// 	} else {
+	// 		this.dpiValue = dpiValue
+	// 	}
+	// }
 
 	// 提交
 	public loading = {
@@ -197,7 +204,7 @@ export class IndexComponent implements OnInit {
 		this.loading.dpi = true;
 		this.currentHidDevice.setDpi({
 			current: this.dpiLevel,
-			level: this.dpiValue,
+			level: null,
 			gears: this.dpiGears,
 			values: this.dpiValues,
 		}).subscribe(() => {
@@ -212,7 +219,7 @@ export class IndexComponent implements OnInit {
 		this.loading.dpi = true;
 		this.currentHidDevice.setDpi({
 			current: 0,
-			level: this.dpiValue,
+			level: null,
 			gears: this.dpiGears,
 			values: this.oldLevelVal,
 		}).subscribe(() => {
@@ -241,8 +248,10 @@ export class IndexComponent implements OnInit {
 	public reset() {
 		const device = this.service.getCurrentHidDevice() as MouseDevice
 		device.recovery({profile: this.currentProfile, tagVal: 0x22}).subscribe(() => {
-			this.init()
-			this.msgService.success(this.i18n.instant('notify.success'))
+			device.getBaseInfo().subscribe(() => {
+				this.init()
+				this.msgService.success(this.i18n.instant('notify.success'))
+			})
 		})
 	}
 }
