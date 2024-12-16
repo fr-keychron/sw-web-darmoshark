@@ -19,6 +19,7 @@ export class SliderComponent implements ControlValueAccessor {
   @Input() step = 50;
   @Input() type: 'Track' | 'Thumb' = 'Track'; // 类型：Track 或 Thumb
   @Input() isRealTimeUpdate = false; // 是否实时更新
+  @Input() tip = '';
 
   @ViewChild('sliderTrack', { static: false }) sliderTrack!: ElementRef<HTMLElement>;
 

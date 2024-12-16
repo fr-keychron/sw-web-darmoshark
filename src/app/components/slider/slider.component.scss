@@ -34,10 +34,10 @@
         }
         & > .tooltip {
             position: absolute;
-            top: -3rem; /* 调整 tooltip 的垂直位置 */
+            top: -3rem;
             left: 50%;
             transform: translateX(-50%);
-            border: 1px solid $global-border-gray;
+            border: 1px solid $global-border-blue;
             color: #fff;
             padding: 5px 10px;
             border-radius: 5px;
@@ -52,8 +52,8 @@
                 width: 10px;
                 height: 10px;
                 background-color: $global-bg-gray; 
-                border-bottom: 1px solid $global-border-gray;
-                border-right: 1px solid $global-border-gray;
+                border-bottom: 1px solid $global-border-blue;
+                border-right: 1px solid $global-border-blue;
               }
           }
     }

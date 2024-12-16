@@ -25,18 +25,21 @@
                     (click)="reset()"
                 ></span> 
             </div>
-            <div class="dpi-os">
+            <div class="dpi-os" [ngClass]="{ 'dpixy-os': nxySetting }">
                 <div class="os-left">
                     <div class="os-item" *ngFor="let dpi of dpiValues;let i = index">
                         <div (click)="changeLevel(i)" class="item-left" [ngStyle]="{background: dpiColors[i] || '#fff'}"></div>
-                        <span
+                        <div
                             class="item-right"
                             (click)="changeLevel(i)"
                             [ngClass]="{'active-bgcolor': dpiLevel === i}"
                         >
-                            X:{{ dpi[0] }} <br>
-                            Y:{{ dpi[1] }} <br> 
-                        </span> 
+                            <span *ngIf="!nxySetting"> {{dpi[0]}}</span>
+                            <span *ngIf="nxySetting">
+                                X:{{ dpi[0] }} <br>
+                                Y:{{ dpi[1] }} <br> 
+                            </span>
+                        </div> 
                     </div>
                 </div>
                 <div class="os-right g-flex g-item-end g-flex-col">
@@ -55,26 +58,68 @@
                             <g-option [gValue]="5" gLabel="5"></g-option>
                         </g-select> 
                     </div>
-                    <div class="scale-content g-flex g-item-center g-justify-between">
-                        <span>{{minDpi}}</span>
-                        <g-slider 
-                            [(ngModel)]="dpiValue" 
-                            [min]="minDpi" 
-                            [max]="maxDpi" 
-                            [step]="50" 
-                            [isRealTimeUpdate]="true"
-                        >
-                        </g-slider>
-                        <span>{{maxDpi}}</span>
+                    <div class="scale-content">
+                        <div *ngIf="!nxySetting" class="scale-slider-box">
+                            <span>{{minDpi}}</span>
+                            <g-slider 
+                                [(ngModel)]="dpiValues[this.dpiLevel][0]" 
+                                [min]="minDpi" 
+                                [max]="maxDpi" 
+                                [step]="50" 
+                                [isRealTimeUpdate]="true"
+                                (ngModelChange)="changeScaleX()" 
+                            >
+                            </g-slider>
+                            <span>{{maxDpi}}</span>
+                        </div>
+                        <div *ngIf="nxySetting" class="scale-slider-box">
+                            <span>{{minDpi}}</span>
+                            <g-slider 
+                                class="dpi-slider"
+                                [(ngModel)]="dpiValues[this.dpiLevel][0]" 
+                                [min]="minDpi" 
+                                [max]="maxDpi" 
+                                [step]="50" 
+                                [isRealTimeUpdate]="true"
+                                tip="X:{{dpiValues[this.dpiLevel][0]}}"
+                                (ngModelChange)="changeScaleX()" 
+                            >
+                            </g-slider>
+                            <span>{{maxDpi}}</span>
+                        </div>
+                        <div *ngIf="nxySetting" class="scale-slider-box">
+                            <span>{{minDpi}}</span>
+                            <g-slider 
+                                class="dpi-slider"
+                                [(ngModel)]="dpiValues[this.dpiLevel][1]" 
+                                [min]="minDpi" 
+                                [max]="maxDpi" 
+                                [step]="50" 
+                                [isRealTimeUpdate]="true"
+                                tip="Y:{{dpiValues[this.dpiLevel][1]}}"
+                                (ngModelChange)="changeScaleY()" 
+                            >
+                            </g-slider>
+                            <span>{{maxDpi}}</span>
+                        </div>
                     </div>
-                  
-                    <div class="submit-btn" (click)="setDpi()">
-                        <span>{{'确定' | translate }}</span>
-                    </div>
+                   <div class="scale-bottom">
+                        <div class="checkbox-blue">
+                            <input type="checkbox" [(ngModel)]="nxySetting" />
+                            <label>X-Y Setting</label>
+                        </div>
+                        <div class="checkbox-blue" *ngIf="nxySetting">
+                            <input type="checkbox" [(ngModel)]="nxySync" />
+                            <label>X-Y Sync</label>
+                        </div>
+                        <div class="submit-btn" (click)="setDpi()">
+                            <span>{{'确定' | translate }}</span>
+                        </div>
+                   </div>
             </div>
         </div>
         </div>
-         <div class="dpixy-container">
+         <!-- <div class="dpixy-container">
             <div class="report-title g-flex g-item-center g-justify-start">
                 <span class="icon_square"></span>
                 {{'X-Y Setting' | translate}} 
@@ -115,7 +160,7 @@
                     <label>X-Y Sync</label>
                 </div>
             </div>
-        </div>
+        </div> -->
         <!-- 回报率设置 -->
         <div class="report-container">
             <div class="report-title g-flex g-item-center g-justify-start">

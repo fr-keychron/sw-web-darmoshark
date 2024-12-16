@@ -35,6 +35,7 @@ export class IndexComponent implements OnInit {
   public maxDpi = 30000; // 刻度尺最大DPI
   public reportRateVal = 0; // 当前回报率
   public nxySync = false; // 是否开启XY同步
+  public nxySetting = false; 
   public reportRate = [
     { value: 125, color: '#ff3643' },
     { value: 500, color: '#003cb8' },
@@ -43,16 +44,6 @@ export class IndexComponent implements OnInit {
     { value: 4000, color: '#fe7f3e' },
     { value: 8000, color: '#fff' },
   ];
-
-  public _dpiValue = 0; // 当前DPI值
-  set dpiValue(v) {
-    this._dpiValue = v;
-    this.changeScale();
-  }
-
-  get dpiValue() {
-    return this._dpiValue;
-  }
 
   ngOnInit() {
     this.hidDevices = this.service.getHidDevices();
@@ -126,7 +117,7 @@ export class IndexComponent implements OnInit {
         return acc;
       }, []);
       this.dpiValues = convertedLevelVal.slice(0, gears)
-	  this.dpiValueX = this.dpiValues[value.dpi][0]
+	    this.dpiValueX = this.dpiValues[value.dpi][0]
       this.dpiValueY =  this.dpiValues[value.dpi][1]
 	//   this.dpiValue = this.dpiValues[value.dpi][0]
       this.dpiGears = gears || json.dpi.level.length;
@@ -169,13 +160,7 @@ export class IndexComponent implements OnInit {
 	// 切换dpi层数的回调
 	public changeLevel(level: number) {
 		this.dpiLevel = level;
-		this.dpiValue = this.dpiValues[level][0];
 	}
-
-	// 刻度改变更新当前层dpi数值
-	public changeScale() {
-		this.dpiValues[this.dpiLevel] = [this.dpiValue,this.dpiValue]
-	} 
 
 	public changeScaleX() {
 		if (this.nxySync) {

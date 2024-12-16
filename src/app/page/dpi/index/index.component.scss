@@ -28,16 +28,17 @@
                 }
                 & > .item-left {
                     width: 1.333rem;
-                    height: 2.666rem;
+                    height: 1.333rem;
                     border-radius: 5px;
                     margin-right: .2rem;
                     cursor: pointer;
                     border: 1px solid $global-border-gray;
+                    transition: height 0.3s ease-in-out;
                 }
 
                 & > .item-right {
                     width: 5.4rem;
-                    height: 2.666rem;
+                    height: 1.333rem;
                     line-height: 1.15rem;
                     border-radius: 5px;
                     padding-left: .8rem;
@@ -57,25 +58,67 @@
         .os-right {
             width: 100%;
             & > .scale-content {
-                height: 13rem;
+                height: 6.3rem;
                 margin-right: 2.8rem;
-            }
-            & > .submit-btn {
-                width: 4rem;
-                height: 1.4rem;
-                line-height: 1.3rem;
-                border-radius: .333rem;
-                text-align: center;
-                cursor: pointer;
-                border: 1px solid $global-border-gray;
-                &:hover {
-                    border: 1px solid $global-border-blue;
-                    box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+                display: flex;
+                justify-content: center;
+                flex-direction: column;
+                transition: height 0.3s ease-in-out;
+                & > .scale-slider-box {
+                    height: 6rem;
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
                 }
             }
+            & > .scale-bottom {
+                width: 100%;
+                display: flex;
+                position: relative;
+                & > .submit-btn {
+                    width: 4rem;
+                    height: 1.4rem;
+                    line-height: 1.3rem;
+                    border-radius: .333rem;
+                    text-align: center;
+                    position: absolute;
+                    right: 0;
+                    bottom: 0;
+                    cursor: pointer;
+                    border: 1px solid $global-border-gray;
+                    &:hover {
+                        border: 1px solid $global-border-blue;
+                        box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+                    }
+                }
+                & > .checkbox-blue {
+                    width: auto;
+                    margin-left: 3rem;
+                    & > label {
+                        margin-right: 0;
+                    }
+                }
+            }
+           
             .text-levelCount {
                 line-height: 1.2rem;
                 margin-right: .333rem;
+            }
+        }
+    }
+    & > .dpixy-os {
+        & > .os-left {
+            & > .os-item {
+                & > .item-left,.item-right {
+                    height: 2.666rem;
+                    transition: height 0.3s ease-in-out;
+                }
+            }
+        }
+        .os-right {
+            & > .scale-content {
+                height: 13rem;
+                transition: height 0.3s ease-in-out;
             }
         }
     }

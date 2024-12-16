@@ -7,6 +7,10 @@
             (mousedown)="onMouseDown($event)"
             (touchstart)="onTrackClick($event)"
         ></div>
+        <div  *ngIf="tip"  class="tooltip" [style.left.%]="progress">
+            {{ tip }}
+            <div class="tooltip-arrow"></div>
+        </div>
     </div>
 </div>
 <div class="slider-container" (click)="onTrackClick($event)" *ngIf="type === 'Thumb'">
