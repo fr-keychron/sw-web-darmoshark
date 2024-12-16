@@ -218,7 +218,7 @@ export class HidCollection implements IHidCollection {
 						http: this.http,
 						transceiver: workMode === 1 ? new RecverTransceiver(hid) : new FeatureTransceiver(hid)
 					})
-				} else if (version === 4) {
+				} else if (version === 'dms') {
 					convertMouseBtnMedia()
 					convertMouseBtnActionEnum()
 					convertMouseBtnDpi()
@@ -258,7 +258,7 @@ export class HidCollection implements IHidCollection {
 					}
 				})
 			} 
-			if(product?.contract === 4){
+			if(product?.contract === 'dms'){
 				getDevice({version: product.contract, workMode: product.workMode || 0})
 			} else{
 				const report = fromEvent(hid, 'inputreport').subscribe(($event: any) => {

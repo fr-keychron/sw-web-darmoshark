@@ -29,8 +29,6 @@ export class IndexComponent implements OnInit {
   public currentProfile = 0;
   public scaleArr = Array(10);
   public dpiLevel = 0; // 当前DPI层级
-  public dpiValueX = 0; // 当前DPI值X
-  public dpiValueY = 0; // 当前DPI值Y
   public minDpi = 100; // 刻度尺最小DPI
   public maxDpi = 30000; // 刻度尺最大DPI
   public reportRateVal = 0; // 当前回报率
@@ -98,15 +96,11 @@ export class IndexComponent implements OnInit {
         usb, rf, bt,
         profile
       }} = h;
-      console.log(h);
-	  
       const drValue = [usb, rf, bt];
       const value = drValue[workMode];
       this.jsonConf = json; // 鼠标json信息（鼠标名、键位标识。。）
       this.reportRateVal = value?.reportRate;
       this.dpiLevel = value.dpi;
-     
-	  
       this.currentProfile = profile;
       this.oldLevelVal = JSON.parse(JSON.stringify(json.dpi.level));
       const convertedLevelVal = dpiConf.levelVal.reduce((acc, value, index, array) => {
@@ -116,9 +110,6 @@ export class IndexComponent implements OnInit {
         return acc;
       }, []);
       this.dpiValues = convertedLevelVal.slice(0, gears)
-	    this.dpiValueX = this.dpiValues[value.dpi][0]
-      this.dpiValueY =  this.dpiValues[value.dpi][1]
-	//   this.dpiValue = this.dpiValues[value.dpi][0]
       this.dpiGears = gears || json.dpi.level.length;
       if (json?.dpi) {
         const { dpi } = json;
@@ -161,6 +152,9 @@ export class IndexComponent implements OnInit {
 		this.dpiLevel = level;
 	}
 
+	public changeScaleX() {
+		this.dpiValues[this.dpiLevel][1] = this.dpiValues[this.dpiLevel][0]
+	}
 
 	// 提交
 	public loading = {

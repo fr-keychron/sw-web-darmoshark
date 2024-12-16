@@ -11,7 +11,7 @@ import {IBaseInfo, IDpiReport} from "../types";
 import {Result} from "src/app/model";
 import {SerialTransceiver} from "../../../transceiver";
 VersionFactory.inject(
-	(s) => s === 4,
+	(s) => s === "dms",
 	(device: MouseDevice) => new MouseDeviceV4(device)
 );
 
@@ -155,7 +155,7 @@ export class MouseDeviceV4 {
 							value: v[6]
 						}
 						this.power = power 
-						this.mouse.protocolVersion = 4
+						// this.mouse.protocolVersion = 'dms'
 						this.mouse.baseInfo.power = power
 						this.mouse.baseInfo.profile = v[7]
 						return {

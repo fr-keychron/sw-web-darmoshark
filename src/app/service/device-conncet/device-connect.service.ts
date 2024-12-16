@@ -165,7 +165,7 @@ export class DeviceConnectService {
 			this.http.get(host).subscribe({
 				next: (json: any) => {
 					if(usageId(0x01, 0xff0a) === usageId(colls[0].usage, colls[0].usagePage)){
-						product.contract = 4
+						product.contract = "dms"
 					} else{
 						product.contract = "M"
 					}
