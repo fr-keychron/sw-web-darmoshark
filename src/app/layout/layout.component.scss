@@ -73,7 +73,29 @@
             height: 100%;
             width: 100%;
             overflow: hidden;
-    
+            position: relative;
+            & > .layout-right-bg {
+                margin: 1rem 1.5rem;
+                height: calc(100% - 2rem);
+                width: 100px;
+                position: absolute;
+                right: 0;
+                top: 0;
+                background-image: url('/assets/icon/bg-home.png');
+                background-repeat: no-repeat;
+                background-size: auto 100%;
+                background-position: right center;
+            }
+            & > .layout-bottom-bg {
+                height: 70px;
+                width: 280px;
+                position: absolute;
+                left: 6rem;
+                bottom: 1rem;
+                background-image: url('/assets/icon/bg-home.png');
+                background-repeat: no-repeat;
+                background-position: left bottom;
+            }
             & > .layout-right-body {
                 width: 100%;
                 flex: 1;
@@ -102,7 +124,6 @@
 .icp {
     color: $global-light-gray;
     font-size: 0.8rem;
-    margin-bottom: 5px;
     text-align: center;
     width: 100%;
 
