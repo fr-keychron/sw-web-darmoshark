@@ -82,7 +82,6 @@
                                 [step]="50" 
                                 [isRealTimeUpdate]="true"
                                 tip="X:{{dpiValues[this.dpiLevel][0]}}"
-                                (ngModelChange)="changeScaleX()" 
                             >
                             </g-slider>
                             <span>{{maxDpi}}</span>
@@ -97,7 +96,6 @@
                                 [step]="50" 
                                 [isRealTimeUpdate]="true"
                                 tip="Y:{{dpiValues[this.dpiLevel][1]}}"
-                                (ngModelChange)="changeScaleY()" 
                             >
                             </g-slider>
                             <span>{{maxDpi}}</span>
@@ -107,10 +105,6 @@
                         <div class="checkbox-blue">
                             <input type="checkbox" [(ngModel)]="nxySetting" />
                             <label>X-Y Setting</label>
-                        </div>
-                        <div class="checkbox-blue" *ngIf="nxySetting">
-                            <input type="checkbox" [(ngModel)]="nxySync" />
-                            <label>X-Y Sync</label>
                         </div>
                         <div class="submit-btn" (click)="setDpi()">
                             <span>{{'确定' | translate }}</span>

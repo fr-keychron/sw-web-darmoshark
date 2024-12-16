@@ -34,7 +34,6 @@ export class IndexComponent implements OnInit {
   public minDpi = 100; // 刻度尺最小DPI
   public maxDpi = 30000; // 刻度尺最大DPI
   public reportRateVal = 0; // 当前回报率
-  public nxySync = false; // 是否开启XY同步
   public nxySetting = false; 
   public reportRate = [
     { value: 125, color: '#ff3643' },
@@ -162,17 +161,6 @@ export class IndexComponent implements OnInit {
 		this.dpiLevel = level;
 	}
 
-	public changeScaleX() {
-		if (this.nxySync) {
-			this.dpiValues[this.dpiLevel][1] = this.dpiValues[this.dpiLevel][0]
-		}
-	}
-
-	public changeScaleY() {
-		if (this.nxySync) {
-			this.dpiValues[this.dpiLevel][0] = this.dpiValues[this.dpiLevel][1]
-		}
-	}
 
 	// 提交
 	public loading = {
