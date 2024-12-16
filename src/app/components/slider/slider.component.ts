@@ -1,4 +1,4 @@
-import { Component, Input, HostListener, forwardRef } from '@angular/core';
+import { Component, Input, HostListener, forwardRef, ViewChild, ElementRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -9,22 +9,23 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     {
       provide: NG_VALUE_ACCESSOR,
       useExisting: forwardRef(() => SliderComponent),
-      multi: true
-    }
-  ]
+      multi: true,
+    },
+  ],
 })
 export class SliderComponent implements ControlValueAccessor {
   @Input() min = 0;
   @Input() max = 1000;
   @Input() step = 50;
-  @Input() type = 'Track'; //进度条类型
-  @Input() isRealTimeUpdate = false;  // 控制是否实时更新值
-  @Input() tip = '';
+  @Input() type: 'Track' | 'Thumb' = 'Track'; // 类型：Track 或 Thumb
+  @Input() isRealTimeUpdate = false; // 是否实时更新
+
+  @ViewChild('sliderTrack', { static: false }) sliderTrack!: ElementRef<HTMLElement>;
 
   public progress = 0;
   private innerValue = this.min;
   private dragging = false;
-  private hovering  = false;
+
   get value(): number {
     return this.innerValue;
   }
@@ -53,48 +54,39 @@ export class SliderComponent implements ControlValueAccessor {
   onChange = (value: number) => {};
   onTouched = () => {};
 
-  // Mouse events
   onMouseDown(event: MouseEvent): void {
     this.dragging = true;
+    window.addEventListener('mousemove', this.onDrag.bind(this));
+    window.addEventListener('mouseup', this.onStopDrag.bind(this));
     event.preventDefault();
   }
 
-  onTrackClick(event: MouseEvent): void {
-    // 点击时根据 isRealTimeUpdate 控制是否更新值
-    this.updateValueFromEvent(event.clientX);
+  onTrackClick(event: MouseEvent | TouchEvent): void {
+    const clientX = this.getClientX(event);
+    this.updateValueFromEvent(clientX);
   }
 
-  @HostListener('window:mouseup', ['$event'])
-  @HostListener('window:touchend', ['$event'])
-  onStopDrag(event: MouseEvent | TouchEvent): void {
+  onDrag(event: MouseEvent | TouchEvent): void {
     if (this.dragging) {
-      this.dragging = false;
-      this.onTouched();
-      if (event) {
-        const clientX = event instanceof MouseEvent ? event.clientX : (event.touches[0] && event.touches[0].clientX);
-        this.updateValueFromEvent(clientX); // 停止拖动时更新值
+      const clientX = this.getClientX(event);
+      if (this.isRealTimeUpdate) {
+        this.updateValueFromEvent(clientX);
+      } else {
+        this.updateProgressFromEvent(clientX);
       }
     }
   }
 
-  @HostListener('window:mousemove', ['$event'])
-  @HostListener('window:touchmove', ['$event'])
-  onDrag(event: MouseEvent | TouchEvent): void {
+  onStopDrag(): void {
     if (this.dragging) {
-      // 根据 isRealTimeUpdate 判断是否实时更新值
-      if (this.isRealTimeUpdate) {
-        const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
-        this.updateValueFromEvent(clientX);  // 拖动时实时更新值
-      } else {
-        const clientX = event instanceof MouseEvent ? event.clientX : event.touches[0].clientX;
-        this.updateProgressFromEvent(clientX);  // 仅更新进度条
-      }
+      this.dragging = false;
+      window.removeEventListener('mousemove', this.onDrag.bind(this));
+      window.removeEventListener('mouseup', this.onStopDrag.bind(this));
     }
   }
 
   private updateValueFromEvent(clientX: number): void {
-    const trackElement = document.querySelector(this.type === 'Thumb' ? '.slider-track-Thumb' : '.slider-track') as HTMLElement;
-    const rect = trackElement.getBoundingClientRect();
+    const rect = this.getTrackRect();
     const offsetX = clientX - rect.left;
     const totalWidth = rect.width;
 
@@ -102,26 +94,28 @@ export class SliderComponent implements ControlValueAccessor {
     const range = this.max - this.min;
     const rawValue = Math.round((newProgress * range) / this.step) * this.step + this.min;
 
-    this.value = Math.max(this.min, Math.min(this.max, rawValue)); // 更新值
+    this.value = Math.max(this.min, Math.min(this.max, rawValue));
   }
 
   private updateProgressFromEvent(clientX: number): void {
-    const trackElement = document.querySelector(this.type === 'Thumb' ? '.slider-track-Thumb' : '.slider-track') as HTMLElement;
-    const rect = trackElement.getBoundingClientRect();
+    const rect = this.getTrackRect();
     const offsetX = clientX - rect.left;
     const totalWidth = rect.width;
 
     const newProgress = Math.max(0, Math.min(1, offsetX / totalWidth));
-    this.progress = newProgress * 100;  // 更新进度条
+    this.progress = newProgress * 100;
   }
 
   private updateProgress(): void {
     const range = this.max - this.min;
     this.progress = ((this.value - this.min) / range) * 100;
-    if (this.progress > 100) {
-      this.progress = 100;
-    } else if (this.progress < 0) {
-      this.progress = 0;
-    }
+  }
+
+  private getClientX(event: MouseEvent | TouchEvent): number {
+    return event instanceof MouseEvent ? event.clientX : event.touches[0]?.clientX || 0;
+  }
+
+  private getTrackRect(): DOMRect {
+    return this.sliderTrack.nativeElement.getBoundingClientRect();
   }
 }

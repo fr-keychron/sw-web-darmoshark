@@ -58,34 +58,63 @@
                     <div class="scale-content g-flex g-item-center g-justify-between">
                         <span>{{minDpi}}</span>
                         <g-slider 
-                            [(ngModel)]="dpiValues[this.dpiLevel][0]" 
+                            [(ngModel)]="dpiValue" 
                             [min]="minDpi" 
                             [max]="maxDpi" 
                             [step]="50" 
                             [isRealTimeUpdate]="true"
-                            [tip]="'X: ' + dpiValues[dpiLevel][0]"
                         >
                         </g-slider>
                         <span>{{maxDpi}}</span>
                     </div>
-                    <div class="scale-content g-flex g-item-center g-justify-between">
-                        <span>{{minDpi}}</span>
-                        <g-slider 
-                            [(ngModel)]="dpiValues[this.dpiLevel][1]" 
-                            [min]="minDpi" 
-                            [max]="maxDpi" 
-                            [step]="50" 
-                            [isRealTimeUpdate]="true"
-                            [tip]="'Y: ' + dpiValues[dpiLevel][1]"
-                        >
-                        </g-slider>
-                        <span>{{maxDpi}}</span>
-                    </div>
+                  
                     <div class="submit-btn" (click)="setDpi()">
                         <span>{{'确定' | translate }}</span>
                     </div>
             </div>
         </div>
+        </div>
+         <div class="dpixy-container">
+            <div class="report-title g-flex g-item-center g-justify-start">
+                <span class="icon_square"></span>
+                {{'X-Y Setting' | translate}} 
+            </div>
+            <div class="dpixy-os">
+                <div class="dpixy-slider-box g-flex g-item-center ">
+                    <span>X:</span>
+                    <g-slider 
+                        class="dpi-slider"
+                        [(ngModel)]="dpiValues[this.dpiLevel][0]" 
+                        [min]="minDpi" 
+                        [max]="maxDpi" 
+                        [step]="50" 
+                        [isRealTimeUpdate]="true"
+                        (mouseup)="setDpi()"
+                        (ngModelChange)="changeScaleX()" 
+                    >
+                    </g-slider>
+                    <span>{{dpiValues[this.dpiLevel][0]}}</span>
+                </div>
+                <div class="dpixy-slider-box g-flex g-item-center ">
+                    <span>Y:</span>
+                    <g-slider 
+                        class="dpi-slider"  
+                        [(ngModel)]="dpiValues[this.dpiLevel][1]" 
+                        [min]="minDpi" 
+                        [max]="maxDpi" 
+                        [step]="50" 
+                        [isRealTimeUpdate]="true"
+                        (mouseup)="setDpi()"
+                        (ngModelChange)="changeScaleY()" 
+                    >
+                    </g-slider>
+                    <span>{{dpiValues[this.dpiLevel][1]}}</span>
+                </div>
+                <div class="checkbox-blue">
+                    <input type="checkbox" [(ngModel)]="nxySync" />
+                    <label>X-Y Sync</label>
+                </div>
+            </div>
         </div>
         <!-- 回报率设置 -->
         <div class="report-container">

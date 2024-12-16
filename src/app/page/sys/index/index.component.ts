@@ -70,7 +70,7 @@ export class IndexComponent implements OnInit {
 
 	public reset(){
 		const device = this.service.getCurrentHidDevice<MouseDevice>();
-		device.recovery({value: 255})
+		device.recovery({tagVal: 255})
 			.subscribe( () => {
 				const leftLockList = localStorage.getItem('leftLockList')
 				const parsedList = JSON.parse(leftLockList)

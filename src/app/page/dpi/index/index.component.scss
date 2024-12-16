@@ -57,7 +57,7 @@
         .os-right {
             width: 100%;
             & > .scale-content {
-                height: 6.666rem;
+                height: 13rem;
                 margin-right: 2.8rem;
             }
             & > .submit-btn {
@@ -76,6 +76,25 @@
             .text-levelCount {
                 line-height: 1.2rem;
                 margin-right: .333rem;
+            }
+        }
+    }
+}
+.dpixy-container {
+    width: 33rem;
+    margin: .6rem 0 .6rem 1rem;
+    padding: 0 .666rem .333rem .2rem;
+    color: $global-white;
+    background: $global-bg-gray;
+    border: 1px solid $global-border-blue;
+    border-radius: .333rem;
+    & > .dpixy-os {
+        & > .dpixy-slider-box {
+            & > .dpi-slider  {
+                width: 100%;
+            }
+            & > span:last-child {
+                width: 4rem;
             }
         }
     }

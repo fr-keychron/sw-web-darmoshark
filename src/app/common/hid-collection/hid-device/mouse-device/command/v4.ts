@@ -707,7 +707,7 @@ export class MouseDeviceV4 {
 			buf[3] = opt.tagVal & 0xff
 			buf[4] = (opt.value || opt.profile) & 0xff
 			const subj = this.mouse.report$
-				.pipe(filter(v => (v[0] === 0x09 || v[0] === 0x49) && v[3] === opt.tagVal && v[4] == (opt.value || opt.profile)), take(1))
+				.pipe(filter(v => (v[0] === 0x09 || v[0] === 0x49) && v[3] === opt.tagVal && ((opt.value || opt.profile) ? v[4] === (opt.value || opt.profile) : v[4] === 0)), take(1))
 				.subscribe((v) => {
 					this.saveData().subscribe((r) => {
 						subj.unsubscribe()
