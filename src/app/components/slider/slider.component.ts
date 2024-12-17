@@ -20,6 +20,7 @@ export class SliderComponent implements ControlValueAccessor {
   @Input() type: 'Track' | 'Thumb' = 'Track'; // 类型：Track 或 Thumb
   @Input() isRealTimeUpdate = false; // 是否实时更新
   @Input() tip = '';
+  @Input() btn = false;
 
   @ViewChild('sliderTrack', { static: false }) sliderTrack!: ElementRef<HTMLElement>;
 
@@ -33,9 +34,15 @@ export class SliderComponent implements ControlValueAccessor {
 
   set value(val: number) {
     if (val !== this.innerValue) {
-      this.innerValue = val;
+      if (val < this.min) {
+        this.innerValue = this.min;
+      } else if (val > this.max) {
+        this.innerValue = this.max;
+      } else {
+        this.innerValue = val;
+      }
       this.updateProgress();
-      this.onChange(val);
+      this.onChange(this.innerValue);
     }
   }
 
@@ -119,4 +126,12 @@ export class SliderComponent implements ControlValueAccessor {
   private getTrackRect(): DOMRect {
     return this.sliderTrack.nativeElement.getBoundingClientRect();
   }
+  public increaseValue(): void {
+    this.value = Math.min(this.value + this.step, this.max);
+  }
+  
+  public decreaseValue(): void {
+    this.value = Math.max(this.value - this.step, this.min);
+  }
+  
 }

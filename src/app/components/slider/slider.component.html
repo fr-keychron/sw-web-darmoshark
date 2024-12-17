@@ -1,26 +1,37 @@
-<div class="slider-container" (click)="onTrackClick($event)" *ngIf="type === 'Track'">
-    <div #sliderTrack class="slider-track">
+<div class="slider-wrapper">
+    <!-- 左侧按钮 -->
+    <button *ngIf="btn" class="slider-btn" (click)="decreaseValue()">-</button>
+  
+    <!-- 滑块内容 -->
+    <div class="slider-container" (click)="onTrackClick($event)" *ngIf="type === 'Track'">
+      <div #sliderTrack class="slider-track">
         <div class="slider-progress" [style.width.%]="progress"></div>
         <div
-            class="slider-handle"
-            [style.left.%]="progress"
-            (mousedown)="onMouseDown($event)"
-            (touchstart)="onTrackClick($event)"
+          class="slider-handle"
+          [style.left.%]="progress"
+          (mousedown)="onMouseDown($event)"
+          (touchstart)="onTrackClick($event)"
         ></div>
-        <div  *ngIf="tip"  class="tooltip" [style.left.%]="progress">
-            {{ tip }}
-            <div class="tooltip-arrow"></div>
+        <div *ngIf="tip" class="tooltip" [style.left.%]="progress">
+          {{ tip }}
+          <div class="tooltip-arrow"></div>
         </div>
+      </div>
     </div>
-</div>
-<div class="slider-container" (click)="onTrackClick($event)" *ngIf="type === 'Thumb'">
-    <div  #sliderTrack class="slider-track-Thumb" >
+  
+    <div class="slider-container" (click)="onTrackClick($event)" *ngIf="type === 'Thumb'">
+      <div #sliderTrack class="slider-track-Thumb">
         <div class="slider-progress" [style.width.%]="progress"></div>
         <div
-            class="slider-handle"
-            [style.left]="'calc(' + progress + '% - 9px)'"
-            (mousedown)="onMouseDown($event)"
-            (touchstart)="onTrackClick($event)"
+          class="slider-handle"
+          [style.left]="'calc(' + progress + '% - 9px)'"
+          (mousedown)="onMouseDown($event)"
+          (touchstart)="onTrackClick($event)"
         ></div>
+      </div>
     </div>
-</div>
+  
+    <!-- 右侧按钮 -->
+    <button *ngIf="btn" class="slider-btn" (click)="increaseValue()">+</button>
+  </div>
+  

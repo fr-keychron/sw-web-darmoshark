@@ -39,7 +39,6 @@ export class DeviceConnectComponent implements OnInit {
 				this.routeConf.keep = s['keep']
 			}
 		})
-		
 		if (this.hidDevices) {
 			this.hidDeviceInit()
 		}
@@ -81,8 +80,6 @@ export class DeviceConnectComponent implements OnInit {
 			.subscribe((r: { type: EEventEnum; }) => {
 				if (r.type === EEventEnum.CONNECT) {
 					this.currentDevice = this.service.getCurrentHidDevice()
-					console.log(this.currentDevice);
-					
 					this.devices = this.service.getHidDevices();
 					this.switchType()
 				}
@@ -131,22 +128,16 @@ export class DeviceConnectComponent implements OnInit {
 	public power = 0;
 	public powerState = 0;
 	public workMode: number;
+	public hibernate: boolean = false;
 
 	private hidDeviceInit() {
 		const hidDevice = this.service.getCurrentHidDevice() as MouseDevice
-		console.log(hidDevice);
-		
 		if (!hidDevice) return
 		if (this.updateSub) this.updateSub.unsubscribe();
 		this.updateSub = hidDevice.update$
 			.pipe(filter(v => v.type === 'base'))
 			.subscribe(v => {
-				console.log(v);
-				
-				const {state, percent,} = v.data.power
-				if (state === 3) this.power = percent
-				this.powerState = state;
-				this.workMode = v.data.workMode
+				this.hibernate = v.data
 			})
 		const getHidConf = (h: MouseDevice) => {
 			this.powerState = h.baseInfo.power.state

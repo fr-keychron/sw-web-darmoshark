@@ -218,4 +218,27 @@ export class IndexComponent implements OnInit {
 		});
 		});
 	}
+
+  public validateDpiValue($event: { target: HTMLInputElement; }, index: number) {
+    const inputElement = $event.target as HTMLInputElement;
+    if (this.dpiValues[this.dpiLevel][index] < this.minDpi) {
+      this.dpiValues[this.dpiLevel][index] = this.minDpi;
+      inputElement.value =  this.minDpi.toString();
+    } else if (this.dpiValues[this.dpiLevel][index] > this.maxDpi) {
+      this.dpiValues[this.dpiLevel][index] = this.maxDpi;
+      inputElement.value =  this.maxDpi.toString();
+    } else {
+      this.dpiValues[this.dpiLevel][index] = Number(inputElement.value);
+    }
+  }
+
+  public validateDpiInput(event: KeyboardEvent): void {
+    const allowedKeys = [
+        'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete', // 常用功能键
+    ]
+    const isNumber = /^[0-9]$/.test(event.key)
+    if (!isNumber && !allowedKeys.includes(event.key)) {
+        event.preventDefault()
+    }
+  }
 }

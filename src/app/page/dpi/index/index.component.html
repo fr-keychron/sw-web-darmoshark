@@ -34,11 +34,19 @@
                             (click)="changeLevel(i)"
                             [ngClass]="{'active-bgcolor': dpiLevel === i}"
                         >
-                            <span *ngIf="!nxySetting"> {{dpi[0]}}</span>
-                            <span *ngIf="nxySetting">
-                                X:{{ dpi[0] }} <br>
-                                Y:{{ dpi[1] }} <br> 
+                            <span *ngIf="!nxySetting">
+                                <input type="number" [value]="dpi[0]" (keydown)="validateDpiInput($event)"  (blur)="validateDpiValue($event, 0)"/>
                             </span>
+                            <div *ngIf="nxySetting" >
+                                <span class="g-flex">
+                                    X:
+                                    <input type="number" [value]="dpi[0]" (keydown)="validateDpiInput($event)" (blur)="validateDpiValue($event, 0)" />
+                                </span>
+                                <span class="g-flex">
+                                    Y:
+                                    <input type="number" [value]="dpi[1]" (keydown)="validateDpiInput($event)"  (blur)="validateDpiValue($event, 1)"/>
+                                </span>
+                            </div>
                         </div> 
                     </div>
                 </div>
@@ -60,20 +68,7 @@
                     </div>
                     <div class="scale-content">
                         <div *ngIf="!nxySetting" class="scale-slider-box">
-                            <span>{{minDpi}}</span>
-                            <g-slider 
-                                [(ngModel)]="dpiValues[this.dpiLevel][0]" 
-                                [min]="minDpi" 
-                                [max]="maxDpi" 
-                                [step]="50" 
-                                [isRealTimeUpdate]="true"
-                                (ngModelChange)="changeScaleX()" 
-                            >
-                            </g-slider>
-                            <span>{{maxDpi}}</span>
-                        </div>
-                        <div *ngIf="nxySetting" class="scale-slider-box">
-                            <span>{{minDpi}}</span>
+                            <!-- <span>{{minDpi}}</span> -->
                             <g-slider 
                                 class="dpi-slider"
                                 [(ngModel)]="dpiValues[this.dpiLevel][0]" 
@@ -81,24 +76,42 @@
                                 [max]="maxDpi" 
                                 [step]="50" 
                                 [isRealTimeUpdate]="true"
+                                [btn]="true"
+                                tip="{{dpiValues[this.dpiLevel][0]}}"
+                                (ngModelChange)="changeScaleX()" 
+                            >
+                            </g-slider>
+                            <!-- <span>{{maxDpi}}</span> -->
+                        </div>
+                        <div *ngIf="nxySetting" class="scale-slider-box">
+                            <!-- <span>{{minDpi}}</span> -->
+                            <g-slider 
+                                class="dpi-slider"
+                                [(ngModel)]="dpiValues[this.dpiLevel][0]" 
+                                [min]="minDpi" 
+                                [max]="maxDpi" 
+                                [step]="50" 
+                                [isRealTimeUpdate]="true"
+                                [btn]="true"
                                 tip="X:{{dpiValues[this.dpiLevel][0]}}"
                             >
                             </g-slider>
-                            <span>{{maxDpi}}</span>
+                            <!-- <span>{{maxDpi}}</span> -->
                         </div>
                         <div *ngIf="nxySetting" class="scale-slider-box">
-                            <span>{{minDpi}}</span>
+                            <!-- <span>{{minDpi}}</span> -->
                             <g-slider 
                                 class="dpi-slider"
                                 [(ngModel)]="dpiValues[this.dpiLevel][1]" 
                                 [min]="minDpi" 
                                 [max]="maxDpi" 
                                 [step]="50" 
+                                [btn]="true"
                                 [isRealTimeUpdate]="true"
                                 tip="Y:{{dpiValues[this.dpiLevel][1]}}"
                             >
                             </g-slider>
-                            <span>{{maxDpi}}</span>
+                            <!-- <span>{{maxDpi}}</span> -->
                         </div>
                     </div>
                    <div class="scale-bottom">

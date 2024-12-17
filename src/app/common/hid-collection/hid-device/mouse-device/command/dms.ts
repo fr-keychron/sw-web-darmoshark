@@ -40,8 +40,6 @@ export class MouseDeviceV4 {
 		return new Observable<any>((s) => {
 			const init = async () => {			
 				const { workMode, version } = this.mouse
-				const protocol = await firstValueFrom(this.getProtocolVersion());
-				await firstValueFrom(this.getVersion());
 				if (workMode === 1) {
 					this.mouse.setTransceiver(new SerialTransceiver(this.mouse.hidRaw))
 					const receiver = await firstValueFrom(this.getReceiverState());
@@ -57,6 +55,8 @@ export class MouseDeviceV4 {
 				} else {
 					await firstValueFrom(this.getBaseInfo());
 				}
+				const protocol = await firstValueFrom(this.getProtocolVersion());
+				await firstValueFrom(this.getVersion());
 				this.mouse.baseInfo.workMode = workMode
 				this.mouse.baseInfo.profile = protocol.profile
 				this.mouse.loaded = true;
@@ -66,7 +66,6 @@ export class MouseDeviceV4 {
 				});
 				s.next();
 			};
-			
 			if (this.mouse.hidRaw.opened) {
 				if (this.mouse.loaded) {
 					s.next();
@@ -350,39 +349,20 @@ export class MouseDeviceV4 {
 	public handleUpdate(bufs: Uint8Array) {
 		return new Observable((s) => {
 			const buf = bufs
-			if (buf[0] === 0xe1) {
-				const data = {
-					mode: buf[1],
-					s: buf[3],
-					n: buf[4],
-					rgb: [buf[5],buf[6],buf[7]],
-					currentColor: `rgb(${buf[5]},${buf[6]},${buf[7]})`
+			if (this.mouse.loaded && buf[0] === 0x01 && buf[2] === 0x8c && buf[3] === 0x01) {
+				if(!((buf[4] >> 3) & 0x01)) {
+					this.mouse.update$.next({
+						type: "base",
+						data: true
+					});
+					s.next(true);
+				}else {
+					this.mouse.update$.next({
+						type: "base",
+						data: false
+					});
+					s.next(false);
 				}
-				this.mouse.update$.next({type: "light", data})
-			}
-			if (buf[0] === 0xe2) {
-				// workMode: 0: usb, 1: 2.4g, 2: BT
-				const obj = {
-					workMode: buf[1],
-					connect: buf[2],
-					power: {
-						state: buf[3],
-						percent: buf[4],
-					},
-					dpi: {
-						value: buf[5],
-						report: buf[6],
-						level: buf[7],
-					},
-				};
-				this.mouse.baseInfo.power = {state: buf[3], value: buf[4]}
-				this.power = {state: buf[3], value: buf[4]}
-				
-				this.mouse.update$.next({
-					type: "base",
-					data: obj,
-				});
-				s.next(true);
 			} else {
 				s.next(false);
 			}

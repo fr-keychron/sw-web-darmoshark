@@ -254,7 +254,7 @@ export class HidCollection implements IHidCollection {
 							s.error(err.msg)
 							return
 						}
-						s.error(this.i18n.instant('mouse.tip.1'))
+						s.error(this.i18n.instant('mouse.tip.5'))
 					}
 				})
 			} 

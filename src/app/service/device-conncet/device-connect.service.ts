@@ -169,7 +169,13 @@ export class DeviceConnectService {
 					} else{
 						product.contract = "M"
 					}
-					this.device.createMouse(mHid, { product: JSON.parse(JSON.stringify(product)), json }).subscribe()
+					this.device.createMouse(mHid, { product: JSON.parse(JSON.stringify(product)), json })
+					.subscribe({
+						error: (e) => {
+							this.event$.next({type: EEventEnum.DISCONNECT, data: this})
+							this.msg.error(e)
+						}
+					})
 				}, error: () => {
 					this.msg.error(this.i18n.instant('notify.hidConfNotFound'))
 				}

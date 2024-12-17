@@ -43,7 +43,7 @@ export class AsideComponent implements OnInit {
 				if ([EEventEnum.DISCONNECT].includes(r.type)) {
 					this.currentDevice = undefined
 					this.menus = []
-					this.router.navigate(['/waiting'])
+					// this.router.navigate(['/waiting'])
 				}
 			})
 		this.currentDevice = undefined

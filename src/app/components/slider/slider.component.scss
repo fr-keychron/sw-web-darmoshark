@@ -1,87 +1,117 @@
 @import "src/styles.scss";
-.slider-container {
-    width: 100%;
-    min-width: 14.6rem;
-    padding: 10px;
-    box-sizing: border-box;
-    & > .slider-track {
-        position: relative;
-        height: 12px;
-        background: url('../../../assets/icon/bg-slider.png');
-        border: 2px solid #ffffff;
-        box-sizing: content-box;
-        border-radius: 12px;
-        cursor: pointer;  
-        & > .slider-progress {
-            position: absolute;
-            height: calc(100% - 2px);
-            background-color: $global-border-blue;
-            border-radius: 6px 0 0 6px; 
-            width: 0%;
-            margin: 1px;
-        }
-        
-        & > .slider-handle {
-            position: absolute;
-            top: -2px;
-            width: 16px;
-            height: 16px;
-            background-color: $global-border-blue;
-            border-radius: 50%;
-            cursor: pointer;
-            transform: translateX(-50%);
-            z-index: 1;
-        }
-        & > .tooltip {
-            position: absolute;
-            top: -3rem;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 1px solid $global-border-blue;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            white-space: nowrap;
-            pointer-events: none; 
-            & > .tooltip-arrow {
+.slider-wrapper {
+    display: flex;
+    align-items: center;
+    & > .slider-container {
+        width: 100%;
+        min-width: 14.6rem;
+        padding: 10px;
+        box-sizing: border-box;
+        display: flex;
+        & > .slider-track {
+            width: 100%;
+            position: relative;
+            height: 12px;
+            background: url('../../../assets/icon/bg-slider.png');
+            border: 2px solid #ffffff;
+            box-sizing: content-box;
+            border-radius: 12px;
+            cursor: pointer;  
+            & > .slider-progress {
                 position: absolute;
-                bottom: -6px; 
-                left: 50%;
-                transform: translateX(-50%) rotate(45deg);
-                width: 10px;
-                height: 10px;
-                background-color: $global-bg-gray; 
-                border-bottom: 1px solid $global-border-blue;
-                border-right: 1px solid $global-border-blue;
-              }
-          }
-    }
-    & > .slider-track-Thumb {
-        position: relative;
-        height: 5px;
-        background-color: #fff;
-        border-radius: 5px;
-        cursor: pointer;
-        & > .slider-progress {
-            position: absolute;
-            height: 100%;
-            background-color: $global-border-blue;
-            border-radius: 6px 0 0 6px; 
-        }
-        
-        & > .slider-handle {
-            position: absolute;
-            top: -7px;
-            width: 18px;
-            height: 21px;
-            background: url('../../../assets/icon/icon-radio-active.png');
-            cursor: pointer;
-            z-index: 1;
+                height: calc(100% - 2px);
+                background-color: $global-border-blue;
+                border-radius: 6px 0 0 6px; 
+                width: 0%;
+                margin: 1px;
+            }
             
+            & > .slider-handle {
+                position: absolute;
+                top: -2px;
+                width: 16px;
+                height: 16px;
+                background-color: $global-border-blue;
+                border-radius: 50%;
+                cursor: pointer;
+                transform: translateX(-50%);
+                z-index: 1;
+            }
+            & > .tooltip {
+                position: absolute;
+                top: -3rem;
+                left: 50%;
+                transform: translateX(-50%);
+                border: 1px solid $global-border-blue;
+                color: #fff;
+                padding: 5px 10px;
+                border-radius: 5px;
+                font-size: 12px;
+                white-space: nowrap;
+                pointer-events: none; 
+                & > .tooltip-arrow {
+                    position: absolute;
+                    bottom: -6px; 
+                    left: 50%;
+                    transform: translateX(-50%) rotate(45deg);
+                    width: 10px;
+                    height: 10px;
+                    background-color: $global-bg-gray; 
+                    border-bottom: 1px solid $global-border-blue;
+                    border-right: 1px solid $global-border-blue;
+                  }
+              }
+        }
+        & > .slider-track-Thumb {
+            width: 100%;
+            position: relative;
+            height: 5px;
+            background-color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            & > .slider-progress {
+                position: absolute;
+                height: 100%;
+                background-color: $global-border-blue;
+                border-radius: 6px 0 0 6px; 
+            }
+            
+            & > .slider-handle {
+                position: absolute;
+                top: -7px;
+                width: 18px;
+                height: 21px;
+                background: url('../../../assets/icon/icon-radio-active.png');
+                cursor: pointer;
+                z-index: 1;
+                
+            }
+        }
+    }
+    & > .slider-btn {
+        // background-color: #007bff;
+        color: white;
+        background-color: transparent;
+        border: 1px solid $global-border-blue;
+        border-radius: 4px;
+        width: 24px;
+        height: 24px;
+        font-size: 24px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        line-height: 17px;
+    
+        &:hover {
+            box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+        }
+    
+        &:active {
+          background-color: $global-border-blue;
         }
     }
 }
+
 
 
 
