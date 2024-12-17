@@ -86,6 +86,7 @@ export class DeviceConnectComponent implements OnInit {
 				if ([EEventEnum.DISCONNECT].includes(r.type)) {
 					this.currentDevice = null
 					this.loading = false
+					this.hibernate = false
 				}
 			})
 	}
