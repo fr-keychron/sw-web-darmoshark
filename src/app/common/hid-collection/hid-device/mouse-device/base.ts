@@ -228,8 +228,6 @@ export class MouseDevice extends Mouse {
 		mouseKey: number,
 		shortCut: EMousseBtnShortcutKey
 	): Observable<any> {
-		console.log(shortCut);
-		
 		return this.setMouseBtn(
 			EMouseBtn.ShortCut,
 			mouseKey,

@@ -254,26 +254,26 @@ export class Macro implements OnInit {
             fromEvent(document.body, 'keyup')
         ).pipe(
         map((e: any) => {
+            console.log(e);
+            
             const action = e.type === 'keyup' ? EKey.release : EKey.press
-            const keyVal = EDmsMouseKeycodeDefault.find((value: any) => value.key === e.code); 
+            const keyVal = EDmsMouseKeycodeDefault.find((value: any) => value.code === e.code); 
+            console.log(keyVal);
+            
             if (!keyVal) return;
 
             let id = keyDownMap.get(e.code);
             if (e.type === 'keydown' && !id) {
             id = 'R' + Date.now();
-            keyDownMap.set(e.code, id);
+                keyDownMap.set(e.code, id);
             } else if (e.type === 'keyup' && id) {
-            keyDownMap.delete(e.code);
+                keyDownMap.delete(e.code);
             }
-        
-            if(!keyVal) return
-            const key = Object.keys(EDmsMouseKeycode).find(
-            (k) => EDmsMouseKeycode[k as keyof typeof EDmsMouseKeycode] === keyVal.value
-            );
-            const keyName = this.keyCodes.find(i => i.code === key)
+            
+            const keyName = this.keyCodes.find(i => i.code === keyVal.key)
             if (keyName && /<br\/>/.test(keyName.name)) {
-            const a = keyName.name.split('<br/>')
-            keyName.name = a[1]
+                const a = keyName.name.split('<br/>')
+                keyName.name = a[1]
             }
             return { id, action, type: 'keyboard', key: { name: keyName?.name || keyVal.key, value: keyVal.value } }
         })
@@ -284,6 +284,7 @@ export class Macro implements OnInit {
     }
     // 事件新增
     private addEvent(res: RecordList): void {
+        if(!res) return
         if(this.overLengthTip()){
             this.updateTime = 0
             this.recordFlag = false
@@ -293,18 +294,20 @@ export class Macro implements OnInit {
             return
         };
         if (this.currentMacro.list.length >= 1 && this.currentMacro.delayMode === 'dynamic') {
-        const delay = Date.now() - this.updateTime
-        const id = 'R' + Date.now()
-        this.currentMacro.list.push({
-            id,
-            type: 'delay',
-            action: EKey.delay,
-            key: {
-            name: delay + unit,
-            value: delay
-            }
-        })
+            const delay = Date.now() - this.updateTime
+            const id = 'R' + Date.now()
+            this.currentMacro.list.push({
+                id,
+                type: 'delay',
+                action: EKey.delay,
+                key: {
+                    name: delay + unit,
+                    value: delay
+                }
+            })
         }
+      
+        
         this.currentMacro.list.push(res)
         this.updateTime = Date.now()
         // 置底
@@ -360,6 +363,8 @@ export class Macro implements OnInit {
     }
     public currentRecordClick(event:any){
         this.currentRecord = event
+        console.log(this.currentRecord);
+        
     }
     // 插入
     public macroType: string = ''

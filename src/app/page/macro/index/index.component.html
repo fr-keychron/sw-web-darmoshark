@@ -67,8 +67,8 @@
                     <div class="record-right">
                         <div nz-row class="record-header">
                             <div nz-col nzSpan="7">{{'序号' | translate}}</div>
-                            <div nz-col nzSpan="7">{{'macro.event' | translate}}</div>
-                            <div nz-col nzSpan="7">{{'macro.value' | translate}}</div>
+                            <div nz-col nzSpan="6">{{'macro.event' | translate}}</div>
+                            <div nz-col nzSpan="8">{{'macro.value' | translate}}</div>
                             <div nz-col nzSpan="3"></div>
                         </div>
                         <div class="record-list" #macro *ngIf="currentMacro">
@@ -78,7 +78,7 @@
                                 [ngClass]="{record_list_active: currentRecord?.id === item.id }"
                             >
                                     <div nz-col nzSpan="7">{{i+1}}</div>
-                                    <div nz-col nzSpan="7">
+                                    <div nz-col nzSpan="6">
                                         <div class="record-list-icons g-flex g-item-end g-justify-center">
                                             <span *ngIf="item.type=== 'keyboard'" [ngClass]="currentRecord?.id === item.id ? 'icon-eventKeyborad-active' : 'icon-eventKeyborad'"></span>
                                             <span *ngIf="item.type=== 'mouse'"  [ngClass]="currentRecord?.id === item.id ? 'icon-eventMouse-active' : 'icon-eventMouse'"></span>
@@ -86,7 +86,7 @@
                                         </div>
                                         
                                     </div>
-                                    <div nz-col nzSpan="7">{{getValueText(item)}}</div>
+                                    <div nz-col nzSpan="8">{{getValueText(item)}}</div>
                                     <div class="operate" nz-col nzSpan="3" *ngIf="!recordFlag" (click)="toggleEventRemoveModal(item)">
                                         ···
                                         <div class="event-remove" *ngIf="activeItem === item">
