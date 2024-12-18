@@ -19,7 +19,7 @@
 				<g-option gLabel="mouse.key_game.mouse" [gValue]='1'></g-option>
 				<g-option gLabel="mouse.key_game.key" [gValue]='2'></g-option>
 			</g-select>
-			<span>键值</span>
+			<span>{{ 'common.key' | translate }}</span>
 			<g-select
 				*ngIf="keyType == 1" 
 				class="game-key-select"

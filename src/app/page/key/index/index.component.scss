@@ -5,19 +5,7 @@
 }
 
 .active-bgcolor {
-    background: url(../../../../assets/icon/bg-select.png);
-    position: relative;
-    &::after {
-        content: '';  
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(255, 128, 38, 0.3);
-        z-index: 1;
-        mix-blend-mode: color;
-    }
+    background-color: rgba($global-border-blue, 50%);
 }
 
 .key-container{
@@ -71,7 +59,7 @@
             & > .fun-select {
                 margin-top: 0.2rem;
                 margin-bottom: 0.666rem;
-                display: flex;
+                display: flex; 
             }
             & > button {
                 width: 100%;
@@ -86,9 +74,6 @@
                 &:hover {
                     box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
                 }
-            }
-            & > .active-bgfun{
-                background: url(../../../../assets/icon/bg-select.png);
             }
             .icon_hint {
                 margin-right: 0.666rem ;
@@ -109,7 +94,7 @@
 }
 
 .active-bgfun ::ng-deep .g-select-box{
-    background: url(../../../../assets/icon/bg-select.png) !important;
+    background-color: rgba($global-border-blue, 50%);
 }
 
 .icon-reset-bule {

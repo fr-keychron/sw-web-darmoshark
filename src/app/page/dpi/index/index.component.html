@@ -5,7 +5,7 @@
 >
     <ng-template #left>
         <div class="container-title g-flex g-justify-between g-item-center">
-            <span>指针设置</span>
+            <span>{{ 'menu.pointer_setting' | translate}}</span>
             <span class="icon_arrow"></span>
         </div>
         <!-- DPI设置 -->
@@ -13,11 +13,11 @@
             <div class="dpi-title g-flex g-item-center g-justify-between">
                 <div class="g-flex g-item-center g-justify-between">
                     <span class="icon_square"></span>
-                    {{'DPI调节' | translate}}
+                    {{'mouse.menu.dpi' | translate}}
                     <span 
                         class="icon_hint"
                         nz-tooltip
-                        [nzTooltipTitle]="'mouse.dpi.dpiTip' | translate"
+                        [nzTooltipTitle]="'mouse.tip.8' | translate"
                     ></span>
                 </div> 
                 <span 
@@ -68,7 +68,6 @@
                     </div>
                     <div class="scale-content">
                         <div *ngIf="!nxySetting" class="scale-slider-box">
-                            <!-- <span>{{minDpi}}</span> -->
                             <g-slider 
                                 class="dpi-slider"
                                 [(ngModel)]="dpiValues[this.dpiLevel][0]" 
@@ -81,10 +80,8 @@
                                 (ngModelChange)="changeScaleX()" 
                             >
                             </g-slider>
-                            <!-- <span>{{maxDpi}}</span> -->
                         </div>
                         <div *ngIf="nxySetting" class="scale-slider-box">
-                            <!-- <span>{{minDpi}}</span> -->
                             <g-slider 
                                 class="dpi-slider"
                                 [(ngModel)]="dpiValues[this.dpiLevel][0]" 
@@ -96,10 +93,8 @@
                                 tip="X:{{dpiValues[this.dpiLevel][0]}}"
                             >
                             </g-slider>
-                            <!-- <span>{{maxDpi}}</span> -->
                         </div>
                         <div *ngIf="nxySetting" class="scale-slider-box">
-                            <!-- <span>{{minDpi}}</span> -->
                             <g-slider 
                                 class="dpi-slider"
                                 [(ngModel)]="dpiValues[this.dpiLevel][1]" 
@@ -111,7 +106,6 @@
                                 tip="Y:{{dpiValues[this.dpiLevel][1]}}"
                             >
                             </g-slider>
-                            <!-- <span>{{maxDpi}}</span> -->
                         </div>
                     </div>
                    <div class="scale-bottom">
@@ -120,7 +114,7 @@
                             <label>X-Y Setting</label>
                         </div>
                         <div class="submit-btn" (click)="setDpi()">
-                            <span>{{'确定' | translate }}</span>
+                            <span>{{'common.key_confirm' | translate }}</span>
                         </div>
                    </div>
             </div>
@@ -176,7 +170,7 @@
                 <span 
                     class="icon_hint"
                     nz-tooltip
-                    [nzTooltipTitle]="'mouse.dpi.reportTip' | translate"
+                    [nzTooltipTitle]="'mouse.tip.9' | translate"
                 ></span> 
             </div>
             <div class="report-os g-flex g-justify-start"> 

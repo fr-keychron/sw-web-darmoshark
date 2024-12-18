@@ -86,7 +86,6 @@ export class DeviceConnectComponent implements OnInit {
 				if ([EEventEnum.DISCONNECT].includes(r.type)) {
 					this.currentDevice = null
 					this.loading = false
-					this.hibernate = false
 				}
 			})
 	}
@@ -116,7 +115,6 @@ export class DeviceConnectComponent implements OnInit {
 
 	/**断开连接 */
 	public disconnect() {
-		this.currentDevice = undefined;
 		this.loading = false;
 		this.service.disconnect()
 	}
@@ -129,16 +127,16 @@ export class DeviceConnectComponent implements OnInit {
 	public power = 0;
 	public powerState = 0;
 	public workMode: number;
-	public hibernate: boolean = false;
 
 	private hidDeviceInit() {
 		const hidDevice = this.service.getCurrentHidDevice() as MouseDevice
 		if (!hidDevice) return
 		if (this.updateSub) this.updateSub.unsubscribe();
 		this.updateSub = hidDevice.update$
-			.pipe(filter(v => v.type === 'base'))
+			.pipe(filter(v => v.type === EEventEnum.DISCONNECT))
 			.subscribe(v => {
-				this.hibernate = v.data
+				this.disconnect()
+				this.msg.error(this.i18n.instant('mouse.tip.16'))
 			})
 		const getHidConf = (h: MouseDevice) => {
 			this.powerState = h.baseInfo.power.state

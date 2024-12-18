@@ -10,6 +10,7 @@ import {VersionFactory} from ".";
 import {IBaseInfo, IDpiReport} from "../types";
 import {Result} from "src/app/model";
 import {SerialTransceiver} from "../../../transceiver";
+import { EEventEnum } from "../../../type";
 VersionFactory.inject(
 	(s) => s === "dms",
 	(device: MouseDevice) => new MouseDeviceV4(device)
@@ -55,10 +56,11 @@ export class MouseDeviceV4 {
 				} else {
 					await firstValueFrom(this.getBaseInfo());
 				}
-				const protocol = await firstValueFrom(this.getProtocolVersion());
+				const protocol = await firstValueFrom(this.getPower());
 				await firstValueFrom(this.getVersion());
 				this.mouse.baseInfo.workMode = workMode
 				this.mouse.baseInfo.profile = protocol.profile
+				this.mouse.baseInfo.power = protocol.power
 				this.mouse.loaded = true;
 				this.mouse.event$.next({
 					type: HidDeviceEventType.JsonConf,
@@ -133,19 +135,19 @@ export class MouseDeviceV4 {
 	}
 
 	public power: any
-	public getProtocolVersion(): Observable<{
-		version: number;
+	public getPower(): Observable<{
+		power: { state: number, value: number };
 		workMode: number;
 		profile: number;
 	}> {
-		return new Observable<{ version: number; workMode: number; profile: number;}>((s) => {
+		return new Observable<{ power: { state: number, value: number }; workMode: number; profile: number;}>((s) => {
 			const buf = MouseDevice.Buffer(64);
 			buf[0] = 0x01
 			buf[2] = 0x80 | 1
 			buf[3] = 0x01
 			const obj = this.mouse.report$
 				.pipe(
-					filter((v) => (v[0] === 0x01 || v[0] === 0x41) &&  v[3] === 0x01),
+					filter((v) => ( this.mouse.workMode === 1 ? v[0] === 0x41 : v[0] === 0x01 ) &&  v[3] === 0x01),
 					map((v) => {
 						const bits = ByteUtil.oct2Bin(v[4])
 						const workMode = Number(bits[3])
@@ -153,14 +155,11 @@ export class MouseDeviceV4 {
 							state: v[5],
 							value: v[6]
 						}
-						this.power = power 
-						// this.mouse.protocolVersion = 'dms'
-						this.mouse.baseInfo.power = power
-						this.mouse.baseInfo.profile = v[7]
+						this.power = power
 						return {
 							workMode,
-							version: 4,
 							profile: v[7],
+							power: power
 						};
 					})
 				)
@@ -171,9 +170,12 @@ export class MouseDeviceV4 {
 					},
 					error: () => {
 						s.next({
-							version: 1,
 							workMode: 0,
-							profile: 0
+							profile: 0,
+							power: {
+								state: 0,
+								value: 0
+							}
 						})
 					},
 				});
@@ -352,16 +354,10 @@ export class MouseDeviceV4 {
 			if (this.mouse.loaded && buf[0] === 0x01 && buf[2] === 0x8c && buf[3] === 0x01) {
 				if(!((buf[4] >> 3) & 0x01)) {
 					this.mouse.update$.next({
-						type: "base",
-						data: true
+						type: EEventEnum.DISCONNECT,
+						data: this
 					});
 					s.next(true);
-				}else {
-					this.mouse.update$.next({
-						type: "base",
-						data: false
-					});
-					s.next(false);
 				}
 			} else {
 				s.next(false);

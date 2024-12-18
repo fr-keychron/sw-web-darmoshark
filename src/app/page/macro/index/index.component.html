@@ -3,7 +3,7 @@
     <div class="g-flex">
         <div>
             <div class="container-title g-flex g-justify-between g-item-center">
-                <span>宏自定义编辑器</span>
+                <span>{{'mouse.menu.key_macro_custom_editor' | translate}}</span>
                 <span class="icon-macroEdit"></span>
             </div>
             <div class="g-flex">
@@ -11,7 +11,7 @@
                 <div class="macro-setting g-flex g-flex-col">
                 <div class="g-flex g-item-center">
                         <span class="icon_square"></span>
-                        {{'宏名称' | translate}}
+                        {{'macro.macro_name' | translate}}
                 </div>
                 <div class="macro-content g-flex g-flex-col g-item-evenly">
                     <ul class="macro-list">
@@ -62,11 +62,11 @@
                 <div class="macro-eventList">
                     <div class="g-flex g-item-center">
                         <span class="icon_square"></span>
-                        {{'事件列表' | translate}}
+                        {{'macro.event_list' | translate}}
                     </div>
                     <div class="record-right">
                         <div nz-row class="record-header">
-                            <div nz-col nzSpan="7">{{'序号' | translate}}</div>
+                            <div nz-col nzSpan="7">{{'common.serial_number' | translate}}</div>
                             <div nz-col nzSpan="6">{{'macro.event' | translate}}</div>
                             <div nz-col nzSpan="8">{{'macro.value' | translate}}</div>
                             <div nz-col nzSpan="3"></div>
@@ -109,12 +109,12 @@
                                 {{'插入' | translate}}
                             </div>
                             <div class="record-btn" [ngClass]="{disabled: recordFlag || !currentRecord}" (click)="delEvent()">
-                                {{'删除' | translate}}
+                                {{'common.delete' | translate}}
                             </div>
                             <div class="insert-modal" *ngIf="insertModal" >
-                                <span (click)="insert('mouse')">插入鼠标事件</span>
-                                <span (click)="insert('keyboard')">插入键盘事件</span>
-                                <span (click)="insert('delay')">插入事件延迟</span>
+                                <span (click)="insert('mouse')">{{'macro.insert_mouse_event' | translate}}</span>
+                                <span (click)="insert('keyboard')">{{'macro.insert_keyboard_event' | translate}}</span>
+                                <span (click)="insert('delay')">{{'macro.insert_event_delay' | translate}}</span>
                             </div>
                         </div>
                   </div>
@@ -139,15 +139,15 @@
                     <div class="radio-blue">
                         <div class="radio-box g-flex g-item-center">
                             <input type="radio" [disabled]="recordFlag" [(ngModel)]="currentMacro.delayMode" value="none" name="delayMode" (ngModelChange)="handleDelay($event)"/>
-                            <label>{{'没有延时' | translate}}</label>
+                            <label>{{'macro.no_delay' | translate}}</label>
                         </div>
                         <div class="radio-box g-flex g-item-center">
                             <input type="radio" [disabled]="recordFlag"  [(ngModel)]="currentMacro.delayMode" value="dynamic" name="delayMode" (ngModelChange)="handleDelay($event)"/>
-                            <label>{{'录制延时' | translate}}</label>
+                            <label>{{'macro.record_delay' | translate}}</label>
                         </div>
                         <div class="radio-box g-flex g-item-center">
                             <input type="radio" [disabled]="recordFlag"  [(ngModel)]="currentMacro.delayMode" value="fixed" name="delayMode" (ngModelChange)="handleDelay($event)"/>
-                            <label>{{'统一延时' | translate}}</label>
+                            <label>{{'macro.uniform_delay' | translate}}</label>
                         </div>
                     </div>
                     <div class="set-delay set-delay-ms g-flex" *ngIf="currentMacro.delayMode === 'fixed'" >
@@ -171,15 +171,15 @@
                     <div class="radio-blue">
                         <div class="radio-box g-flex g-item-center">
                             <input type="radio" [disabled]="recordFlag" [(ngModel)]="currentMacro.loopMode" value="loopTilRelease" name="loopMode" (ngModelChange)="handleLoop($event)"/>
-                            <label>{{'循环直到按键松开' | translate}}</label>
+                            <label>{{'macro.loop_until_key_release' | translate}}</label>
                         </div>
                         <div class="radio-box g-flex g-item-center">
                             <input type="radio" [disabled]="recordFlag"  [(ngModel)]="currentMacro.loopMode" value="loopTilPress" name="loopMode" (ngModelChange)="handleLoop($event)"/>
-                            <label>{{'循环直到任意键按下' | translate}}</label>
+                            <label>{{'macro.loop_until_any_key_press' | translate}}</label>
                         </div>
                         <div class="radio-box g-flex g-item-center">
                             <input type="radio" [disabled]="recordFlag"  [(ngModel)]="currentMacro.loopMode" value="loopTilDoublePress" name="loopMode" (ngModelChange)="handleLoop($event)"/>
-                            <label>{{'循环直到触发键再次按下' | translate}}</label>
+                            <label>{{'macro.loop_until_trigger_key_press' | translate}}</label>
                         </div>
                         <div class="radio-box g-flex g-item-center">
                             <input type="radio" [disabled]="recordFlag" [(ngModel)]="currentMacro.loopMode" value="loopTilCount" name="loopMode" (ngModelChange)="handleLoop($event)"/>
@@ -199,7 +199,7 @@
             <div class="macro-event" *ngIf="currentRecord">
                 <div class="g-flex g-item-center">
                     <span class="icon_square"></span>
-                    <span>{{'事件属性' | translate}}</span>
+                    <span>{{'macro.event_properties' | translate}}</span>
                 </div>
                 <div class="event-select">
                     <g-select
@@ -215,7 +215,7 @@
                 </div> 
                 <div class="g-flex g-item-center">
                     <span class="icon_square"></span>
-                    <span>{{'事件值' | translate}}</span>
+                    <span>{{'macro.event_value' | translate}}</span>
                 </div>
                 <div class="event-select">
                     <g-select

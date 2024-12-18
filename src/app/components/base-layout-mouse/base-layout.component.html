@@ -58,17 +58,17 @@
 				<div class="icon_square"></div>
 				<button class="button-bule" (click)="reset()">
 					<span class="icon-reset icon-button"></span>
-					重置
+					{{ 'common.resetLayout' | translate }}
 				</button>
 				<div class="icon_square"></div>
 				<button class="button-bule" (click)="importConfig()">
 					<span class="icon-import icon-button"></span>
-					导出
+					{{ 'common.export' | translate }}
 				</button>
 				<div class="icon_square"></div>
 				<button class="button-bule">
 					<span class="icon-export icon-button"></span>
-					导入
+					{{ 'common.import' | translate }}
 					<input class="upload" type="file" accept=".json" (change)="exportConfig($event)">
 				</button>
 			</div>

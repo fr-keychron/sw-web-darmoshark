@@ -6,7 +6,7 @@
 >
   <ng-template #left>
     <div class="container-title g-flex g-justify-between g-item-center">
-        <span>鼠标按键设置</span>
+        <span>{{ 'mouse.menu.mouse_setting' | translate}}</span>
         <span class="icon-mouse"></span>
     </div>
      <div class="g-flex">
@@ -59,7 +59,7 @@
                 <div class="fun-item">
                     <div class="g-flex g-item-center">
                         <span class="icon_square"></span>
-                        基础鼠标功能
+                        {{ 'mouse.key.11' | translate}}
                     </div>
                     <g-select
                         class="fun-select"
@@ -78,7 +78,7 @@
                 <div class="fun-item">
                     <div class="g-flex g-item-center">
                         <span class="icon_square"></span>
-                        灵敏度
+                        {{ 'mouse.key.5' | translate}}
                     </div>
                     <g-select
                         class="fun-select"
@@ -97,7 +97,7 @@
                 <div class="fun-item">
                     <div class="g-flex g-item-center">
                         <span class="icon_square"></span>
-                        多媒体按键
+                        {{ 'mouse.key.3' | translate}}
                     </div>
                     <g-select
                         class="fun-select"
@@ -116,7 +116,7 @@
                 <div class="fun-item">
                     <div class="g-flex g-item-center">
                         <span class="icon_square"></span>
-                        宏按键
+                        {{ 'mouse.key.12' | translate}}
                     </div>
                     <g-select
                         class="fun-select"
@@ -135,7 +135,7 @@
                 <div class="fun-item">
                     <div class="g-flex g-item-center">
                         <span class="icon_square"></span>
-                        系统快捷键
+                        {{ 'mouse.key.13' | translate}}
                     </div>
                     <g-select
                         class="fun-select"
@@ -154,7 +154,7 @@
                 <div class="fun-item">
                     <div class="g-flex g-item-center">
                         <span class="icon_square"></span>
-                        灯光切换
+                        {{ 'mouse.key.14' | translate}}
                     </div>
                     <g-select
                         class="fun-select"
@@ -188,7 +188,11 @@
                             <span class="icon_square"></span>
                             {{ 'mouse.key.7' | translate}}
                         </div>
-                        <span class="icon_hint"></span>
+                        <span 
+                            class="icon_hint"
+                            nz-tooltip
+                            [nzTooltipTitle]="'mouse.tip.7' | translate"
+                        ></span>
                     </div>
                     <button 
                         (click)="funType = 7;"

@@ -14,13 +14,15 @@
 <div class="device-connected g-flex g-item-center g-justify-between" *ngIf="currentDevice">
 	<div class="g-flex g-item-center">
 		<div class="battery-container">
-			<div class="battery-level" [style.width]="power === 100 ? 'calc(100% - 2px)' : (power + '%')"></div>
+			<div class="battery-level" [style.width]="power === 100 ? 'calc(100% - 2px)' : (power + '%')">
+				<span style="color: #173b3b" nz-icon nzType="thunderbolt" nzTheme="outline" *ngIf="powerState === 1" ></span>
+			</div>
 		</div>
-		<div class="">{{powerState === 2 ? '充满电'  : powerState === 1 ? '充电中' : (power+"%")}}</div>
+		<div class="">{{powerState === 2 ? ('common.battery_fully_charged' | translate )  : powerState === 1 ? ('common.battery_charging' | translate ) : (power+"%")}}</div>
 	</div>
 	<div class="g-flex g-item-center">
 		<span class="icon_square"></span>
-		<div class="connect-type">{{workMode === 0 ? 'USB连接' : workMode === 1 ? '2.4Ghz连接' : 'BT连接' | translate}} </div>
+		<div class="connect-type">{{(workMode === 0 ? 'USB' : workMode === 1 ? '2.4Ghz' : 'BT') + ('common.connection' | translate)}} </div>
 	</div>
 </div>
 <ng-template #template let-notification>
@@ -46,4 +48,3 @@
 		</div>
 	</div>
 </ng-template>
-<div class="mask" *ngIf="hibernate">鼠标已休眠</div>

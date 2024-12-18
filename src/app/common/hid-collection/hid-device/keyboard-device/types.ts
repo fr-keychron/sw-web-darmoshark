@@ -19,7 +19,8 @@ export enum HidDeviceEventType {
 	FirmwareVersion,
 	Reset,
 	LayerChange,
-	matrix
+	matrix,
+	Update
 }
 
 export interface IHidDeviceEvent {

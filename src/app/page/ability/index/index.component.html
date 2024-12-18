@@ -1,7 +1,7 @@
 <base-layout-mouse [left]="left" (load)="load($event)" #sysBaseLayout [showMouseButton]="false" >
     <ng-template #left>
         <div class="container-title g-flex g-justify-between g-item-center">
-            <span>系统功能设置</span>
+            <span>{{ 'mouse.menu.sys_setting' | translate}}</span>
             <span class="icon-ability"></span>
         </div>
         <div class="g-flex">
@@ -23,7 +23,7 @@
                         <div class="radio-blue">
                             <div  *ngFor="let lod of lodList">
                                 <input type="radio" [(ngModel)]="lodValue" [value]="lod.index" name="lodValue" (ngModelChange)="submit()"/>
-                                <label>{{lod.value}}</label>
+                                <label>{{lod.value | translate}}</label>
                             </div>
                         </div>
                     </div>
@@ -38,8 +38,25 @@
                         <span 
                             class="icon_hint"
                             nz-tooltip
-                            [nzTooltipTitle]="'mouse.dpi.dpiTip' | translate"
+                            [nzTooltipTitle]="titleTemplate"
                         ></span>
+                        <ng-template #titleTemplate let-thing>
+                            <span>{{'mouse.sys.sensor' | translate}}</span>
+                            <br>
+                            <span>【{{'mouse.sys.wave' | translate}}】</span>
+                            <br>
+                            <span>{{'mouse.tip.11' | translate}}</span>
+                            <br>
+                            <span>{{'mouse.tip.12' | translate}}</span>
+                            <br>
+                            <span>【{{'mouse.sys.line' | translate}}】</span>
+                            <br>
+                            <span>{{'mouse.tip.14' | translate}}</span>
+                            <br>
+                            <span>【{{'mouse.sys.motion' | translate}}】</span>
+                            <br>
+                            <span>{{'mouse.tip.15' | translate}}</span>
+                          </ng-template>
                     </div>
                     <div class="item-content">
                         <div class="checkbox-blue">
@@ -50,7 +67,7 @@
                             <label>{{ "mouse.sys.line" | translate }}</label>
 
                             <input type="checkbox" [(ngModel)]="sensorValue[2]"(ngModelChange)="submit()" />
-                            <label>{{ "Motion Sync开启" | translate }}</label>
+                            <label>Motion Sync{{ "common.open" | translate }}</label>
                         </div>
                     </div>
                 </div>
@@ -58,7 +75,7 @@
                 <div class="item-container">
                     <div class="g-flex g-item-center">
                         <span class="icon_square"></span>
-                        {{'滚动方向设置'  | translate}} 
+                        <span>{{ 'mouse.sys.scroll' | translate}}{{ 'menu.setting' | translate}}</span>
                     </div>
                     <div class="item-content">
                         <div class="radio-blue">
@@ -74,20 +91,20 @@
                     <div class="g-flex g-item-center g-justify-between">
                         <div class="g-flex g-item-center ">
                             <span class="icon_square"></span>
-                            {{'电竞模式'  | translate}} 
+                            {{ 'mouse.sys.game' | translate}}
                         </div>
                         <span 
                             class="icon_hint"
                             nz-tooltip
-                            [nzTooltipTitle]="'mouse.dpi.dpiTip' | translate"
+                            [nzTooltipTitle]="'mouse.tip.12' | translate"
                         ></span>
                     </div>
                     <div class="item-content">
                         <div class="radio-blue">
                             <input type="radio" [(ngModel)]="eSports" [value]="1" name="eSports" (ngModelChange)="submit()"/>
-                            <label>{{ "打开" | translate }}</label>
+                            <label>{{ "common.open" | translate }}</label>
                             <input type="radio" [(ngModel)]="eSports" [value]="0" name="eSports" (ngModelChange)="submit()"/>
-                            <label>{{ "关闭" | translate }}</label>
+                            <label>{{ "common.close" | translate }}</label>
                         </div>
                     </div>
                 </div>
@@ -172,22 +189,22 @@
             <div class="g-flex g-justify-between">
                 <div class="g-flex g-item-center">
                     <span class="icon_square"></span>
-                    {{'休眠时间设置'  | translate}} 
+                    {{'common.sleep_time'  | translate}}{{ 'menu.setting' | translate}}
                 </div>
                 <div class="sleep-content">
                     <g-select
-                        [(ngModel)]="sleepTime" 
+                        [(ngModel)]="sleepTime"
                         [gCenter]="false"
                         (ngModelChange)="submitTime()"
                     >
-                        <g-option [gValue]="60" gLabel="1分钟"></g-option>
-                        <g-option [gValue]="300" gLabel="5分钟"></g-option>
-                        <g-option [gValue]="600" gLabel="10分钟"></g-option>
-                        <g-option [gValue]="1200" gLabel="20分钟"></g-option>
-                        <g-option [gValue]="1500" gLabel="25分钟"></g-option>
-                        <g-option [gValue]="1800" gLabel="30分钟"></g-option>
-                        <g-option [gValue]="2100" gLabel="35分钟"></g-option>
-                        <g-option [gValue]="2400" gLabel="40分钟"></g-option>
+                        <g-option [gValue]="60" [gLabel]="1+('common.min' | translate)"></g-option>
+                        <g-option [gValue]="300" [gLabel]="5+('common.min' | translate)"></g-option>
+                        <g-option [gValue]="600" [gLabel]="10+('common.min' | translate)"></g-option>
+                        <g-option [gValue]="1200" [gLabel]="20+('common.min' | translate)"></g-option>
+                        <g-option [gValue]="1500" [gLabel]="25+('common.min' | translate)"></g-option>
+                        <g-option [gValue]="1800" [gLabel]="30+('common.min' | translate)"></g-option>
+                        <g-option [gValue]="2100" [gLabel]="35+('common.min' | translate)"></g-option>
+                        <g-option [gValue]="2400" [gLabel]="40+('common.min' | translate)"></g-option>
                     </g-select> 
                 </div>
             </div>

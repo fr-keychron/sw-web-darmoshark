@@ -5,7 +5,7 @@
 >
     <ng-template #left>
         <div class="container-title g-flex g-justify-between g-item-center">
-            <span>RGB灯光设置</span>
+            {{'mouse.menu.rgb_light_setting' | translate}} 
             <span class="icon-light"></span>
         </div>
         <!-- light设置 -->
@@ -13,7 +13,7 @@
             <div class="g-flex g-item-center g-justify-between">
                 <div class="g-flex g-item-center g-justify-between">
                     <span class="icon_square"></span>
-                    {{'灯光效果' | translate}} 
+                    {{'lights.key_light_effect' | translate}} 
                 </div>
                 <span (click)="reset()" class="icon-reset-bule"></span>
             </div>
@@ -24,9 +24,9 @@
                     (ngModelChange)="setRGB()"
                 >
                     <g-option [gValue]="0" gLabel="关闭"></g-option>
-                    <g-option [gValue]="1" gLabel="单色常亮"></g-option>
-                    <g-option [gValue]="2" gLabel="单色呼吸"></g-option>
-                    <g-option [gValue]="3" gLabel="光谱循环"></g-option>
+                    <g-option [gValue]="1" [gLabel]="'lights.1. Solid Color'| translate"></g-option>
+                    <g-option [gValue]="2" [gLabel]="'lights.2. Breathing'| translate"></g-option>
+                    <g-option [gValue]="3" [gLabel]="'lights.4. Cycle All'| translate"></g-option>
                     
                 </g-select> 
             </div>
@@ -34,24 +34,24 @@
         <div class="light-container-bottom" *ngIf="lightMode">
             <div class="g-flex g-item-center">
                 <span class="icon_square"></span>
-                {{'自定义效果' | translate}} 
+                {{'lights.key_custom_effect' | translate}} 
             </div>
             <div class="light-content-top" nz-row>
                 <div nz-col nzSpan="13">
                     <div >
-                        <div class="title">亮度调节</div>
+                        <div class="title">{{'lights.key_brightness_adjustment' | translate}} </div>
                         <div  class="range-box">
                             <g-slider [(ngModel)]="brightness" [min]="0" [max]="255" [step]="1" (ngModelChange)="setRGB()"></g-slider>
                         </div>
                     </div>
                     <div *ngIf="![0,1].includes(lightMode)">
-                        <div >速度调节</div>
+                        <div >{{'lights.key_speed_adjustment' | translate}} </div>
                         <div  class="range-box">
                             <g-slider [(ngModel)]="speed" [min]="0" [max]="4" [step]="1" (ngModelChange)="setRGB()"></g-slider>
                         </div>
                     </div>
                     <div *ngIf="[1,2,5].includes(lightMode)">
-                        <div >饱和度</div>
+                        <div >{{'light.saturation' | translate}} </div>
                         <div  class="range-box">
                             <g-slider [(ngModel)]="saturation" [min]="0" [max]="100" [step]="1" (ngModelChange)="saturationChange()"></g-slider>
                         </div>
@@ -59,7 +59,7 @@
                     <div class="rgb" *ngIf="[1,2,5].includes(lightMode)">
                         <div class="rgb-text">
                             <span class="icon_square"></span>
-                            {{'自定义颜色' | translate}} 
+                            {{'lights.key_custom_color' | translate}} 
                         </div>
                         <div class="rgb-text">
                             <span class="icon_square"></span>
@@ -85,12 +85,12 @@
                     </div>
                 </div>
                 <div nz-col nzSpan="11" *ngIf="[1,2,5].includes(lightMode)">
-                    <div class="title">常用颜色选择</div>
+                    <div class="title">{{'lights.key_common_color_select' | translate}} </div>
                     <div class="color-lump">
                         <div *ngFor="let i of staticColors" [ngStyle]="{background: 'rgb('+i.color+')'}" (click)="colorChange(i.color)"></div>
                     </div>
                     <div class="g-flex g-justify-between">
-                        颜色显示
+                        {{'lights.key_color_display' | translate}} 
                         <div class="color-box" [style.backgroundColor]="currentColor"></div>
                     </div>
                     <g-color-picker [(ngModel)]="currentColor" [radius]="100" (colorChanged)="colorPicker($event)"></g-color-picker>

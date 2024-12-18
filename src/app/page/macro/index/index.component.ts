@@ -254,12 +254,8 @@ export class Macro implements OnInit {
             fromEvent(document.body, 'keyup')
         ).pipe(
         map((e: any) => {
-            console.log(e);
-            
             const action = e.type === 'keyup' ? EKey.release : EKey.press
             const keyVal = EDmsMouseKeycodeDefault.find((value: any) => value.code === e.code); 
-            console.log(keyVal);
-            
             if (!keyVal) return;
 
             let id = keyDownMap.get(e.code);
@@ -363,8 +359,6 @@ export class Macro implements OnInit {
     }
     public currentRecordClick(event:any){
         this.currentRecord = event
-        console.log(this.currentRecord);
-        
     }
     // 插入
     public macroType: string = ''

@@ -32,11 +32,11 @@ export class IndexComponent implements OnInit {
 	public lodList = [
 		{
 			"index": 1,
-			"value": "1.0mm"
+			"value": "common.low"
 		},
 		{
 			"index": 2,
-			"value": "2.0mm"
+			"value": "common.high"
 		}
 	]
 	public lodValue: number
@@ -65,7 +65,7 @@ export class IndexComponent implements OnInit {
 			this.sensorValue = [!!wave, !!line, !!motion]
 			this.dalayTime = device.baseInfo.delay
 			this.sleepTime = device.baseInfo.sleep
-			this.lodList = sys.lod
+			// this.lodList = sys.lod
 		})
 	}
 
