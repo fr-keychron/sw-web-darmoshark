@@ -154,7 +154,7 @@ export class MouseDevice extends Mouse {
 		return this.setMouseBtn(
 			EMouseBtn.Media,
 			mouseKey,
-			this.version === 4 ? ByteUtil.numToHighLow(e, 4, 8, "HighToLow") : ByteUtil.numToHighLow(e)
+			this.version === 'dms' ? ByteUtil.numToHighLow(e, 4, 8, "HighToLow") : ByteUtil.numToHighLow(e)
 		)
 	}
 
@@ -170,7 +170,7 @@ export class MouseDevice extends Mouse {
 		return this.setMouseBtn(
 			EMouseBtn.Mouse,
 			mouseKey,
-			this.version === 4 ? ByteUtil.numToHighLow(e, 4, 8, "HighToLow") : ByteUtil.numToHighLow(e, 3, 8, "HighToLow")
+			this.version === 'dms' ? ByteUtil.numToHighLow(e, 4, 8, "HighToLow") : ByteUtil.numToHighLow(e, 3, 8, "HighToLow")
 		)
 	}
 
@@ -182,7 +182,7 @@ export class MouseDevice extends Mouse {
 		return this.setMouseBtn(
 			EMouseBtn.Keyboard,
 			mouseKey,
-			this.version === 4 ? [0 ,shiftKey, keycodes[0], 0]: [shiftKey, ...keycodes]
+			this.version === 'dms' ? [0 ,shiftKey, keycodes[0], 0]: [shiftKey, ...keycodes]
 		)
 	}
 
@@ -190,7 +190,7 @@ export class MouseDevice extends Mouse {
 		return this.setMouseBtn(
 			EMouseBtn.Dpi,
 			mouseKey,
-			this.version === 4 ? ByteUtil.numToHighLow(dpi, 4, 8, "HighToLow") : [dpi]
+			this.version === 'dms' ? ByteUtil.numToHighLow(dpi, 4, 8, "HighToLow") : [dpi]
 		)
 	}
 
@@ -210,7 +210,7 @@ export class MouseDevice extends Mouse {
 		return this.setMouseBtn(
 			EMouseBtn.GameReinforce,
 			mouseKey,
-			this.version === 4 ? 
+			this.version === 'dms' ? 
 			[	type,
 				data.keycode,
 				count,
@@ -233,7 +233,7 @@ export class MouseDevice extends Mouse {
 		return this.setMouseBtn(
 			EMouseBtn.ShortCut,
 			mouseKey,
-			this.version === 4 ? ByteUtil.numberToArray(shortCut) : ByteUtil.numToHighLow(shortCut, 3, 8, "HighToLow")
+			this.version === 'dms' ? ByteUtil.numberToArray(shortCut) : ByteUtil.numToHighLow(shortCut, 3, 8, "HighToLow")
 		)
 	}
 
