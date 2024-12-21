@@ -36,6 +36,17 @@
                     <span>{{ mouseInfo.launcher }}</span>
                 </div>
             </div>
+            <div class="item-container" >
+                <div class="g-flex g-item-center g-justify-between" *ngIf="firmwareInfo.lastedVersion">
+                    <div class="g-flex g-item-center ">
+                        <span class="icon_square"></span>
+                        {{ 'firmware.info.4' | translate }}
+                    </div>
+                    <div class="reset-select" (click)="updataModal = true">
+                        {{'menu.keyboard_firmware'  | translate}} 
+                    </div>
+                </div>
+            </div>
             <div class="item-container">
                 <div class="g-flex g-item-center g-justify-between">
                     <div class="g-flex g-item-center ">
@@ -97,4 +108,35 @@
         <div (click)="resetModal = false">{{'common.cancel'  | translate}}</div>
     </div>
 </div>
- 
+
+<div class="reset-model"  *ngIf="updataModal">
+    <div class="model-title g-flex g-item-center">
+        <span class="icon_square"></span>
+        {{'menu.keyboard_firmware'  | translate}} 
+    </div>
+        <span>{{'firmware.info.7'  | translate}}：{{firmwareInfo.lastedVersion}}</span><br>
+        <span>{{ 'firmware.info.updateSize' | translate }}:{{firmwareInfo.size + ' KB'}}</span><br>
+    <span>{{'firmware.info.8'  | translate}}：{{firmwareInfo.lastedCreateTime | date:"YYYY-MM-dd"}}</span><br>
+    <span>{{'是否确认更新固件'  | translate}}</span>
+    <div class="model-btns g-flex">
+        <div (click)="onUpload()">{{'common.key_confirm'  | translate}}</div>
+        <div (click)="updataModal = false">{{'common.cancel'  | translate}}</div>
+    </div>
+</div>
+<nz-modal
+    [(nzVisible)]="isVisible"
+    [nzClosable]="false"
+    [nzMaskClosable]="false"
+    [nzFooter]="null"
+    [nzStyle]="{top: '48%', left: '6%'}"
+>
+    <ng-container *nzModalContent>
+    <nz-progress
+            class="upload-rate"
+            *ngIf="rate"
+            [nzPercent]="rate"
+            [nzShowInfo]="false"
+    ></nz-progress>
+        <div *ngIf="rate" class="rate-num">{{rate}}%</div>
+    </ng-container>
+</nz-modal>

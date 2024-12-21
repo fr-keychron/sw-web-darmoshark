@@ -1,83 +1,119 @@
 {
-  "name": "Darnoshark-M3-4k",
+  "name": "Keychron M3",
   "type": "mouse",
+  "light": [
+    {
+      "value": 1,
+      "name": "soleLight"
+    },
+    {
+      "value": 2,
+      "name": "soleBreathe"
+    },
+    {
+      "value": 3,
+      "name": "fullColorCycle"
+    },
+    {
+      "value": 4,
+      "name": "colorFlowing"
+    },
+    {
+      "value": 5,
+      "name": "soleFlowing"
+    },
+    {
+      "value": 6,
+      "name": "flashLight"
+    }
+  ],
   "size": [
     517,
     1001
   ],
   "keys": [
     {
-      "x": 168,
-      "y": 68,
+      "x": 421,
+      "y": 74,
       "dir": "left",
       "index": 0,
       "custom": true,
-      "w": 241
+      "w": 570
     },
     {
-      "x": 326,
-      "y": 68,
-      "w": 241,
+      "x": 781,
+      "y": 79,
+      "w": 500,
       "dir": "right",
       "custom": true,
       "index": 2
     },
     {
-      "x": 255,
-      "y": 191,
-      "w": 314,
+      "x": 605,
+      "y": 375,
+      "w": 667,
       "dir": "right",
       "custom": true,
       "index": 1
     },
     {
-      "x": 0,
-      "y": 412,
-      "w": 80,
-      "dir": "left",
-      "custom": true,
-      "index": 4
-    },
-    {
-      "x": 0,
-      "y": 567,
-      "w": 80,
+      "x": 56,
+      "y": 904,
+      "w": 216,
       "dir": "left",
       "custom": true,
       "index": 3
     },
     {
-      "x": 255,
-      "y": 140,
-      "w": 330,
+      "x": 80,
+      "y": 1243,
+      "w": 240,
+      "dir": "left",
+      "custom": true,
+      "index": 4
+    },
+    {
+      "x": 619,
+      "y": 886,
+      "w": 640,
+      "dir": "right",
+      "custom": true,
+      "index": 7,
+      "keyKeep": true,
+      "name": "swichLight"
+    },
+    {
+      "x": 605,
+      "y": 250,
+      "w": 758,
       "dir": "left",
       "custom": true,
       "index": 14,
       "title": "upScroll",
-      "name": "onRoller"
+      "name": "upScroll"
     },
     {
-      "x": 255,
-      "y": 248,
-      "w": 331,
+      "x": 605,
+      "y": 515,
+      "w": 761,
       "dir": "left",
       "custom": true,
       "index": 13,
       "title": "downScroll",
-      "name": "underRoller"
+      "name": "downScroll"
     }
   ],
   "dpi": {
     "limit": [
-      50,
-      30000
+      100,
+      26000
     ],
     "level": [
       400,
       800,
       1600,
       3200,
-      4800
+      5000
     ],
     "reportRate": [
       {
@@ -86,11 +122,11 @@
       },
       {
         "value": 500,
-        "color": "#12ff00"
+        "color": "#0060ff"
       },
       {
         "value": 1000,
-        "color": "#0060ff"
+        "color": "#ff0000"
       }
     ]
   },
@@ -104,6 +140,7 @@
         "index": 2,
         "value": "2.0mm"
       }
-    ]
+    ],
+    "disSensor": false
   }
 }

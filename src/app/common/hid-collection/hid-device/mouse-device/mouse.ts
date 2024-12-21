@@ -122,4 +122,6 @@ export abstract class Mouse {
 		lod: number, wave: number, line: number, motion: number, scroll: number,
 	}, stop?: boolean): Observable<any>
 
+	abstract sendUpdateRequest(file: File): Observable<any>
+
 }

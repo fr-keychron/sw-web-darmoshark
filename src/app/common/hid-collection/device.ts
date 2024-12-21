@@ -244,6 +244,7 @@ export class HidCollection implements IHidCollection {
 				hidDevice.productInfo = {raw: product}
 				hidDevice?.open().subscribe({
 					next: () => {
+						
 						this.currentHidDevice = hidDevice
 						this.collection.mouse.push(hidDevice)
 						this.event$.next({type: EEventEnum.CONNECT, data: this})

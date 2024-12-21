@@ -293,6 +293,10 @@ export class MouseDevice extends Mouse {
 			ByteUtil.numToHighLow(light, 4, 8, "HighToLow")
 		)
 	}
+
+	sendUpdateRequest(file: File) {
+		return this.commands.bluetoothUpdate(file)
+	}
 }
 
 export class handleMouseKey {
