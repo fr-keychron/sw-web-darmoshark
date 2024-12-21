@@ -211,8 +211,8 @@
 }
 
 .active-bgcolor {
-    background: url('../../../../assets/icon/bg-key-active.png');
-    border: 1px solid $global-border-blue; 
+    background-color: rgba($global-border-blue, 50%);
+    border: 1px solid $global-border-blue !important; 
 }
 
 .dpi-select ::ng-deep .g-select{
