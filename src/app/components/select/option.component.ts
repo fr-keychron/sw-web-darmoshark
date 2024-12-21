@@ -24,7 +24,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
             color: #00FFFD;
         }
         .selected {
-            background: url(../../../assets/icon/bg-select.png)
+            background-color: rgba(#00b3b2, 50%);
         }
     `]
 })
