@@ -1,5 +1,5 @@
 {
-  "api": "cn",
+  "api": "local",
   "env": "DEV",
-  "apiHost": "https://launcher.keychron.cn/"
+  "apiHost": "https://192.168.31.92:23333/"
 }
