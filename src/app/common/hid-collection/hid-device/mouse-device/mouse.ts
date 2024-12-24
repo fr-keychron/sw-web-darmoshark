@@ -124,4 +124,6 @@ export abstract class Mouse {
 
 	abstract sendUpdateRequest(file: File): Observable<any>
 
+	abstract sendBinRequest(file: File, mac: number[]): Observable<any>
+
 }
