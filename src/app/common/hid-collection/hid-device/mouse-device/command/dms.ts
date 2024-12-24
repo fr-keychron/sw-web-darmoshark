@@ -225,7 +225,7 @@ export class MouseDeviceV4 {
 			buf[3] = 0x01
 			const sub = this.mouse.report$
 				.pipe(
-					// filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x01),
+					filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x01),
 					map((v) => {
 						
 						const dpiPosition = Array.from({ length: 10 }, (_, i) => [i * 2 + 8, i * 2 + 9]);
@@ -353,8 +353,6 @@ export class MouseDeviceV4 {
 		});
 	}
 	public handleUpdate(bufs: Uint8Array) {
-		console.log(bufs);
-		
 		return new Observable((s) => {
 			const buf = bufs
 			if (this.mouse.loaded && buf[0] === 0x01 && buf[2] === 0x8c && buf[3] === 0x01) {
@@ -820,89 +818,31 @@ export class MouseDeviceV4 {
 			this.mouse.write(0, buf).subscribe()
 		});
 	}
+	
 
-	private bluetoothWriteFile(file: File): Observable<any> {
-		return new Observable(s => {
-			const fr = new FileReader()
-			fr.readAsArrayBuffer(file)
-			fr.onload = e => {
-				const arrayBuffer = e.target.result as ArrayBuffer;
-				const uint8 = new Uint8Array(arrayBuffer);
-				console.log(uint8);
-				
-				const remainingData = uint8.slice(74);  
-				// 将 uint8 数据分块
-				const chunkSize = 59; // 每块最大59字节
-				const chunks:any = [];
-				for (let i = 0; i < remainingData.length; i += chunkSize) {
-					chunks.push(remainingData.slice(i, i + chunkSize));
-				}
-
-				console.log(`Total chunks: ${chunks.length}`);
-				const bufArr: { payload: number[], buf: Uint8Array }[] = [];
-				// 发送固件数据函数
-				const sendFirmware = async (firmwareData: string | any[], index: number, isLast: any) => {
-					const buf = new Uint8Array(64); 
-					buf[0] = 0x9e; // 固定前缀
-					buf[1] = index & 0xFF;
-					buf[2] = (index >> 8) & 0xFF;
-					buf[3] = firmwareData.length | (isLast ? 0x80 : 0x00); // 固定值
-
-					// 填充数据部分
-					for (let i = 0; i < firmwareData.length; i++) {
-						buf[4 + i] = firmwareData[i];
-					}
-
-					this.setbuf63(buf)
-					console.log(buf);
-					this.mouse.write(0, buf).subscribe()
-				};
-				const sendChunksRecursively = async (index: number) => {
-					if (index >= chunks.length) {
-						console.log("All chunks sent.");
-						return;
-					}
-					const isLast = index === chunks.length - 1;
-
-					await sendFirmware(chunks[index], index, isLast);
-					console.log(`Chunk ${index + 1}/${chunks.length} sent.`);
-					setTimeout(() => {
-						sendChunksRecursively(index + 1);
-					}, 100);
-				};
-
-				sendChunksRecursively(0); // 开始递归发送
-			}
-		})
-	}
-
-	public sendUpdateRequest(file: File) {
-		return new Observable<any>((s) => {
+	public sendUpdateRequest() {
+		return new Observable((s) => {
 			const hexStr = this.mouse.pid.replace(/^0x/, '').padStart(4, '0');
 			const pidBuf = ByteUtil.hexSplit(hexStr)
 			const buf = MouseDevice.Buffer(64);
 			buf[0] = 0x1d;
-			buf[2] = 0x80 | 2
+			buf[2] = 0x80 | 11
 			buf[3] = 0x01
-			buf[4] = parseInt(pidBuf[0], 16)
-			buf[5] = parseInt(pidBuf[1], 16)
-			buf[16] = 0x01
+			buf[4] = parseInt(pidBuf[1], 16)
+			buf[5] = parseInt(pidBuf[0], 16)
 			this.setbuf63(buf)
-			console.log(buf);
-			const subj = this.mouse.report$.subscribe(r => {
-				this.bluetoothWriteFile(file)
-					.subscribe(
-						(r) => s.next(r),
-						err => {
-							s.error(err)
-						}
-					)
-				subj.unsubscribe()
-			})
-			s.next();
-			this.mouse.write(0, buf).subscribe(()=>{
-				s.next();
-			})
+			const sub = this.mouse.report$
+				.pipe(
+					filter((v) => (v[0] === 0x1d) && v[3] === 0x01),
+					map((v) => {
+						const mac = [v[5], v[6], v[7], v[8], v[9]]
+						return mac
+					})
+				).subscribe((v) => {
+					s.next(v)       
+					sub.unsubscribe()
+				})
+			this.mouse.write(0, buf).subscribe()
 		})
-	}
+	} 
 }

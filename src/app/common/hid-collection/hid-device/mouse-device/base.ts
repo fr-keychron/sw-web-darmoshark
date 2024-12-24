@@ -294,8 +294,12 @@ export class MouseDevice extends Mouse {
 		)
 	}
 
-	sendUpdateRequest(file: File) {
-		return this.commands.bluetoothUpdate(file)
+	sendUpdateRequest() {
+		return this.commands.sendUpdateRequest()
+	}
+	
+	sendBinRequest(file: File, mac: number[]) {
+		return this.commands.sendBinRequest(file, mac)
 	}
 }
 

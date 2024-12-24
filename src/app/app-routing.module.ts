@@ -2,7 +2,6 @@
 import {NgModule} from '@angular/core';
 import {RouterModule, Routes} from '@angular/router';
 
-
 /**鼠标路由 */
 const mouseRoute: Routes = [
 	// 主页设置
@@ -43,6 +42,10 @@ const mouseRoute: Routes = [
 ]
 const routes: Routes = [
 	...mouseRoute,
+	{
+		path: 'update',
+		loadChildren: () => import('./page/firmware/firmware.module').then(m => m.FirmwareModule)
+	}
 ];
 
 @NgModule({

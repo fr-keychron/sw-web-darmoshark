@@ -93,6 +93,8 @@ export class BaseLayoutMouseComponent implements OnInit {
 
 	private hidDeviceInit() {
 		const hidDevice = this.service.getCurrentHidDevice() as MouseDevice
+		console.log(hidDevice);
+		
 		if (!hidDevice) return 
 		
 		const getHidConf = (h: MouseDevice) => {
