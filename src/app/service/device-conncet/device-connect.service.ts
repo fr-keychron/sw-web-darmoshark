@@ -335,63 +335,68 @@ export class DeviceConnectService {
 		return new Observable((s) => {
 			const usageId = (n1: number, n2: number) => n1 << 16 | n2;
 			this.merchandise.info({ variable: {id} })
-			.subscribe(({data}: any) => {
-				const { type = 0 } = data.category
-				const colls: any = []
-				hids.forEach((hid: any) => {
-					const { collections } = hid;
-					collections.forEach(({usage, usagePage}: any) => {
-						if(usageId(0x01, 0x8c) === usageId(usage, usagePage)) {
-							colls.push({hid, usage, usagePage})
-						}
-						
-						if(type === 0 && usageId(0x61, 0xff60) === usageId(usage, usagePage)) {
-							colls.push({hid, usage, usagePage})
-						}
-
-						if(type === 1 && usageId(0x01, 0xffc1) === usageId(usage, usagePage)){
-							colls.push({hid, usage, usagePage})
-						}
-
-						if(type === 1 && usageId(0x01, 0xff0a) === usageId(usage, usagePage)){
-							colls.push({hid, usage, usagePage})
-						}
-
-						if(type === 2 && [usageId(0x61, 0xff60), usageId(0x01, 0xffc1)].includes(usageId(usage, usagePage))){
-							colls.push({hid, usage, usagePage})
-						}
-						if(type === 2 && usageId(0x01, 0xff0a) === usageId(usage, usagePage)){
-							colls.push({hid, usage, usagePage})
-						}
-					})
-				})
-				const create = [
-					this.createByKeyboard.bind(this),
-					this.createByMouse.bind(this),
-					this.createByDangle.bind(this),
-				][type]
-
-				const bridge = colls.find(({usage, usagePage}: any) => usageId(0x01, 0x8c) === usageId(usage, usagePage))
-				
-				if(bridge){
-					this.device.createBridgeDevice(bridge.hid).subscribe(() => {
-						create(colls, JSON.parse(JSON.stringify(data)), id)
-					})
-				} else {
-					create(colls, JSON.parse(JSON.stringify(data)), id)
-				}
-			}, () => {
-				if(this.loadByKeyboardDef){
+			.subscribe({
+				next: ({data}: any) => {
+					const { type = 0 } = data.category
+					const colls: any = []
 					hids.forEach((hid: any) => {
 						const { collections } = hid;
 						collections.forEach(({usage, usagePage}: any) => {
-							if(usageId(0x61, 0xff60) === usageId(usage, usagePage)){
-								this.createByKeyboard([{hid, usage, usagePage}], false)
+							if(usageId(0x01, 0x8c) === usageId(usage, usagePage)) {
+								colls.push({hid, usage, usagePage})
+							}
+							
+							if(type === 0 && usageId(0x61, 0xff60) === usageId(usage, usagePage)) {
+								colls.push({hid, usage, usagePage})
+							}
+
+							if(type === 1 && usageId(0x01, 0xffc1) === usageId(usage, usagePage)){
+								colls.push({hid, usage, usagePage})
+							}
+
+							if(type === 1 && usageId(0x01, 0xff0a) === usageId(usage, usagePage)){
+								colls.push({hid, usage, usagePage})
+							}
+
+							if(type === 2 && [usageId(0x61, 0xff60), usageId(0x01, 0xffc1)].includes(usageId(usage, usagePage))){
+								colls.push({hid, usage, usagePage})
+							}
+							if(type === 2 && usageId(0x01, 0xff0a) === usageId(usage, usagePage)){
+								colls.push({hid, usage, usagePage})
 							}
 						})
 					})
+					const create = [
+						this.createByKeyboard.bind(this),
+						this.createByMouse.bind(this),
+						this.createByDangle.bind(this),
+					][type]
+
+					const bridge = colls.find(({usage, usagePage}: any) => usageId(0x01, 0x8c) === usageId(usage, usagePage))
+					
+					if(bridge){
+						this.device.createBridgeDevice(bridge.hid).subscribe(() => {
+							create(colls, JSON.parse(JSON.stringify(data)), id)
+						})
+					} else {
+						create(colls, JSON.parse(JSON.stringify(data)), id)
+					}
+				}, error: () => {
+					if(this.loadByKeyboardDef){
+						hids.forEach((hid: any) => {
+							const { collections } = hid;
+							collections.forEach(({usage, usagePage}: any) => {
+								if(usageId(0x61, 0xff60) === usageId(usage, usagePage)){
+									this.createByKeyboard([{hid, usage, usagePage}], false)
+								}
+							})
+						})
+					}else{
+						this.disconnect()
+						this.msg.error(this.i18n.instant('notify.hidConfNotFound'))
+					}
 				}
-			})
+			}) 
 		})
 	}
 
