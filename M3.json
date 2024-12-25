@@ -1,5 +1,5 @@
 {
-  "name": "Darnoshark-M3 pro",
+  "name": "Darnoshark M3 Pro Max",
   "type": "mouse",
   "size": [
     1200,
@@ -73,40 +73,45 @@
       30000
     ],
     "level": [
-      [
-        400,
-        400
-      ],
-      [
-        800,
-        800
-      ],
-      [
-        1600,
-        1600
-      ],
-      [
-        3200,
-        3200
-      ],
-      [
-        4800,
-        4800
-      ]
+      400,
+      800,
+      1600,
+      3200,
+      4800
     ],
     "reportRate": [
       {
         "value": 125,
-        "color": "#fff"
+        "color": "#ff0000"
       },
       {
         "value": 500,
-        "color": "#12ff00"
+        "color": "#0060ff"
       },
       {
         "value": 1000,
-        "color": "#0060ff"
+        "color": "#12ff00"
+      },
+      {
+        "value": 2000,
+        "color": "#e218ff"
+      },
+      {
+        "value": 4000,
+        "color": "#f9e14c"
+      },
+      {
+        "value": 8000,
+        "color": "#ffffff"
       }
+    ],
+    "colors": [
+      "#ff0000",
+      "#0060ff",
+      "#12ff00",
+      "#e218ff",
+      "#f9e14c",
+      "#e218ff"
     ]
   },
   "sys": {
@@ -121,5 +126,6 @@
       }
     ],
     "disSensor": false
-  }
+  },
+  "light": null
 }

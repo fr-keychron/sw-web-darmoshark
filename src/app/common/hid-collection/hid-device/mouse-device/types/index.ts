@@ -9,6 +9,7 @@ export interface IBaseInfo {
 	workMode: number ,
 	feature?: number,
 	profile: number,
+	reportRateMax?: number,
 	usb: IDpiReport,
 	rf: IDpiReport,
 	bt: IDpiReport,

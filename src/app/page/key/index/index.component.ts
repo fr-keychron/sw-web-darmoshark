@@ -186,6 +186,8 @@ export class IndexComponent implements OnInit {
 		return name.name
 	}
 	public setSelectActive(active: number, type: number) {
+		console.log(active, type);
+		
 		let v = this.activeMouseKey;
 		if (v || v === 0) {
 			if (type=== this.funBtnKeys.Mouse) { // 基础按键

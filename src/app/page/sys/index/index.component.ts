@@ -65,8 +65,8 @@ export class IndexComponent implements OnInit {
 		const device = this.service.getCurrentHidDevice() as MouseDevice
 		this.device = device
 		const parseInfo = (d: MouseDevice) => {
-			this.mouseInfo.mouse = d.firmware.mouse
-			this.mouseInfo.receiver = d.firmware.receiver
+			this.mouseInfo.mouse = d.firmware.mouse || '0.0.0'
+			this.mouseInfo.receiver = d.firmware.receiver || '0.0.0'
 		}
 		if (device instanceof MouseDevice) {
 			parseInfo(device)
@@ -143,8 +143,6 @@ export class IndexComponent implements OnInit {
 						this.firmwareInfo.lastedCreateTime = r.firmware.lasted?.update_time
 						this.firmwareInfo.path = r.firmware.lasted.path
 						this.showUpdate = this.mouseInfo.mouse != this.firmwareInfo.lastedVersion
-					} else {
-						this.msg.error(this.i18n.instant('firmware.productNotExist'))
 					}
 				}, error: () => {
 					this.msg.error(this.i18n.instant('firmware.productNotExist'))

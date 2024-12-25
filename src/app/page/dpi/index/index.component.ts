@@ -32,6 +32,7 @@ export class IndexComponent implements OnInit {
   public minDpi = 100; // 刻度尺最小DPI
   public maxDpi = 30000; // 刻度尺最大DPI
   public reportRateVal = 0; // 当前回报率
+  public reportRateMax = 3; // 最大回报率数量
   public nxySetting = false; 
   public reportRate = [
     { value: 125, color: '#ff3643' },
@@ -94,7 +95,8 @@ export class IndexComponent implements OnInit {
         dpiConf,
         workMode,
         usb, rf, bt,
-        profile
+        profile,
+        reportRateMax
       }} = h;
       const drValue = [usb, rf, bt];
       const value = drValue[workMode];
@@ -102,7 +104,7 @@ export class IndexComponent implements OnInit {
       this.reportRateVal = value?.reportRate;
       this.dpiLevel = value.dpi;
       this.currentProfile = profile;
-      this.oldLevelVal = JSON.parse(JSON.stringify(json.dpi.level));
+      this.oldLevelVal = JSON.parse(JSON.stringify(json.dpi.level)).map((level: number) => [level, level]);
       const convertedLevelVal = dpiConf.levelVal.reduce((acc, value, index, array) => {
         if (index % 2 === 0) {
           acc.push([array[index], array[index + 1]]);
@@ -121,7 +123,7 @@ export class IndexComponent implements OnInit {
         }
 
         if (Object.keys(dpi.reportRate).length > 0) {
-          this.reportRate = dpi.reportRate
+          this.reportRate = dpi.reportRate.slice(0, reportRateMax)
             .filter(r => r.type ? r.type.includes(workMode) : true)
             .map(r => ({
               ...r,
@@ -211,11 +213,16 @@ export class IndexComponent implements OnInit {
 	// 恢复出厂设置
 	public reset() {
 		const device = this.service.getCurrentHidDevice() as MouseDevice;
-		device.recovery({ profile: this.currentProfile, tagVal: 0x22 }).subscribe(() => {
-		device.getBaseInfo().subscribe(() => {
-			this.init();
-			this.msgService.success(this.i18n.instant('notify.success'));
-		});
+		this.currentHidDevice.setDpi({
+			current: 1,
+			level: null,
+			gears: 5,
+			values: this.oldLevelVal,
+		}).subscribe(() => {
+      device.getBaseInfo().subscribe(() => {
+        this.init();
+        this.msgService.success(this.i18n.instant('notify.success'));
+      });
 		});
 	}
 

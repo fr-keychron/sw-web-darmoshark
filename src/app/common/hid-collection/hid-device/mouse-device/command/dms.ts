@@ -1,5 +1,5 @@
 import {Observable, firstValueFrom} from "rxjs";
-import {EDmsMacroLoopKey, EMouseBtn} from "../enum";
+import {EDmsMacroLoopKey, EMouseBtn, productFirmware} from "../enum";
 import {EDeviceConnectState} from "../../../enum";
 import {filter, map, switchMap, take, tap, timeout} from "rxjs/operators";
 import {ByteUtil} from "src/app/utils";
@@ -41,8 +41,6 @@ export class MouseDeviceV4 {
 		return new Observable<any>((s) => {
 			const init = async () => {			
 				const { workMode, version } = this.mouse
-				console.log(this.mouse);
-				
 				if (workMode === 1) {
 					this.mouse.setTransceiver(new SerialTransceiver(this.mouse.hidRaw))
 					const receiver = await firstValueFrom(this.getReceiverState());
@@ -55,6 +53,7 @@ export class MouseDeviceV4 {
 					}
 					this.mouse.state = EDeviceConnectState.G;
 					await firstValueFrom(this.getBaseInfo());
+					await firstValueFrom(this.getReceiverVersion())
 				} else {
 					await firstValueFrom(this.getBaseInfo());
 				}
@@ -63,6 +62,7 @@ export class MouseDeviceV4 {
 				this.mouse.baseInfo.workMode = workMode
 				this.mouse.baseInfo.profile = protocol.profile
 				this.mouse.baseInfo.power = protocol.power
+				this.mouse.baseInfo.reportRateMax = protocol.reportRateMax
 				this.mouse.loaded = true;
 				this.mouse.event$.next({
 					type: HidDeviceEventType.JsonConf,
@@ -107,15 +107,15 @@ export class MouseDeviceV4 {
 							2,
 							""
 						)}`; 
-						// const pid = `0x${ByteUtil.oct2Hex(v[12], 2, "")}${ByteUtil.oct2Hex(
-						// 	v[11],
-						// 	2,
-						// 	""
-						// )}`;
-						const pid = '0x073a'
+						const pid = `0x${ByteUtil.oct2Hex(v[12], 2, "")}${ByteUtil.oct2Hex(
+							v[11],
+							2,
+							""
+						)}`;
+						const newPid = productFirmware.find((item) => item.productID.toLowerCase() === pid.toLowerCase())?.PID
 						const vpId = MouseDevice.vendorProductId(
 							ByteUtil.hex2Oct(vid),
-							ByteUtil.hex2Oct(pid)
+							ByteUtil.hex2Oct(newPid)
 						);
 						this.mouse.id = vpId
 					
@@ -141,8 +141,9 @@ export class MouseDeviceV4 {
 		power: { state: number, value: number };
 		workMode: number;
 		profile: number;
+		reportRateMax: number;
 	}> {
-		return new Observable<{ power: { state: number, value: number }; workMode: number; profile: number;}>((s) => {
+		return new Observable<{ power: { state: number, value: number }; workMode: number; profile: number; reportRateMax: number;}>((s) => {
 			const buf = MouseDevice.Buffer(64);
 			buf[0] = 0x01
 			buf[2] = 0x80 | 1
@@ -161,7 +162,8 @@ export class MouseDeviceV4 {
 						return {
 							workMode,
 							profile: v[7],
-							power: power
+							power: power,
+							reportRateMax: v[10],
 						};
 					})
 				)
@@ -177,7 +179,8 @@ export class MouseDeviceV4 {
 							power: {
 								state: 0,
 								value: 0
-							}
+							},
+							reportRateMax: 3
 						})
 					},
 				});
@@ -263,6 +266,7 @@ export class MouseDeviceV4 {
 							power: this.power,
 							profile: this.mouse.baseInfo?.profile || 0,
 							workMode: this.mouse.baseInfo?.workMode !== undefined ? this.mouse.baseInfo.workMode : null,
+							reportRateMax: this.mouse.baseInfo?.reportRateMax || 3,
 						};
 					})
 				)
@@ -312,14 +316,13 @@ export class MouseDeviceV4 {
 
 	public getVersion(): Observable<{
 		firmwareVersion: string;
-		receiverVersion: string;
 	}> {
-		return new Observable<{  firmwareVersion: string; receiverVersion: string; }>((s) => {
+		return new Observable<{  firmwareVersion: string}>((s) => {
 			const formatVersion = (highByte: number, lowByte: number): string => {
-				const versionValue = (highByte << 8) | lowByte
-				const versionMajor = (versionValue >> 8) & 0xFF
-				const versionPatch = versionValue & 0xFF
-				return `${versionMajor}.${0}.${versionPatch}`
+				const major = highByte;
+				const minor = (lowByte & 0xF0) >> 4;
+				const patch = lowByte & 0x0F;
+				return `${major}.${minor}.${patch}`;
 			};
 			const buf = MouseDevice.Buffer(64);
 			buf[0] = 0x00;
@@ -327,24 +330,60 @@ export class MouseDeviceV4 {
 			buf[3] = 0x00
 			this.mouse.report$
 				.pipe(
-					filter((v) => v[0] === 0  && v[3] === 0),
+					filter((v) => (v[0] === 0 || v[0] === 0x40) && v[3] === 0),
 					map((v) => {
 						return {
 							firmwareVersion:formatVersion(v[9],v[8]),//固件版本
-							receiverVersion:formatVersion(v[21],v[20]),//接收器版本
 						};
 					})
 				)
 				.subscribe({
 					next: (v) => {
 						this.mouse.firmware.mouse = v.firmwareVersion
+						s.next(v);
+					},
+					error: () => {
+						s.next({
+							firmwareVersion: '1.0.0'
+						})
+					},
+				});
+			this.setbuf0(buf);
+			this.setbuf63(buf);
+			this.mouse.write(0, buf).subscribe();
+		});
+	}
+	public getReceiverVersion(): Observable<{
+		receiverVersion: string;
+	}> {
+		return new Observable<{receiverVersion: string; }>((s) => {
+			const formatVersion = (highByte: number, lowByte: number): string => {
+				const major = highByte;
+				const minor = (lowByte & 0xF0) >> 4;
+				const patch = lowByte & 0x0F;
+				return `${major}.${minor}.${patch}`;
+			};
+			const buf = MouseDevice.Buffer(64);
+			buf[0] = 0;
+			buf[2] = 0x80 | 1;
+			buf[3] = 0
+			this.mouse.report$
+				.pipe(
+					filter((v) => v[0] === 0  && v[3] === 0),
+					map((v) => {
+						return {
+							receiverVersion:formatVersion(v[9],v[8]),//接收器版本
+						};
+					})
+				)
+				.subscribe({
+					next: (v) => {
 						this.mouse.firmware.receiver = v.receiverVersion
 						s.next(v);
 					},
 					error: () => {
 						s.next({
-							firmwareVersion: '1.0.0',
-							receiverVersion: '1.0.0'   
+							receiverVersion: '0.0.0'   
 						})
 					},
 				});
@@ -355,14 +394,14 @@ export class MouseDeviceV4 {
 	public handleUpdate(bufs: Uint8Array) {
 		return new Observable((s) => {
 			const buf = bufs
-			if (this.mouse.loaded && buf[0] === 0x01 && buf[2] === 0x8c && buf[3] === 0x01) {
+			if (this.mouse.workMode === 1 && this.mouse.loaded && buf[0] === 0x01 && buf[2] === 0x8c && buf[3] === 0x01) {
 				if(!((buf[4] >> 3) & 0x01)) {
 					this.mouse.update$.next({
 						type: EEventEnum.DISCONNECT,
 						data: this
 					});
 					s.next(true);
-				}
+				}                                                          
 			} else {
 				s.next(false);
 			}
@@ -638,6 +677,55 @@ export class MouseDeviceV4 {
 		});
 	}
 	
+	public getProtocolVersion(): Observable<{
+		version: number;
+		workMode: number;
+		profile: number;
+	}> {
+		return new Observable<{ version: number; workMode: number; profile: number;}>((s) => {
+			const buf = MouseDevice.Buffer(64);
+			buf[0] = 0x01
+			buf[2] = 0x81
+			buf[3] = 0x01
+			const obj = this.mouse.report$
+				.pipe(
+					filter((v) => (v[0] === 0x01 || v[0] === 0x41) && v[3] === 0x01),
+					map((v) => {
+						const bits = ByteUtil.oct2Bin(v[4])
+						const workMode = Number(bits[4])
+						const power = {
+							state: v[5],
+							value: v[6]
+						}
+						this.power = power || this.power
+						// this.mouse.protocolVersion = 
+						this.mouse.baseInfo.power = power
+						this.mouse.baseInfo.profile = v[7]
+						return {
+							workMode,
+							version: null,
+							profile: v[7],
+						};
+					})
+				)
+				.subscribe({
+					next: (v) => {
+						obj.unsubscribe()
+						s.next(v);
+					},
+					error: () => {
+						s.next({
+							version: 1,
+							workMode: 0,
+							profile: 0
+						})
+					},
+				});
+			this.setbuf0(buf)
+			this.setbuf63(buf)
+			this.mouse.write(0, buf).subscribe();
+		});
+	}
 	public setDebounce(v: number) {
 		return new Observable((s) => {
 			const buf = MouseDevice.Buffer(64);
@@ -656,38 +744,14 @@ export class MouseDeviceV4 {
 	}
 	public recovery(opt: {profile?:number, tagVal?: any, value?:number}) {
 		return new Observable<any>((s) => {
-			if (opt.tagVal === 34) {
-				const section: Observable<Result>[] = [];
-				section.push(this.recovery({ tagVal: 3, value: 7 }))
-				section.push(this.recovery({ tagVal: 3, value: 6 }))
-				section.push(this.recovery({ tagVal: 3, value: 5 }))
-				const run = () => {
-					const data = section.shift();
-					data.subscribe();
-					const subj = this.mouse.report$
-					.pipe(
-						filter(v => (v[0] === 0x0a || v[0] === 0x4a ) && v[3] === 0x01 ),
-						take(1))
-					.subscribe((v) => {
-						if (section.length) {
-							run();
-						} else {
-							s.next()
-							subj.unsubscribe();
-						}
-					});
-				};
-				run();
-				return
-			}
-			
 			const buf = MouseDevice.Buffer(64);
 			buf[0] = 0x09
 			buf[2] = (opt.value || opt.profile) ? 0x82 : 0x81
 			buf[3] = opt.tagVal & 0xff
 			buf[4] = (opt.value || opt.profile) & 0xff
 			const subj = this.mouse.report$
-				.pipe(filter(v => (v[0] === 0x09 || v[0] === 0x49) && v[3] === opt.tagVal && ((opt.value || opt.profile) ? v[4] === (opt.value || opt.profile) : v[4] === 0)), take(1))
+				.pipe(
+					filter(v => (v[0] === 0x09 || v[0] === 0x49) && v[3] === opt.tagVal && ((opt.value || opt.profile) ? v[4] === (opt.value || opt.profile) : v[4] === 0)), take(1))
 				.subscribe((v) => {
 					this.saveData().subscribe((r) => {
 						subj.unsubscribe()
@@ -739,7 +803,7 @@ export class MouseDeviceV4 {
 		return new Observable((s) => {
 			const buf = MouseDevice.Buffer(64);
 			buf[0] = 0x05
-			buf[2] = 0x80 | 14
+			buf[2] = 0x80 | 17
 			buf[3] = 0x02
 			buf[4] = 0x01
 			buf[5] = data.i
@@ -758,8 +822,9 @@ export class MouseDeviceV4 {
 			buf[18] = data.g
 			buf[19] = data.b
 			const subj = this.mouse.report$
-			.pipe(filter(v => (v[0] === 0x05 || v[0] === 0x45) && v[3] === 0x02))
-				.subscribe(() => {
+			.pipe(
+				filter(v => (v[0] === 0x05 || v[0] === 0x45) && v[3] === 0x02))
+				.subscribe((v) => {
 					this.saveData().subscribe((r) => {
 						subj.unsubscribe()
 						s.next(r)

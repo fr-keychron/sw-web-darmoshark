@@ -217,7 +217,15 @@ body {
         }
     }
 }
-
+::ng-deep .g-select {
+    & > .g-options {
+        & > g-option:last-child {
+            & > .g-option {
+                border: 0;
+            }
+        }
+    }
+}
 .g-shining {
     animation-name: g-shining-animate;
     animation-timing-function: linear;

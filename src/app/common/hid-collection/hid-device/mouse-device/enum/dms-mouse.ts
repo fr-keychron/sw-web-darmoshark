@@ -1,3 +1,13 @@
+export const productFirmware = [
+	{productName: 'M3Pro', productID: "0x0711", PID: "0x072D"},
+	{productName: 'M3ProMax', productID: "0x071A", PID: "0x073A"},
+	{productName: 'M3SMax', productID: "0x071F", PID: "0x0740"},
+	{productName: 'M3MICCROPRO', productID: "0x071E", PID: "0x073E"},
+	{productName: 'M2MOUSE', productID: "0x0713", PID: "0x0733"},
+	{productName: 'M5PRO', productID: "0x071C", PID: "0x073D"},
+	{productName: 'M3SPRO', productID: "0x0710", PID: "0x0722"},
+]
+
 export enum EDmsMouseBtnActionKey {
 	leftClick = 0x0100f000,
 	rightClick = 0x0100f100,

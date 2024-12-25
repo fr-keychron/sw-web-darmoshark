@@ -7,6 +7,7 @@ import {Subscription, fromEvent, firstValueFrom} from "rxjs";
 import {TranslateService} from "@ngx-translate/core";
 import {EEventEnum, EMouseBtn, HidDeviceEventType, IMouseJson, MouseDevice} from "../../common/hid-collection";
 import {DeviceConnectService} from "../../service/device-conncet/device-connect.service";
+import { cloneDeep } from 'lodash';
 
 @Component({
 	selector: 'base-layout-mouse',
@@ -276,9 +277,17 @@ export class BaseLayoutMouseComponent implements OnInit {
 	}
 	public async importConfig() {
 		const device = this.service.getCurrentHidDevice<MouseDevice>()
+		const convertedLevelVal = device.baseInfo.dpiConf.levelVal.reduce((acc, value, index, array) => {
+			if (index % 2 === 0) {
+			  acc.push([array[index], array[index + 1]]);
+			}
+			return acc;
+		  }, []);
+		const newBaseInfo = cloneDeep(device.baseInfo);
+		newBaseInfo.dpiConf.levelVal = convertedLevelVal;
 		const data = {
 			mousebtnConf: await this.getMousebtnConf(),
-			baseInfo: device.baseInfo,
+			baseInfo: newBaseInfo,
 			lightConf: await this.getLightConf(),
 			leftLock: this.leftLock,
 		}

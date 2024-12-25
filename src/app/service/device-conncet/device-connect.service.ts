@@ -9,7 +9,8 @@ import {
 	HidCollection,
 	IEvent,
 	KeyboardDevice,
-	MouseDevice
+	MouseDevice,
+	productFirmware
 } from "../../common/hid-collection";
 import {fromEvent, Observable, Subject} from "rxjs";
 import {filter, map} from "rxjs/operators";
@@ -30,8 +31,6 @@ export class DeviceConnectService {
 		this.support = 'hid' in window.navigator;
 		if ((<any>navigator).hid) {
 			(<any>navigator).hid.addEventListener('disconnect', (e: any) => {
-				console.log(e);
-				
 				this.event$.next({type: EEventEnum.DISCONNECT, data: null})
 				this.hidCollection = []
 			});
@@ -267,17 +266,29 @@ export class DeviceConnectService {
 						)
 						.subscribe((v: any) => {
 							const vid = `0x${ByteUtil.oct2Hex(v[6], 2, "")}${ByteUtil.oct2Hex(v[5], 2, "")}`;
-							// const pid = `0x${ByteUtil.oct2Hex(v[12], 2, "")}${ByteUtil.oct2Hex(v[11], 2, "")}`;
-							const pid = '0x073a'
-							const vpId = BridgeDevice.vendorProductId(ByteUtil.hex2Oct(vid), ByteUtil.hex2Oct(pid));
+							const pid = `0x${ByteUtil.oct2Hex(v[12], 2, "")}${ByteUtil.oct2Hex(v[11], 2, "")}`;
+							console.log(vid, pid);
+							
+							const newPid = productFirmware.find((item) => item.productID.toLowerCase() === pid.toLowerCase())?.PID
+							if(!newPid){
+								this.disconnect()
+								this.msg.error(this.i18n.instant('notify.hidConfNotFound'))
+								return
+							}
+							const vpId = BridgeDevice.vendorProductId(ByteUtil.hex2Oct(vid), ByteUtil.hex2Oct(newPid));
 							this.merchandise.info({ variable: {id: vpId} })
-								.subscribe(({data}: any) => {
-									const mouseData = {...data, workMode: 1}
-									if (mouseData.category.type === 1){
-										this.createByMouse(colls, mouseData, vpId)
-										s.next()
-									} else {
-										s.next(2)
+								.subscribe({
+									next: ({data}: any) => {
+										const mouseData = {...data, workMode: 1}
+										if (mouseData.category.type === 1){
+											this.createByMouse(colls, mouseData, vpId)
+											s.next()
+										} else {
+											s.next(2)
+										}
+									}, error: () => {
+										this.disconnect()
+										this.msg.error(this.i18n.instant('notify.hidConfNotFound'))
 									}
 								})
 							sub.unsubscribe()

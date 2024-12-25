@@ -43,15 +43,10 @@ export class IndexComponent implements OnInit {
 
 	ngOnInit(): void {
 		this.init()
-		const device = this.service.getCurrentHidDevice<MouseDevice>();
-		device?.update$.subscribe(r => {
-			if(r.type === 'light'){
-				this.init()
-			}
-		})
 	}
 	public init(){
 		const device = this.service.getCurrentHidDevice<MouseDevice>();
+		console.log('init'	,device);
 		device?.getLight().subscribe((r: any)=>{
 			this.lightMode = r.lightMode
 			this.brightness = r.brightness
@@ -61,13 +56,14 @@ export class IndexComponent implements OnInit {
 			this.saturationUpdata()
 			setTimeout(()=>{
 				this.isInitialized = true;
-			},0)
-			
+			},100)
 		})
 	}
 
 	// 取色器
 	public colorPicker(e: any){
+		console.log('colorPicker');
+		
 		this.rgbArr = this.parseRgbString(e);
 		this.setRGB()
 	}
@@ -80,11 +76,14 @@ export class IndexComponent implements OnInit {
 	  }
 	// 常用色
 	public colorChange(color: number[]){
+		console.log('colorChange');
+		
 		this.rgbArr = [...color]
 		this.setRGB()
 	}
 	// 饱和度
 	public saturationChange(){
+		console.log('saturationChange');
 		this.hsl[1] = this.saturation/100
 		this.rgbArr = this.hslToRgb(this.hsl)
 		this.setRGB()
@@ -98,26 +97,37 @@ export class IndexComponent implements OnInit {
 		if (this.updateSub) this.updateSub.unsubscribe()
 	}
 
-	public load($e: number) {
-		if (this.deviceSub) this.deviceSub.unsubscribe()
-		this.init()
-	}
-	public setRGB(): void {
-		if (this.isInitialized) {
+	private throttleTimer: any = null; // 节流计时器
+
+	public setRGB() {
+		if (!this.isInitialized) return;
+
+		// 如果当前有未完成的计时器，直接返回，避免多次执行
+		if (this.throttleTimer !== null) return;
+
+		this.throttleTimer = setTimeout(() => {
 			const [r, g, b] = this.rgbArr;
 			this.currentColor = `rgb(${r},${g},${b})`;
+
 			const device = this.service.getCurrentHidDevice<MouseDevice>();
+			console.log('setRGB', this.lightMode);
+
 			device.setLight({
 				i: this.lightMode,
 				l: this.brightness,
 				s: this.speed,
-				r, 
-				g, 
+				r,
+				g,
 				b,
 			}).subscribe();
+
 			this.saturationUpdata();
-		}
+
+			// 清除节流计时器
+			this.throttleTimer = null;
+		}, 300); // 300 毫秒的节流间隔
 	}
+
 
 	// 恢复出厂设置
 	public reset(){
