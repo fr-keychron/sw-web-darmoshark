@@ -5,6 +5,7 @@ import {MsgService} from "../../../service/msg/msg.service";
 import {TranslateService} from "@ngx-translate/core";
 import {HttpClient} from "@angular/common/http";
 import {
+	EEventEnum,
 	MouseDevice,
 } from "../../../common/hid-collection";
 import {
@@ -12,6 +13,7 @@ import {
 } from "../../../common/hid-collection/hid-device/device-dfu/mouse-device";
 import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 import { Router } from "@angular/router";
+import { GLOBAL_CONFIG } from "src/app/config";
 
 @Component({
 	selector: 'firmware-update',
@@ -40,12 +42,13 @@ export class UpdateComponent implements OnInit {
 			this.getFirmwareInfo()
 			this.version = this.device.firmware.mouse
 		}
-		
+		this.service.event$
+			.pipe(filter(v => v.type === EEventEnum.DISCONNECT))
+			.subscribe(() => this.device = undefined)
 	}
 
 	public loading = false
 	public step = 0;
-	public support = false;
 	public version: string
 	public firmwareInfo: any = {
 		path: '',
@@ -80,7 +83,7 @@ export class UpdateComponent implements OnInit {
 	}
 	// 下载固件
 	public downloadFirmware(callback: (success: boolean) => void) {
-		const path = 'https://192.168.31.92:23333/api/upload/bin/27/1735022473202.bin';
+		const path = this.firmwareInfo.path;
 		this.loading = true;
 		const httpOptions = {
 			responseType: 'blob' as 'json'
@@ -168,10 +171,11 @@ export class UpdateComponent implements OnInit {
 				next: (r: any) => {
 					if (r.product && r.firmware.lasted) {
 						this.firmwareInfo['productName'] = r.product.name;
-						this.support = r.product.support_update
 						this.firmwareInfo.lastedVersion = r.firmware.lasted?.version
 						this.firmwareInfo.lastedCreateTime = r.firmware.lasted?.update_time
 						this.firmwareInfo.path = r.firmware.lasted.path
+						const locale = GLOBAL_CONFIG.lang;
+						this.firmwareInfo.desc = r.firmware.lasted.desc ? r.firmware.lasted.desc[locale] : ''
 						if (!this.firmwareInfo.file && this.firmwareInfo.path) {
 							this.downloadFirmware((success: boolean) => {
 								if (!success) {

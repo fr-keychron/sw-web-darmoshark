@@ -825,6 +825,8 @@ export class MouseDeviceV4 {
 			.pipe(
 				filter(v => (v[0] === 0x05 || v[0] === 0x45) && v[3] === 0x02))
 				.subscribe((v) => {
+					console.log(v);
+					
 					this.saveData().subscribe((r) => {
 						subj.unsubscribe()
 						s.next(r)
@@ -832,6 +834,8 @@ export class MouseDeviceV4 {
 				})
 			this.setbuf0(buf);
 			this.setbuf63(buf);
+			console.log(buf);
+			
 			this.mouse.write(0, buf).subscribe();
 		})
 	}

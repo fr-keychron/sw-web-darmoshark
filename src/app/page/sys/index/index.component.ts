@@ -142,7 +142,7 @@ export class IndexComponent implements OnInit {
 						this.firmwareInfo.lastedVersion = r.firmware.lasted?.version
 						this.firmwareInfo.lastedCreateTime = r.firmware.lasted?.update_time
 						this.firmwareInfo.path = r.firmware.lasted.path
-						this.showUpdate = this.mouseInfo.mouse != this.firmwareInfo.lastedVersion
+						this.showUpdate =  this.compareVersions(this.mouseInfo.mouse, this.firmwareInfo.lastedVersion) < 0 && r.product.support_update
 					}
 				}, error: () => {
 					this.msg.error(this.i18n.instant('firmware.productNotExist'))
@@ -153,5 +153,19 @@ export class IndexComponent implements OnInit {
 	public goUpdate(){
 		this.router.navigate(['/update'])
 	}
+	private compareVersions(v1: string, v2: string) {
+		const arr1 = v1.split('.').map(Number);
+		const arr2 = v2.split('.').map(Number);
 	
+		const len = Math.max(arr1.length, arr2.length);
+		for (let i = 0; i < len; i++) {
+			const num1 = arr1[i] || 0; 
+			const num2 = arr2[i] || 0;
+	
+			if (num1 > num2) return 1;
+			if (num1 < num2) return -1;
+		}
+	
+		return 0;
+	}
 }

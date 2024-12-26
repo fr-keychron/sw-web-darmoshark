@@ -2,8 +2,7 @@
 	<!-- 加载图 -->
 	<div class='device-unconnected' *ngIf="!currentHidDevice">
 		<c-loading/>
-	</div> 
-
+	</div>
 	<div class='device-connected' *ngIf="currentHidDevice && showCover">
 		<div class="device-connected-top  g-flex g-justify-between g-item-center" (click)="bodyClick($event)">
 			<div class="left" (click)="$event.stopPropagation()"  *ngIf="left">

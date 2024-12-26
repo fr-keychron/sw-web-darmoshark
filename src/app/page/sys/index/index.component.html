@@ -37,7 +37,7 @@
                 </div>
             </div>
             <div class="item-container" >
-                <div class="g-flex g-item-center g-justify-between" *ngIf="showUpdate">
+                <div class="g-flex g-item-center g-justify-between" *ngIf="showUpdate && device?.workMode === 0">
                     <div class="g-flex g-item-center ">
                         <span class="icon_square"></span>
                         {{ 'firmware.info.4' | translate }}

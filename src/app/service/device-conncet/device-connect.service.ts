@@ -31,7 +31,7 @@ export class DeviceConnectService {
 		this.support = 'hid' in window.navigator;
 		if ((<any>navigator).hid) {
 			(<any>navigator).hid.addEventListener('disconnect', (e: any) => {
-				this.event$.next({type: EEventEnum.DISCONNECT, data: null})
+				this.disconnect()
 				this.hidCollection = []
 			});
 		}

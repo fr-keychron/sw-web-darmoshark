@@ -4,7 +4,7 @@
 			<nz-spin nzSimple></nz-spin>
 		</div>
 
-		<div class="content-wrapper" *ngIf="step === 0">
+		<div class="content-wrapper" *ngIf="step === 0 && device">
 			<div class="content-block">
 				<div>
 					<span>{{ 'firmware.info.6' | translate }}:</span>
@@ -27,7 +27,7 @@
 				</div>
 				<div *ngIf="firmwareInfo.desc" class="description">
 					<span>{{ 'firmware.description' | translate }}:</span>
-					<span [innerText]="deviceInfo.desc ">
+					<span [innerText]="firmwareInfo.desc ">
 					</span>
 				</div>
 			</div>
