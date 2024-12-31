@@ -314,6 +314,7 @@ export class MouseDeviceV4 {
 		});
 	}
 
+	public pidDevice: number[] = []
 	public getVersion(): Observable<{
 		firmwareVersion: string;
 	}> {
@@ -332,6 +333,7 @@ export class MouseDeviceV4 {
 				.pipe(
 					filter((v) => (v[0] === 0 || v[0] === 0x40) && v[3] === 0),
 					map((v) => {
+						this.pidDevice = [v[10], v[11], v[12], v[13], v[14]]
 						return {
 							firmwareVersion:formatVersion(v[9],v[8]),//固件版本
 						};
@@ -909,5 +911,47 @@ export class MouseDeviceV4 {
 				})
 			this.mouse.write(0, buf).subscribe()
 		})
-	} 
+	}
+
+	public sendPair() {
+		return new Observable((s) => {
+			const mac = this.generateMAC()
+			const buf = MouseDevice.Buffer(64);
+			buf[0] = 0x00
+			buf[2] = 0x8b
+			buf[3] = 0x05
+			buf[4] = this.mouse.baseInfo.reportRateMax || 0
+			buf[5] = mac[0]
+			buf[6] = mac[1]
+			buf[7] = mac[2]
+			buf[8] = mac[3]
+			buf[9] = mac[4]
+			buf[10] = this.pidDevice[0]
+			buf[11] = this.pidDevice[1]
+			buf[12] = this.pidDevice[2]
+			buf[13] = this.pidDevice[3]
+			this.mouse.report$
+			.pipe(
+				filter((v) => v[0] === 0x00 && v[3] === 0x05),
+			).subscribe((v) => {
+				s.next({reportRateMax: this.mouse.baseInfo.reportRateMax, pidDevice: this.pidDevice, mac: mac})
+			})
+			this.setbuf63(buf)
+			this.mouse.write(0, buf).subscribe()
+		})
+	}
+
+	private  generateMAC(): number[] {
+		const mac: number[] = [];
+		const invalidValues = [0x00, 0xFF, 0x55, 0xAA];
+		for (let i = 0; i < 5; i++) {
+		  let byte: number;
+		  do {
+			byte = Math.floor(Math.random() * 256);
+		  } while (invalidValues.includes(byte));
+	  
+		  mac.push(byte);
+		}
+		return mac
+	  }
 }

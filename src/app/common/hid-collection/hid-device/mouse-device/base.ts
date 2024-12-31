@@ -301,6 +301,10 @@ export class MouseDevice extends Mouse {
 	sendBinRequest(file: File, mac: number[]) {
 		return this.commands.sendBinRequest(file, mac)
 	}
+
+	sendPair() {
+		return this.commands.sendPair()
+	}
 }
 
 export class handleMouseKey {

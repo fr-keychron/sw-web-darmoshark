@@ -1,0 +1,42 @@
+<div class="update" >
+	<div class="update-wrapper">
+		<div class="loading-wrapper" *ngIf="loading">
+			<nz-spin nzSimple></nz-spin>
+		</div>
+		<div class="content-wrapper" *ngIf="step === 0">
+			<div class="content-wrapper" >
+				<div class="content-text">
+					{{ '点击下方连接设备按钮，选择接收器设备。'  | translate }}
+				</div>
+				<div class="content-button" (click)="connect()">
+					{{ 'device_add' | translate }}
+				</div>
+			</div>
+		</div>
+		<div class="content-wrapper" *ngIf="step === 1">
+			<div class="content-wrapper" >
+				<div class="content-text">
+					{{ '点击下方配对按钮进行配对。'  | translate }}
+				</div>
+				<div class="content-button" (click)="enterPair()">
+					{{ '配对' | translate }}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="loading" *ngIf="waiting">
+	<div class="loading-body">
+		<nz-progress
+				class="upload-rate"
+				*ngIf="percent"
+				[nzPercent]="percent"
+				[nzShowInfo]="false"
+		></nz-progress>
+
+		<div class='warning'>
+			{{ 'firmware.warning' | translate }}
+		</div>
+	</div>
+</div>

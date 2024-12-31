@@ -17,8 +17,8 @@ export class MouseDeviceDFU {
 	public id: number
 	public name: any;
 	public event$: Subject<IMouseDeviceEvent> = new Subject<IMouseDeviceEvent>()
-
 	constructor(
+		
 		private hidRaw: any,
 		private i18n: TranslateService,
 	) {
@@ -346,7 +346,33 @@ export class MouseDeviceDFU {
 					sub.unsubscribe()
                 }
 			})
-			
+			this.write(0, buf).subscribe()
+		})
+	}
+	public sendPair(data: {pidDevice: number[], reportRateMax: number, mac: number[]}) {
+		return new Observable((s) => {
+			const buf = MouseDeviceDFU.Buffer(64);
+			buf[0] = 0x00
+			buf[2] = 0x8b
+			buf[3] = 0x05
+			buf[4] = data.reportRateMax
+			buf[5] = data.mac[0]
+			buf[6] = data.mac[1]
+			buf[7] = data.mac[2]
+			buf[8] = data.mac[3]
+			buf[9] = data.mac[4]
+			buf[10] = data.pidDevice[0]
+			buf[11] = data.pidDevice[1]
+			buf[12] = data.pidDevice[2]
+			buf[13] = data.pidDevice[3]
+			const sub = this.report$
+			.pipe(
+				filter((v) => v[0] === 0x00 && v[2] === 0x8b && v[3] === 0x05),
+			).subscribe(() => {
+				s.next()
+				sub.unsubscribe()
+			})
+			this.setbuf63(buf)
 			this.write(0, buf).subscribe()
 		})
 	}

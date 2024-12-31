@@ -153,6 +153,11 @@ export class IndexComponent implements OnInit {
 	public goUpdate(){
 		this.router.navigate(['/update'])
 	}
+
+	public goPair(){
+		this.router.navigate(['/pair'])
+	}
+
 	private compareVersions(v1: string, v2: string) {
 		const arr1 = v1.split('.').map(Number);
 		const arr2 = v2.split('.').map(Number);

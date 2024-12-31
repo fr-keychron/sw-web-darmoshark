@@ -45,6 +45,10 @@ const routes: Routes = [
 	{
 		path: 'update',
 		loadChildren: () => import('./page/firmware/firmware.module').then(m => m.FirmwareModule)
+	},
+	{
+		path: 'pair',
+		loadChildren: () => import('./page/pair/pair.module').then(m => m.PairModule)
 	}
 ];
 
