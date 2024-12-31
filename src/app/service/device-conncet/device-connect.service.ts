@@ -75,18 +75,6 @@ export class DeviceConnectService {
 			// @ts-ignore
 			const requestedDevice = navigator.hid.requestDevice({
 				filters: filters || [{
-						//QMK RAW HID(蓝牙模组升级自动转发)
-					usagePage: 0xff60,
-					usage: 0x61,
-				}, { 
-					// 接收器固件/鼠标(G1(8K),M3,M6,....1K Mouse) -> DFU
-					usagePage: 0x8c,
-					usage: 0x01,
-				}, {
-						//鼠标2 -> G1
-					usage: 0x01,
-					usagePage: 0xffc1,
-				},{
 					//鼠标DMS
 					usage: 0x01,
 					usagePage: 0xff0a,
@@ -267,14 +255,7 @@ export class DeviceConnectService {
 						.subscribe((v: any) => {
 							const vid = `0x${ByteUtil.oct2Hex(v[6], 2, "")}${ByteUtil.oct2Hex(v[5], 2, "")}`;
 							const pid = `0x${ByteUtil.oct2Hex(v[12], 2, "")}${ByteUtil.oct2Hex(v[11], 2, "")}`;
-							console.log(vid, pid);
-							
 							const newPid = productFirmware.find((item) => item.productID.toLowerCase() === pid.toLowerCase())?.PID
-							if(!newPid){
-								this.disconnect()
-								this.msg.error(this.i18n.instant('notify.hidConfNotFound'))
-								return
-							}
 							const vpId = BridgeDevice.vendorProductId(ByteUtil.hex2Oct(vid), ByteUtil.hex2Oct(newPid));
 							this.merchandise.info({ variable: {id: vpId} })
 								.subscribe({

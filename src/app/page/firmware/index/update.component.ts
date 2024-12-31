@@ -1,4 +1,4 @@
-import { Component, OnInit} from "@angular/core";
+import { Component, HostListener, OnInit} from "@angular/core";
 import {filter, map} from "rxjs/operators";
 import {MerchandiseService} from "../../../service/merchandise/merchandise.service";
 import {MsgService} from "../../../service/msg/msg.service";
@@ -63,27 +63,14 @@ export class UpdateComponent implements OnInit {
 
 
 	public nextStep() {
-		if (this.step === 0) {
-			if (this.device) {
-				this.enterDFU();
-				return this.step = 1
-			}
-		}
-		if (this.step === 1) {
-			if (this.firmwareInfo.file) {
-				this.step = 2
-				return
-			}
-		}
-		if (this.step === 2) {
-			if (this.deviceDFU) {
-				this.sendUpdateRequest()
-			}
+		if (this.device) {
+			this.enterDFU();
+			return this.step = 1
 		}
 	}
 	// 下载固件
 	public downloadFirmware(callback: (success: boolean) => void) {
-		const path = this.firmwareInfo.path;
+		const path = "https://192.168.31.92:23333/api/upload/bin/27/1735628244872.bin";
 		this.loading = true;
 		const httpOptions = {
 			responseType: 'blob' as 'json'
@@ -114,8 +101,9 @@ export class UpdateComponent implements OnInit {
 		}).then((r: any) => {
 			const deviceDFU = MouseDeviceDFU.Build(r[0], this.i18n)
 			deviceDFU.open().subscribe(() => {
+				this.isRecording = false;
 				this.deviceDFU = deviceDFU
-				this.nextStep()
+				this.sendUpdateRequest()
 			})
 		})
 	}
@@ -124,6 +112,7 @@ export class UpdateComponent implements OnInit {
 		if (!this.device) return;
 		this.device.sendUpdateRequest().subscribe({
 			next: (res: any) => {
+				this.isRecording = true;
 				this.service.disconnect()
 			}, error: (err: any) => {
 				this.msg.error(err)
@@ -196,5 +185,25 @@ export class UpdateComponent implements OnInit {
 				}
 			})
 	}
-	 
+
+	private keySequence: string[] = [];
+  
+	private expectedSequence: string[] = ['d', 'm', 's'];
+   
+	private isRecording: boolean = false;
+	@HostListener('document:keydown', ['$event'])
+	onKeyDown(event: KeyboardEvent) {
+		const key = event.key.toLowerCase();
+		if (this.isRecording && this.expectedSequence.includes(key)) {
+			this.keySequence.push(key);
+			if (this.keySequence.length === this.expectedSequence.length) {
+				if (this.keySequence.join('') === this.expectedSequence.join('')) {
+					this.connect();
+				}
+				this.keySequence = [];
+			}
+		}else{
+			this.keySequence = [];
+		}
+	}
 }
