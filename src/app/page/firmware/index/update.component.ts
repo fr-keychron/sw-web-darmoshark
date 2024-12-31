@@ -70,7 +70,7 @@ export class UpdateComponent implements OnInit {
 	}
 	// 下载固件
 	public downloadFirmware(callback: (success: boolean) => void) {
-		const path = "https://192.168.31.92:23333/api/upload/bin/27/1735628244872.bin";
+		const path = this.firmwareInfo.path;
 		this.loading = true;
 		const httpOptions = {
 			responseType: 'blob' as 'json'
