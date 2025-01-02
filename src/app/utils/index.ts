@@ -117,3 +117,7 @@ export const findMissingIndices = (indexList: Array<any>, totalRange: number) =>
 	}
 	return missingIndices;
 }
+
+export const supportHid = () => {
+	return 'hid' in navigator;
+}

@@ -8,7 +8,7 @@ import {DeviceConnectService} from "../../service/device-conncet/device-connect.
 import {BaseKeyboard, EEventEnum, MouseDevice, HidDeviceEventType} from "../../common/hid-collection";
 import {ActivatedRoute, Route, Router} from "@angular/router";
 import {BridgeDevice} from "src/app/common/hid-collection/hid-device/device-dfu/bridge-device";
-import {filter, map} from "rxjs/operators";
+import {filter, map, throttleTime} from "rxjs/operators";
 @Component({
 	selector: 'common-connect-devices',
 	templateUrl: './device-connect.component.html',
@@ -21,6 +21,7 @@ export class DeviceConnectComponent implements OnInit {
 	} = {
 		keep: false
 	}
+	public hibernate: boolean = false;
 
 	constructor(
 		private i18n: TranslateService,
@@ -83,6 +84,7 @@ export class DeviceConnectComponent implements OnInit {
 					this.devices = this.service.getHidDevices();
 					this.switchType()
 				}
+				
 				if ([EEventEnum.DISCONNECT].includes(r.type)) {
 					this.currentDevice = null
 					this.loading = false
@@ -133,10 +135,15 @@ export class DeviceConnectComponent implements OnInit {
 		if (!hidDevice) return
 		if (this.updateSub) this.updateSub.unsubscribe();
 		this.updateSub = hidDevice.update$
-			.pipe(filter(v => v.type === EEventEnum.DISCONNECT))
+			.pipe()
 			.subscribe(v => {
-				this.disconnect()
-				this.msg.error(this.i18n.instant('mouse.tip.16'))
+				if (v.type === EEventEnum.HIBERNATE) {
+					this.hibernate = v.data
+				}
+				if (v.type === EEventEnum.DISCONNECT) {
+					this.disconnect()
+					this.msg.error(this.i18n.instant('mouse.tip.16'))
+				}
 			})
 		const getHidConf = (h: MouseDevice) => {
 			this.powerState = h.baseInfo.power.state

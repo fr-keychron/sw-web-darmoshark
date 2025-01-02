@@ -20,8 +20,10 @@ import {FeatureTransceiver, ParallelTransceiver, RecverTransceiver} from "../../
 import {HidDeviceEventType} from "../keyboard-device";
 import {versionFactory} from './command'
 import {Mouse} from './mouse'
+import { DeviceConnectService } from "src/app/service/device-conncet/device-connect.service";
 
 export class MouseDevice extends Mouse {
+	service: typeof DeviceConnectService;
 	constructor({product, json, hid, i18n, http, transceiver}: MouseBase) {
 		super();
 		this.hidRaw = hid
@@ -38,7 +40,7 @@ export class MouseDevice extends Mouse {
 		this.opened = hid.opened;
 		this.setTransceiver(transceiver ? transceiver : new ParallelTransceiver(hid))
 		this.commands = versionFactory.get(this.version, this)
-		
+		this.service = DeviceConnectService
 		if(json){
 			this.json = json
 		} else {

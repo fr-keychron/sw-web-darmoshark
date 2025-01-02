@@ -404,4 +404,5 @@ export class DeviceConnectService {
 		this.loadByKeyboardDef = enable;
 		this.keyboardDef = json;
 	}
+	
 }

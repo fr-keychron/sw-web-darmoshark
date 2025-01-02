@@ -24,7 +24,8 @@ export enum EEventEnum {
 	CLOSED,
 	ERROR,
 	Change,
-	Update
+	Update,
+	HIBERNATE
 }
 
 export interface IEvent {

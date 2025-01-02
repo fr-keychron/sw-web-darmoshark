@@ -1,7 +1,7 @@
 import {Observable, firstValueFrom} from "rxjs";
 import {EDmsMacroLoopKey, EMouseBtn, productFirmware} from "../enum";
 import {EDeviceConnectState} from "../../../enum";
-import {filter, map, switchMap, take, tap, timeout} from "rxjs/operators";
+import {filter, map, switchMap, take, tap, throttleTime, timeout} from "rxjs/operators";
 import {ByteUtil} from "src/app/utils";
 import {getMouseButtonInfo,} from "../util";
 import {HidDeviceEventType} from "../../keyboard-device";
@@ -101,6 +101,8 @@ export class MouseDeviceV4 {
 					map((v) => {
 						const bits = ByteUtil.oct2Bin(v[4])
 						const workMode = Number(bits[4])
+						console.log('workMode', workMode);
+						
 						const state = workMode;
 						const vid = `0x${ByteUtil.oct2Hex(v[6], 2, "")}${ByteUtil.oct2Hex(
 							v[5],
@@ -117,7 +119,7 @@ export class MouseDeviceV4 {
 							ByteUtil.hex2Oct(vid),
 							ByteUtil.hex2Oct(newPid)
 						);
-						this.mouse.id = vpId
+						// this.mouse.id = vpId
 					
 						return {
 							state,
@@ -333,7 +335,7 @@ export class MouseDeviceV4 {
 				.pipe(
 					filter((v) => (v[0] === 0 || v[0] === 0x40) && v[3] === 0),
 					map((v) => {
-						this.pidDevice = [v[10], v[11], v[12], v[13], v[14]]
+						this.pidDevice = [v[4], v[5], v[6], v[7]]
 						return {
 							firmwareVersion:formatVersion(v[9],v[8]),//固件版本
 						};
@@ -397,15 +399,13 @@ export class MouseDeviceV4 {
 		return new Observable((s) => {
 			const buf = bufs
 			if (this.mouse.workMode === 1 && this.mouse.loaded && buf[0] === 0x01 && buf[2] === 0x8c && buf[3] === 0x01) {
-				if(!((buf[4] >> 3) & 0x01)) {
-					this.mouse.update$.next({
-						type: EEventEnum.DISCONNECT,
-						data: this
-					});
-					s.next(true);
-				}                                                          
+				this.mouse.update$.next({
+					type: EEventEnum.HIBERNATE,
+					data: !((buf[4] >> 3) & 0x01)
+				});
+				s.next(true)
 			} else {
-				s.next(false);
+				s.next(false)
 			}
 		});
 	}
@@ -937,6 +937,8 @@ export class MouseDeviceV4 {
 				s.next({reportRateMax: this.mouse.baseInfo.reportRateMax, pidDevice: this.pidDevice, mac: mac})
 			})
 			this.setbuf63(buf)
+			console.log(buf);
+			
 			this.mouse.write(0, buf).subscribe()
 		})
 	}
