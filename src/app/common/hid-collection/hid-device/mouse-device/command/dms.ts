@@ -1,7 +1,7 @@
 import {Observable, firstValueFrom} from "rxjs";
 import {EDmsMacroLoopKey, EMouseBtn, productFirmware} from "../enum";
 import {EDeviceConnectState} from "../../../enum";
-import {filter, map, switchMap, take, tap, throttleTime, timeout} from "rxjs/operators";
+import {filter, map, take} from "rxjs/operators";
 import {ByteUtil} from "src/app/utils";
 import {getMouseButtonInfo,} from "../util";
 import {HidDeviceEventType} from "../../keyboard-device";
@@ -101,8 +101,6 @@ export class MouseDeviceV4 {
 					map((v) => {
 						const bits = ByteUtil.oct2Bin(v[4])
 						const workMode = Number(bits[4])
-						console.log('workMode', workMode);
-						
 						const state = workMode;
 						const vid = `0x${ByteUtil.oct2Hex(v[6], 2, "")}${ByteUtil.oct2Hex(
 							v[5],
@@ -119,7 +117,7 @@ export class MouseDeviceV4 {
 							ByteUtil.hex2Oct(vid),
 							ByteUtil.hex2Oct(newPid)
 						);
-						// this.mouse.id = vpId
+						this.mouse.id = vpId
 					
 						return {
 							state,
@@ -937,8 +935,6 @@ export class MouseDeviceV4 {
 				s.next({reportRateMax: this.mouse.baseInfo.reportRateMax, pidDevice: this.pidDevice, mac: mac})
 			})
 			this.setbuf63(buf)
-			console.log(buf);
-			
 			this.mouse.write(0, buf).subscribe()
 		})
 	}
