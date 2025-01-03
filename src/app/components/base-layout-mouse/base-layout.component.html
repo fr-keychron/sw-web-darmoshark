@@ -33,6 +33,19 @@
  
 					</ng-container>
 				</div>
+				<div class="device-select-box" *ngIf="currentHidDevice && showCoverSelect && images">
+					<g-select
+						[(ngModel)]="coverUrl"
+						[gCenter]="false"
+						(ngModelChange)="getImg($event)"
+					>
+						<g-option *ngFor="let option of images" 
+							[gLabel]="deviceName + ' ' + (('color.' + option.i18) | translate)" 
+							[gValue]="option.cover"
+						>
+						</g-option>
+					</g-select> 
+				</div>
 			</div>
 			<div class="right"  *ngIf="right">
 				<ng-container *ngTemplateOutlet="right"></ng-container> 

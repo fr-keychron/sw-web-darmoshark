@@ -923,7 +923,7 @@ export class MouseDeviceV4 {
 			buf[0] = 0x00
 			buf[2] = 0x8b
 			buf[3] = 0x05
-			buf[4] = this.mouse.baseInfo.reportRateMax || 0
+			buf[4] = 0x06
 			buf[5] = mac[0]
 			buf[6] = mac[1]
 			buf[7] = mac[2]
@@ -937,9 +937,13 @@ export class MouseDeviceV4 {
 			.pipe(
 				filter((v) => v[0] === 0x00 && v[3] === 0x05),
 			).subscribe((v) => {
-				s.next({reportRateMax: this.mouse.baseInfo.reportRateMax, pidDevice: this.pidDevice, mac: mac})
+				console.log(v);
+				
+				s.next({pidDevice: this.pidDevice, mac: mac})
 			})
 			this.setbuf63(buf)
+			console.log(buf);
+			
 			this.mouse.write(0, buf).subscribe()
 		})
 	}

@@ -17,9 +17,11 @@ import { cloneDeep } from 'lodash';
 export class BaseLayoutMouseComponent implements OnInit {
 	@Input() showCover = true; 
 	@Input() showMouseButton = true;
+	@Input() showCoverSelect = false
 	@Input() textAttach: TemplateRef<any>;
 	@Input() left: TemplateRef<any>;
 	@Input() right: TemplateRef<any>;
+	@Output() imgUpdate = new EventEmitter<any>();
 	constructor(
 		private readonly service: DeviceConnectService,
 		private readonly msg: MsgService,
@@ -38,6 +40,9 @@ export class BaseLayoutMouseComponent implements OnInit {
 	public deviceOptions: Array<{ label: string; value: number }> = [];
 	public ConfigList = [0,1,2,3,4]
 	public profile: number
+	public images:{cover:string, i18:string}[] = []
+	public coverUrl: string = ''
+	public deviceName: string = ''
 	ngOnInit() {
 		if (this.hidDevices) {
 			this.hidDeviceInit()
@@ -104,6 +109,8 @@ export class BaseLayoutMouseComponent implements OnInit {
 			this.power = h.baseInfo.power.value
 			this.workMode = h.workMode
 			this.profile = h.baseInfo.profile
+			this.images = this.jsonConf?.images
+			this.deviceName = hidDevice.name
 			this.load(this.profile)
 			this.getInfo()
 		}
@@ -184,9 +191,11 @@ export class BaseLayoutMouseComponent implements OnInit {
 		}, 10)
 	}
 
-	private getImg(v: any) {
+	public getImg(v: string) {
 		let image: any
-		const cover = GLOBAL_CONFIG.API + v.product.cover
+		const cover = GLOBAL_CONFIG.API + v
+		this.coverUrl = v
+		sessionStorage.setItem('cover', v);
 		image = new Image()
 		image.src = cover;
 		image.crossOrigin = 'anonymous'
@@ -199,7 +208,8 @@ export class BaseLayoutMouseComponent implements OnInit {
 
 	private getInfo() {
 		const data = this.currentHidDevice.productInfo.raw
-		this.getImg(data)
+		const coverImage = sessionStorage.getItem('cover');
+		this.getImg(coverImage || data.product.cover)
 	}
 
 	@Output('load')
@@ -372,6 +382,5 @@ export class BaseLayoutMouseComponent implements OnInit {
 				}
 			};
 		}
-        
 	}
 }

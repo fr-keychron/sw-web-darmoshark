@@ -76,7 +76,8 @@ export interface IMouseJson {
 	sys: {
 		lod: { index: number, value: string }[],
 		sencor?: any
-	}
+	},
+	images?: { cover: string, i18: string }[]
 }
 
 export interface IMacroItem {

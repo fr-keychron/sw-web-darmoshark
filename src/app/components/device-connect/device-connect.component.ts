@@ -104,6 +104,7 @@ export class DeviceConnectComponent implements OnInit {
 		const s = this.i18n.instant('notify.notSupportHid')
 		if (!this.service.support) return this.msg.error(s)
 		this.loading = true
+		sessionStorage.removeItem('cover');
 		this.service.requestDevice()
 			.subscribe(
 				(r: any) => {

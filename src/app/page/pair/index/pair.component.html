@@ -26,17 +26,15 @@
 	</div>
 </div>
 
-<div class="loading" *ngIf="waiting">
-	<div class="loading-body">
-		<nz-progress
-				class="upload-rate"
-				*ngIf="percent"
-				[nzPercent]="percent"
-				[nzShowInfo]="false"
-		></nz-progress>
-
-		<div class='warning'>
-			{{ 'firmware.warning' | translate }}
-		</div>
-	</div>
-</div>
+<nz-modal
+    [(nzVisible)]="tipModal"
+    [nzFooter]="null"
+    (nzOnCancel)="goHome()"
+    [nzStyle]="{top: '48%'}"
+>
+	<ng-container *nzModalContent>
+    <div class="modal-content">
+      {{"配对成功，若需要2.4G方式进入驱动，请重新插拔接收器。" | translate}}
+    </div>
+	</ng-container>
+</nz-modal>

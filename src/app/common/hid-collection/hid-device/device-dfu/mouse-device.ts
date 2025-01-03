@@ -349,13 +349,13 @@ export class MouseDeviceDFU {
 			this.write(0, buf).subscribe()
 		})
 	}
-	public sendPair(data: {pidDevice: number[], reportRateMax: number, mac: number[]}) {
+	public sendPair(data: {pidDevice: number[], mac: number[]}) {
 		return new Observable((s) => {
 			const buf = MouseDeviceDFU.Buffer(64);
 			buf[0] = 0x00
 			buf[2] = 0x8b
 			buf[3] = 0x05
-			buf[4] = data.reportRateMax
+			buf[4] = 0x06
 			buf[5] = data.mac[0]
 			buf[6] = data.mac[1]
 			buf[7] = data.mac[2]
@@ -368,11 +368,15 @@ export class MouseDeviceDFU {
 			const sub = this.report$
 			.pipe(
 				filter((v) => (v[0] === 0x00 || v[0] === 0x01) && v[2] === 0x8b && v[3] === 0x05),
-			).subscribe(() => {
+			).subscribe((v) => {
+				console.log(v);
+				
 				s.next()
 				sub.unsubscribe()
-			})
+			}) 
 			this.setbuf63(buf)
+			console.log(buf);
+			
 			this.write(0, buf).subscribe()
 		})
 	}

@@ -30,7 +30,7 @@ export class PairComponent implements OnInit {
 		private readonly router: Router,
 	) {
 	}
-
+	public tipModal:boolean = false
 	public waiting = false
 	public percent: number = null
 	public device: MouseDevice
@@ -96,8 +96,7 @@ export class PairComponent implements OnInit {
 				if (!this.deviceDFU) return;
 				this.deviceDFU.sendPair(res).subscribe({
 					next: () => {
-						this.router.navigate(['/mouse/home'])
-						this.msg.success(this.i18n.instant('配对成功'))
+						this.tipModal = true
 					}, error: (err: any) => {
 						this.msg.error(err)
 					}
@@ -109,4 +108,7 @@ export class PairComponent implements OnInit {
 		
 	}
 
+	public goHome() {
+		this.router.navigate(['/mouse/home'])
+	}
 }

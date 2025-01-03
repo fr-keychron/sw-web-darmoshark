@@ -168,27 +168,27 @@ body {
     }
 }
 
-::ng-deep {
+// ::ng-deep {
 
-    .ant-radio-wrapper,
-    .ant-radio-disabled+span {
-        color: $global-white;
-    }
+//     .ant-radio-wrapper,
+//     .ant-radio-disabled+span {
+//         color: $global-white;
+//     }
 
-    .ant-radio-inner {
-        background: $global-dark !important;
-        border-color: $global-border-color !important;
-    }
+//     .ant-radio-inner {
+//         background: $global-dark !important;
+//         border-color: $global-border-color !important;
+//     }
 
-    .ant-radio-checked .ant-radio-inner::after {
-        display: none !important;
-    }
+//     .ant-radio-checked .ant-radio-inner::after {
+//         display: none !important;
+//     }
 
-    .ant-radio-checked .ant-radio-inner {
-        border-color: $global-orange !important;
-        border-width: 0.32rem;
-    }
-}
+//     .ant-radio-checked .ant-radio-inner {
+//         border-color: $global-orange !important;
+//         border-width: 0.32rem;
+//     }
+// }
 
 ::ng-deep {
 
@@ -198,13 +198,14 @@ body {
     }
 
     .ant-modal-title,
+    .ant-modal,
     .ant-modal-close-x {
-        color: $global-fc-gray !important;
+        color: $global-fc-white !important;
     }
 
     .ant-modal-header,
     .ant-modal-footer {
-        border-color: $global-border-color;
+        border-color: $global-fc-white;
     }
 }
 

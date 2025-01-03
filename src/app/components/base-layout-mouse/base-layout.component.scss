@@ -192,6 +192,11 @@
                         user-select: none;
                     }
                 }
+                & > .device-select-box {
+                    position: relative;
+                    top: 50%;
+                    width: 14rem;
+                }
             }
             // & > .middle-left {
             //     margin-right: 3.2rem;
