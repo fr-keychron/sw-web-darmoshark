@@ -54,6 +54,7 @@ export class MouseDeviceV4 {
 					this.mouse.state = EDeviceConnectState.G;
 					await firstValueFrom(this.getBaseInfo());
 					await firstValueFrom(this.getReceiverVersion())
+					this.mouse.baseInfo.reportRateMax = receiver.reportRateMax
 				} else {
 					await firstValueFrom(this.getBaseInfo());
 				}
@@ -62,7 +63,9 @@ export class MouseDeviceV4 {
 				this.mouse.baseInfo.workMode = workMode
 				this.mouse.baseInfo.profile = protocol.profile
 				this.mouse.baseInfo.power = protocol.power
-				this.mouse.baseInfo.reportRateMax = protocol.reportRateMax
+				if (!workMode) {
+					this.mouse.baseInfo.reportRateMax = protocol.reportRateMax
+				}
 				this.mouse.loaded = true;
 				this.mouse.event$.next({
 					type: HidDeviceEventType.JsonConf,
@@ -89,6 +92,7 @@ export class MouseDeviceV4 {
 		vid: string;
 		pid: string;
 		vpId: number;
+		reportRateMax: number;
 	}> {
 		return new Observable((s) => {
 			const buf = MouseDevice.Buffer(64);
@@ -118,12 +122,13 @@ export class MouseDeviceV4 {
 							ByteUtil.hex2Oct(newPid)
 						);
 						this.mouse.id = vpId
-					
+						const reportRateMax = v[9]
 						return {
 							state,
 							vid,
 							pid,
 							vpId,
+							reportRateMax
 						};
 					})
 				)

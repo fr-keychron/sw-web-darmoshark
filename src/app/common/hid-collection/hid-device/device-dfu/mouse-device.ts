@@ -367,7 +367,7 @@ export class MouseDeviceDFU {
 			buf[13] = data.pidDevice[3]
 			const sub = this.report$
 			.pipe(
-				filter((v) => v[0] === 0x00 && v[2] === 0x8b && v[3] === 0x05),
+				filter((v) => (v[0] === 0x00 || v[0] === 0x01) && v[2] === 0x8b && v[3] === 0x05),
 			).subscribe(() => {
 				s.next()
 				sub.unsubscribe()
