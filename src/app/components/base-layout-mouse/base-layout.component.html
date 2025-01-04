@@ -32,19 +32,15 @@
 						</div>
  
 					</ng-container>
-				</div>
-				<div class="device-select-box" *ngIf="currentHidDevice && showCoverSelect && images">
-					<g-select
-						[(ngModel)]="coverUrl"
-						[gCenter]="false"
-						(ngModelChange)="getImg($event)"
-					>
-						<g-option *ngFor="let option of images" 
-							[gLabel]="deviceName + ' ' + (('color.' + option.i18) | translate)" 
-							[gValue]="option.cover"
-						>
-						</g-option>
-					</g-select> 
+					<div class="g-flex g-justify-center" *ngIf="currentHidDevice && showCoverSelect && images && cover">
+						<span 
+							*ngFor="let option of images"
+							class="color-circle"
+							[ngClass]="{'color-active': coverUrl === option.cover}"
+							(click)="getImg(option.cover)"
+							[ngStyle]="{'background': getGradient(option.colors)}">
+						</span>
+					</div>
 				</div>
 			</div>
 			<div class="right"  *ngIf="right">

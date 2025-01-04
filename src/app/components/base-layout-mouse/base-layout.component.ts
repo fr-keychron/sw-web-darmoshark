@@ -60,7 +60,10 @@ export class BaseLayoutMouseComponent implements OnInit {
 			})
 		this.service.event$
 			.pipe(filter(v => v.type === EEventEnum.DISCONNECT))
-			.subscribe(() => this.currentHidDevice = undefined)
+			.subscribe(() => {
+				this.currentHidDevice = undefined;
+				this.cover = '';
+			})
 
 		this.service.event$
 			.pipe(filter(v => v.type === EEventEnum.CLOSED))
@@ -383,4 +386,15 @@ export class BaseLayoutMouseComponent implements OnInit {
 			};
 		}
 	}
+
+	public getGradient(colors: string[]): string {
+		if (colors.length === 2) {
+			return `linear-gradient(to bottom, ${colors[0]} 50%, ${colors[1]} 50%)`;
+		} else if (colors.length === 1) {
+			return colors[0];
+		} else {
+			return 'transparent';
+		}
+	}
+	
 }
