@@ -101,7 +101,6 @@ export class KeyboardComponent {
 		const shift = this.currentShift ?? 0;
 		const keycodes: number[] = []
 		const keyCodeValue = EDmsMouseKeycodeDefault.find((i: { code: string; }) => i.code === this.firstKey.code);
-		console.log(this.firstKey,keyCodeValue);
 		
 		if (this.firstKey.code) keycodes.push(keyCodeValue.value)
 		device.setMouseBtn2KeyBoard(

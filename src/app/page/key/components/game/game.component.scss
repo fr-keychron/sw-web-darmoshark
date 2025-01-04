@@ -2,7 +2,7 @@
     
 
 .game-content {
-    min-width: 13.866rem;
+    min-width: 15rem;
     border: 1px solid $global-border-blue;
     padding: .1rem .333rem .333rem;
     border-radius: .333rem;
@@ -29,6 +29,36 @@
             color: $global-white;
             & > span {
                 white-space: nowrap;
+            }
+            & > .key-wrapper {
+                width: 5.666rem;
+                height: 1.266rem;
+                display: flex;
+                align-items: center;
+                & > input {
+                    height:100%;
+                    width: 100%;
+                    border: 0;
+                    text-align: center;
+                    outline: none;
+                    font-size: .8rem;
+                    border-radius: .333rem;
+                    cursor: pointer;
+                    border: 1px solid $global-border-gray;
+                    color: $global-border-white;
+                    background: $global-dark;
+                    &::placeholder {
+                        color: #fff;
+                        opacity: 1;
+                    }
+                    &:hover {
+                        border: 1px solid $global-border-blue;
+                        box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+                    }
+                    &:focus {
+                        border: 1px solid $global-border-blue;
+                    }
+                } 
             }
         }
         & > .game-input {
@@ -71,7 +101,6 @@
                     line-height: 1.7rem;
                 }
             }
-           
         }
     }
 }
@@ -82,7 +111,7 @@
     line-height: 1.1rem;
 }
 .game-key-select ::ng-deep .g-select{
-    width: 4.6rem !important;
+    width: 5.666rem !important;
     height: 1.266rem !important;
     font-size: .9rem;
     line-height: 1.1rem;
@@ -90,6 +119,9 @@
 .game-select ::ng-deep .g-select-box{
     border: 1px solid $global-border-gray;
     &:hover {
+        border: 1px solid $global-border-blue;
+    }
+    &:focus {
         border: 1px solid $global-border-blue;
     }
 }

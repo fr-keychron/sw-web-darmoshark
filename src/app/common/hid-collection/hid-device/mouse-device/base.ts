@@ -202,7 +202,7 @@ export class MouseDevice extends Mouse {
 			count: number
 		}
 	): Observable<any> {
-		const type = data.type === 1 
+		const type = !data.type
 		? 0x10 + Math.floor(data.count / 255)
 		: 0x30 + Math.floor(data.count / 255)
 		const count = data.count > 255 ? 255 : Number(data.count) 

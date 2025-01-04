@@ -16,12 +16,12 @@
 				[(ngModel)]="keyType" 
 				[gCenter]="false"
 			>
-				<g-option gLabel="mouse.key_game.mouse" [gValue]='1'></g-option>
+				<g-option gLabel="mouse.key_game.mouse" [gValue]='0'></g-option>
 				<g-option gLabel="mouse.key_game.key" [gValue]='2'></g-option>
 			</g-select>
 			<span>{{ 'common.key' | translate }}</span>
 			<g-select
-				*ngIf="keyType == 1" 
+				*ngIf="keyType === 0" 
 				class="game-key-select"
 				[ngClass]="{ 'game-active-select': currentSelectKey }"
 				[(ngModel)]="currentSelectKey" 
@@ -35,7 +35,17 @@
 				>	
 				</g-option>
 			</g-select>
-			<g-select
+			<div #inputKey class="key-wrapper" *ngIf="keyType == 2" >
+					<input 
+						type="text"
+						readonly
+						[(ngModel)]="keyData.name"
+						(focus)="listenKey(true)"
+						(blur)="listenKey(false)"
+						placeholder="{{ 'mouse.key_game.key_input_single_key' | translate }}"
+					>
+			</div>
+			<!-- <g-select
 				*ngIf="keyType == 2" 
 				class="game-key-select"
 				[ngClass]="{ 'game-active-select': keyActive }"
@@ -50,7 +60,7 @@
 					[useInnerHTML]="true"
 				>	
 				</g-option>
-			</g-select>
+			</g-select> -->
 		</div>
 		<div class="game-input g-flex g-item-center g-justify-between">
 			<span>{{ 'mouse.key_game.count' | translate }}</span>

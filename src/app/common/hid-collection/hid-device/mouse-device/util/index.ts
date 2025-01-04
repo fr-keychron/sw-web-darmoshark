@@ -278,18 +278,18 @@ export const getMouseButtonInfo = (bufferArr: number[]) => {
 		if (bufferArr[0] >= 0x10 && bufferArr[0] <= 0x1F) {
 			let mouseCode = EMdsMouseBtnGameDefault.find(i => i.value === bufferArr[1]);
 			if(mouseCode) {
-				return  {EMouseBtn: 7, type:1, count:bufferArr[2], speed:bufferArr[3],keycode:mouseCode}
+				return  {EMouseBtn: 7, type:0, count:bufferArr[2], speed:bufferArr[3],keycode:mouseCode}
 			}
 		} else if (bufferArr[0] >= 0x20 && bufferArr[0] <= 0x2F) {
 			let keycode = EDmsMouseKeycodeDefault.find((i: { value: number; }) => i.value === bufferArr[1]);
 			if(keycode) {
-				return  {EMouseBtn: 7, type:2, count:bufferArr[2], speed:bufferArr[3],...keycode}
+				return  {EMouseBtn: 7, type:1, count: bufferArr[2], speed: bufferArr[3],keycode: keycode}
 			}
 		} else if (bufferArr[0] >= 0x30 && bufferArr[0] <= 0x3F) {
 			let keycode = EDmsMouseKeycodeDefault.find((i: { value: number; }) => i.value === bufferArr[1]);
 			
 			if(keycode) {
-				return  {EMouseBtn: 7, type:2, count:bufferArr[2], speed:bufferArr[3],keycode: keycode.key}
+				return  {EMouseBtn: 7, type: 2, count: bufferArr[2], speed: bufferArr[3],keycode: keycode}
 			}
 		}
 	}

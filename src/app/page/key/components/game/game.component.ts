@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from "@angular/core";
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@angular/core";
 import keyJson from 'src/assets/json/mouse.json';
 import {TaskQueueService} from "src/app/service/task-queue/task-queue.service";
 import {
@@ -12,6 +12,7 @@ import {
 import {DeviceConnectService} from "../../../../service/device-conncet/device-connect.service";
 import {MsgService} from "src/app/service/msg/msg.service";
 import {TranslateService} from "@ngx-translate/core";
+import { fromEvent, Subscription } from "rxjs";
 
 @Component({
 	selector: 'mouse-button-game',
@@ -21,18 +22,20 @@ import {TranslateService} from "@ngx-translate/core";
 export class GameComponent {
 
 	public _mouseKey: number
-	public keyCodes: Array<any> = []
+	// public keyCodes: Array<any> = []
 	public mouseCodes: Array<any> = []
+	private keyCodes: Array<any> = keyJson[0].keycodes.slice(2);
 	public keyType: number = 1
+	public keyData: { name: string, code: string } = {name: '', code: ''}
 	constructor(
 		private readonly mouseService: DeviceConnectService,
 		private readonly task: TaskQueueService,
 		private readonly msg: MsgService,
 		private readonly i18n: TranslateService,
 	) {
-		this.keyCodes = EDmsMouseKeycodeDefault.map((i: { value: number; key: string; }) => {
-			return {code: i.value, name: i.key}
-		})
+		// this.keyCodes = EDmsMouseKeycodeDefault.map((i: { value: number; key: string; }) => {
+		// 	return {code: i.value, name: i.key}
+		// })
 		this.mouseCodes = EMdsMouseBtnGameMouse.map(i => {
 			return {code: i.value, name: i.key}
 		})
@@ -102,7 +105,7 @@ export class GameComponent {
 			device.setMouseBtn2Game(
 				this.mouseKey, {
 					type: this.keyType,
-					keycode:  Number(this.currentSelectKey),
+					keycode: Number(this.currentSelectKey),
 					speed: Number(this.rate),
 					count: Number(this.count)
 				}
@@ -127,12 +130,16 @@ export class GameComponent {
 		if (!this.mouseKey && this.mouseKey !== 0) return
 		const item = this.data.find((element: any) => element.mouseKey === this.mouseKey);
 		if (!Object.values(EDmsMouseGame).includes(item.data.type))return;
-		const {type, count, speed, value} = item.data;
-		this.currentSelectKey = value
-		if (type === EDmsMouseGame[EDmsMouseGame.mouseGame]) {
-			this.keyType = 1
-		}else{
-			this.keyType = 2
+		const {type, count, speed, keycode} = item.data;
+		this.currentSelectKey = keycode.value
+		this.keyType = type
+		if (type === EDmsMouseGame.keyboardGame) {
+			const keyName = this.keyCodes.find(i => i.code === keycode.key)
+            if (keyName && /<br\/>/.test(keyName.name)) {
+                const a = keyName.name.split('<br/>')
+				keyName.name = a[1]
+            }
+			this.keyData = {code: keycode.code, name: keyName.name}
 		}
 
 		this.count = count;
@@ -148,4 +155,22 @@ export class GameComponent {
             event.preventDefault()
         }
     }
+
+	@ViewChild('inputKey') public inputKey: ElementRef
+	public inputKeyRef:Subscription
+	public listenKey(subFlag: boolean){
+		if(this.inputKeyRef) this.inputKeyRef.unsubscribe();
+		if(subFlag){
+			this.inputKeyRef = fromEvent(this.inputKey.nativeElement, 'keydown')
+				.subscribe((e:any) => {
+					e.preventDefault()
+					e.stopPropagation()
+					this.keyData = {name: e.key, code: e.code}
+					console.log(this.keyData);
+					
+					const keyCodeValue = EDmsMouseKeycodeDefault.find((i: { code: string; }) => i.code === this.keyData.code);
+					this.currentSelectKey = keyCodeValue.value
+				})
+		} 
+	}
 }

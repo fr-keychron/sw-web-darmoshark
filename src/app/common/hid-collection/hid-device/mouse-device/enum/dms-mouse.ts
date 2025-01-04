@@ -139,8 +139,8 @@ export const EMdsMouseBtnDisabled= [
 ]
 export enum EDmsMouseGame {
 	mouseGame,
-	keyboardGame,
-	modifierGame
+	modifierGame,
+	keyboardGame
 }
 export enum EDmsMouseBtnGameKey {
 	mouse = 0x01,
