@@ -6,7 +6,7 @@
 		<div class="content-wrapper" *ngIf="step === 0">
 			<div class="content-wrapper" >
 				<div class="content-text">
-					{{ '点击下方连接设备按钮，选择接收器设备。'  | translate }}
+					{{ 'mouse.pair.select_receiver'  | translate }}
 				</div>
 				<div class="content-button" (click)="connect()">
 					{{ 'device_add' | translate }}
@@ -16,10 +16,10 @@
 		<div class="content-wrapper" *ngIf="step === 1">
 			<div class="content-wrapper" >
 				<div class="content-text">
-					{{ '点击下方配对按钮进行配对。'  | translate }}
+					{{ 'mouse.pair.pair_start'  | translate }}
 				</div>
 				<div class="content-button" (click)="enterPair()">
-					{{ '配对' | translate }}
+					{{ 'mouse.pair.pair' | translate }}
 				</div>
 			</div>
 		</div>
@@ -34,7 +34,7 @@
 >
 	<ng-container *nzModalContent>
     <div class="modal-content">
-      {{"配对成功，若需要2.4G方式进入驱动，请重新插拔接收器。" | translate}}
+      {{"mouse.pair.pair_success" | translate}}
     </div>
 	</ng-container>
 </nz-modal>

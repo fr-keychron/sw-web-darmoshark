@@ -31,8 +31,8 @@
 					</span>
 				</div>
 			</div>
-			<div class="content-desc">{{'点击下方按钮后鼠标会进入升级模式，鼠标暂时无法使用，需要键盘操作。' | translate }}</div>
-			<div class="content-desc">{{'进入升级模式后，请勿退出，按照步骤操作，否则鼠标将无法正常使用。' | translate }}</div>
+			<div class="content-desc">{{'firmware.mouse.upgrade_mode_warning1' | translate }}</div>
+			<div class="content-desc">{{'firmware.mouse.upgrade_mode_warning2' | translate }}</div>
 			<div class="content-btn-group">
 				<div class="btn" (click)="nextStep()">
 					{{ "firmware.button.2" | translate }}
@@ -48,48 +48,20 @@
 			</div>
 			<div style="padding: 3rem 0 0 17rem;">
 				<div class="content-text">
-					{{ '若无法点击连接设备按钮，请按以下步骤进行操作：' | translate }}
+					{{ 'firmware.mouse.unable_to_connect' | translate }}
 				</div>
 				
 				<div class="content-desc">
-					{{ '1. 按顺序依次按下键盘上的 D、M、S 三个字母键，待出现 HID 设备连接提示后，继续进行下一步操作。' | translate }}
+					{{ 'firmware.mouse.step1_hid_device' | translate }}
 				</div>
 				<div class="content-desc">
-					{{ '2. 使用键盘的 Tab 键切换焦点，配合键盘的上下箭头键选择需要升级的鼠标名称。' | translate }}
+					{{ 'firmware.mouse.step2_hid_device' | translate }}
 				</div>
 				<div class="content-desc">
-					{{ '3. 确认选择后，按下回车键，开始固件刷入过程。' | translate }}
+					{{ 'firmware.mouse.step3_hid_device' | translate }}
 				</div>
 			</div>
 		  </div>
-		<!-- <div class="content-wrapper" *ngIf="step === 2">
-			<div class="content-block">
-				<div>
-					<span>{{ 'firmware.info.6' | translate }}:</span>
-					<span>{{ firmwareInfo.productName }}</span>
-				</div>
-				<div>
-					<span>{{ 'firmware.info.5' | translate }}:</span>
-					<span>{{ version }}</span>
-				</div>
-			</div>
-
-			<div class="content-block">
-				<div>
-					<span>{{ 'firmware.info.7' | translate }}:</span>
-					<span>{{ firmwareInfo.lastedVersion }}</span>
-				</div>
-				<div>
-					<span>{{ 'firmware.info.8' | translate }}:</span>
-					<span>{{ firmwareInfo.lastedCreateTime | date:"YYYY-MM-dd" }}</span>
-				</div>
-			</div>
-			<div class="content-btn-group">
-				<div class="btn" (click)="nextStep()">
-					{{ "firmware.button.5" | translate }}
-				</div>
-			</div>
-		</div> -->
 	</div>
 </div>
 
