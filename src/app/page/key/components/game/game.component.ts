@@ -5,7 +5,6 @@ import {
 	EDmsMouseGame,
 	EMouseBtnGameKey,
 	EMdsMouseBtnGameMouse,
-	EMouseKeycodeDefault,
 	MouseDevice,
 	EDmsMouseKeycodeDefault
 } from "../../../../common/hid-collection";
@@ -20,12 +19,10 @@ import { fromEvent, Subscription } from "rxjs";
 	styleUrls: ['./game.component.scss']
 })
 export class GameComponent {
-
 	public _mouseKey: number
-	// public keyCodes: Array<any> = []
 	public mouseCodes: Array<any> = []
 	private keyCodes: Array<any> = keyJson[0].keycodes.slice(2);
-	public keyType: number = 1
+	public keyType: number = 0
 	public keyData: { name: string, code: string } = {name: '', code: ''}
 	constructor(
 		private readonly mouseService: DeviceConnectService,
@@ -33,14 +30,9 @@ export class GameComponent {
 		private readonly msg: MsgService,
 		private readonly i18n: TranslateService,
 	) {
-		// this.keyCodes = EDmsMouseKeycodeDefault.map((i: { value: number; key: string; }) => {
-		// 	return {code: i.value, name: i.key}
-		// })
 		this.mouseCodes = EMdsMouseBtnGameMouse.map(i => {
 			return {code: i.value, name: i.key}
 		})
-		
-		
 	}
 
 	public _data: any
@@ -166,8 +158,6 @@ export class GameComponent {
 					e.preventDefault()
 					e.stopPropagation()
 					this.keyData = {name: e.key, code: e.code}
-					console.log(this.keyData);
-					
 					const keyCodeValue = EDmsMouseKeycodeDefault.find((i: { code: string; }) => i.code === this.keyData.code);
 					this.currentSelectKey = keyCodeValue.value
 				})
