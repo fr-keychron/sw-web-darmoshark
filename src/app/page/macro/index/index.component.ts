@@ -43,6 +43,8 @@ export class Macro implements OnInit {
     public currentRecord: RecordList // 当前宏记录
     public insertModal: boolean = false
     public activeItem:any
+    public macroItem:any
+    public macroMenu:boolean = false
     ngOnInit(): void {
         const device = this.service.getCurrentHidDevice() as MouseDevice
         const data = JSON.parse(localStorage.getItem('macroList'))
@@ -113,7 +115,6 @@ export class Macro implements OnInit {
     // 选择宏
     public selectMacro(v: MacroList): void {
         this.currentMacro = v
-        this.newName = this.currentMacro.name
     }
     // 切换延迟
     public handleDelay(v: string): void {
@@ -126,18 +127,21 @@ export class Macro implements OnInit {
     public handleLoop(v: string): void {
         this.save()
     }
-    // 重命名
-    public nameVisible: boolean
-    public newName: string
-    public rename() {
-        this.nameVisible = !this.nameVisible
-        if (this.nameVisible) {
-            this.newName = this.currentMacro.name
-        } else {
-            this.currentMacro.name = this.newName
-            this.save()
-            this.newName = ''
+    // 复制宏
+    public copyMarc() {
+        const len = this.macroList.length
+        const copyItem: MacroList = {
+            id: 'M' + Date.now(),
+            name: len ? 'M' + (len + 1) : 'M1',
+            delayNum:  this.currentMacro.delayNum,
+            delayMode:  this.currentMacro.delayMode,
+            loopNum:  this.currentMacro.loopNum,
+            loopMode:  this.currentMacro.loopMode,
+            list:  this.currentMacro.list
         }
+        this.macroList.push(copyItem)
+        this.selectMacro(copyItem)
+        this.save()
     }
     // 删除宏
     public delMarco() {
@@ -187,6 +191,14 @@ export class Macro implements OnInit {
             this.activeItem = null;
         } else {
             this.activeItem = item;
+        }
+    }
+    // 控制宏菜单的显示
+    public macroModal(item: any) {
+        if (this.macroItem === item) {
+            this.macroItem = null;
+        } else {
+            this.macroItem = item;
         }
     }
     // 录制操作

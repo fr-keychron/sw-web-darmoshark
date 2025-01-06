@@ -239,7 +239,8 @@ export class MouseDevice extends Mouse {
 		loopType: EMacroLoopKey,
 		loopCount?: number,
 		macro: Array<number[]>,
-		delay: number
+		delay: number,
+		macroIndex: number
 	}): Observable<any> {
 		return this.commands.setMacro(data)
 	}

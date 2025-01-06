@@ -15,35 +15,28 @@
                 </div>
                 <div class="macro-content g-flex g-flex-col g-item-evenly">
                     <ul class="macro-list">
-                    <li [ngClass]="{active: item.id === currentMacro.id}" *ngFor="let item of macroList, let i = index"
-                        (click)="!recordFlag && selectMacro(item)">
-                        <ng-container *ngIf="nameVisible && item.id === currentMacro.id; else elseTemplate">
-                        <input class="macro-li-input" nz-input [(ngModel)]="newName" autofocus>
-                        <div class="list-btn">
-                            <span (click)="rename()">{{'common.save' | translate}}</span>
-                            <span (click)="nameVisible = false;newName = ''">{{'common.cancel' | translate}}</span>
-                        </div>
-                        </ng-container>
-                        <ng-template #elseTemplate>
-                        <span>{{item.name || 'M' + (i + 1)}}</span>
-                        <span *ngIf="!recordFlag">
-                            <i 
-                                nz-popover 
-                                nzPopoverTrigger="click" 
-                                [nzPopoverContent]="macroOperate"
-                                nzPopoverPlacement="right"
-                            >
-                            ···
-                            </i>
-                        </span>
-                        </ng-template>
-                    </li>
-                    <ng-template #macroOperate>
-                        <div (click)="rename()">{{'macro.rename' | translate}}</div>
-                        <div (click)="delMarco()">
-                        {{'common.delete' | translate}}
-                        </div>
-                    </ng-template>
+                        <li [ngClass]="{active: item.id === currentMacro.id}" *ngFor="let item of macroList, let i = index"
+                            (click)="!recordFlag && selectMacro(item)">
+                            <ng-container *ngIf="nameVisible && item.id === currentMacro.id; else elseTemplate">
+                            <input class="macro-li-input" nz-input [(ngModel)]="newName" autofocus>
+                            <div class="list-btn">
+                                <span (click)="copyMarc()">{{'common.save' | translate}}</span>
+                                <span (click)="nameVisible = false;newName = ''">{{'common.cancel' | translate}}</span>
+                            </div>
+                            </ng-container>
+                            <ng-template #elseTemplate>
+                            <span>{{item.name || 'M' + (i + 1)}}</span>
+                            <span *ngIf="!recordFlag">
+                                <i  (click)="macroModal(item)">
+                                    ···
+                                    <div class="macro-list-menu" *ngIf="macroItem === item">
+                                        <div (click)="copyMarc()">{{'mouse.key_basic.copy' | translate}}</div>
+                                        <div (click)="delMarco()">{{'common.delete' | translate}}</div>
+                                    </div>
+                                </i>
+                            </span>
+                            </ng-template>
+                        </li>
                     </ul>
                     <div class="macro-btns g-flex g-justify-between">
                         <div class="macro-btn" [ngClass]="{disabled: recordFlag}" (click)="!recordFlag && addMacroItem()">
@@ -106,7 +99,7 @@
                                 (blur)="onInsertModal(false)"
                                 tabindex="0"
                             >
-                                {{'插入' | translate}}
+                                {{'macro.macro_insert' | translate}}
                             </div>
                             <div class="record-btn" [ngClass]="{disabled: recordFlag || !currentRecord}" (click)="delEvent()">
                                 {{'common.delete' | translate}}

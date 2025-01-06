@@ -186,8 +186,6 @@ export class IndexComponent implements OnInit {
 		return name.name
 	}
 	public setSelectActive(active: number, type: number) {
-		console.log(active, type);
-		
 		let v = this.activeMouseKey;
 		if (v || v === 0) {
 			if (type=== this.funBtnKeys.Mouse) { // 基础按键
@@ -227,7 +225,7 @@ export class IndexComponent implements OnInit {
 						this.msg.success(this.i18n.instant('notify.success'))
 					})
 			}
-		}
+		}123
 	}
 	public setMacro(value: string) {
 		const m = this.macroList.find((e)=>e.id===value)
@@ -237,6 +235,7 @@ export class IndexComponent implements OnInit {
 			this.msg.warn(this.i18n.instant('notify.macroSizeLimit'))
 			return
 		}
+		const macroIndex = this.mouseKeys.filter((e: { type: EMouseBtn; })=>e.type === EMouseBtn.Macro)
 		const delay = ['none', 'dynamic'].includes(delayMode) ? 0 : delayNum
 		this.device.setMacro({
 			mouseKey: this.activeMouseKey,
@@ -244,7 +243,8 @@ export class IndexComponent implements OnInit {
 			loopType: EDmsMacroLoopKey[loopMode],
 			loopCount: loopNum,
 			delay,
-			macro: dmsSerializeMacro(list)
+			macro: dmsSerializeMacro(list),
+			macroIndex: macroIndex.length 
 		}).subscribe(() => {
 			this.init()
 			this.msg.success(this.i18n.instant('notify.success'))

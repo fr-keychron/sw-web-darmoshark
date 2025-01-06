@@ -448,6 +448,7 @@ export class MouseDeviceV4 {
 		loopCount?: number;
 		macro: Array<number[]>;
 		delay: number;
+		macroIndex: number;
 	}): Observable<any> {
 		return new Observable((s) => {
 			const section: Observable<Result>[] = [];
@@ -461,12 +462,11 @@ export class MouseDeviceV4 {
 			// 拆分宏数据到多个包
 			while (remainingMacroData.length > 0) {
 				let chunkBuf = MouseDevice.Buffer(64);
-				
 				// 如果是第一个封包，填充所有固定字段
 				if (isFirstChunk) {
 					chunkBuf[0] = 7;
 					chunkBuf[3] = 2; // 设置宏
-					chunkBuf[4] = 0; // 宏序号
+					chunkBuf[4] = data.macroIndex; // 宏序号
 					chunkBuf[5] = data.loopType;
 					chunkBuf[6] = data.loopCount;
 					chunkBuf[41] = data.delay & 0xFF;
@@ -478,13 +478,11 @@ export class MouseDeviceV4 {
 					// 如果不是第一个封包，只需要填充宏数据
 					chunkBuf[0] = 7;
 					chunkBuf[3] = 2;
-					chunkBuf[4] = 0;
+					chunkBuf[4] = data.macroIndex;
 					offset = 5;  // 后续的封包从第5个字节开始填充宏数据
 				}
-	
 				// 判断是否是最后一包abc
 				const isLastChunk = remainingMacroData.length <= (maxBufSize - offset);
-	
 				// 将当前宏数据部分添加到 chunkBuf 中
 				let currentChunk = remainingMacroData.splice(0, maxBufSize - offset); // 剩余的宏数据
 				currentChunk.forEach((num, index) => {
@@ -521,7 +519,7 @@ export class MouseDeviceV4 {
 						if (section.length) {
 							run();
 						} else {
-							this.setMouseMacro(data.mouseKey).subscribe(() => s.next())
+							this.setMouseMacro(data.mouseKey,data.macroIndex).subscribe(() => s.next())
 						}
 						subj.unsubscribe();
 					});
@@ -532,6 +530,7 @@ export class MouseDeviceV4 {
 	}
 	public setMouseMacro (
 		mouseKey: number,
+		macroIndex: number
 	): Observable<any> {
 		return new Observable<any>((s) => {
 			const buf = MouseDevice.Buffer(64)
@@ -540,8 +539,8 @@ export class MouseDeviceV4 {
 			buf[3] = 0x04
 			buf[4] = mouseKey
 			buf[5] = 0x09
-			buf[6] = 0x01
-			buf[7] = 0x00
+			buf[6] = 0x02
+			buf[7] = macroIndex
 			buf[8] = 0x00
 			this.setbuf0(buf)
 			this.setbuf63(buf)
