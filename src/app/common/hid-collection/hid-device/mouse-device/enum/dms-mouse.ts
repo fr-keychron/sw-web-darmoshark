@@ -6,6 +6,7 @@ export const productFirmware = [
 	{productName: 'M2MOUSE', productID: "0x0713", PID: "0x0733"},
 	{productName: 'M5PRO', productID: "0x071C", PID: "0x073D"},
 	{productName: 'M3SPRO', productID: "0x0710", PID: "0x0722"},
+	{productName: 'M7', productID: "Ox9F1", PID: "0x0744"},
 ]
 
 export enum EDmsMouseBtnActionKey {

@@ -90,10 +90,10 @@
                                     <div class="operate" nz-col nzSpan="3" *ngIf="!recordFlag" (click)="toggleEventRemoveModal(item)">
                                         ···
                                         <div class="event-remove" *ngIf="activeItem === item">
-                                            <div (click)="moveItem('top')">{{'置顶' | translate}}</div>
-                                            <div (click)="moveItem('up')">{{'向上移动' | translate}}</div>
-                                            <div (click)="moveItem('down')">{{'向下移动' | translate}}</div>
-                                            <div (click)="moveItem('bottom')">{{'置底' | translate}}</div>
+                                            <div (click)="moveItem('top')">{{'macro.top' | translate}}</div>
+                                            <div (click)="moveItem('up')">{{'macro.move_up' | translate}}</div>
+                                            <div (click)="moveItem('down')">{{'macro.move_down' | translate}}</div>
+                                            <div (click)="moveItem('bottom')">{{'macro.bottom' | translate}}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -207,9 +207,9 @@
                         [(ngModel)]="currentRecord.type" 
                         [gCenter]="false"
                     >
-                        <g-option *ngIf="currentRecord.type === 'mouse'" gLabel="插入鼠标事件"  gValue="mouse" ></g-option>
-                        <g-option *ngIf="currentRecord.type === 'keyboard'"  gLabel="插入键盘事件"  gValue="keyboard" ></g-option>
-                        <g-option *ngIf="currentRecord.type === 'delay'"  gLabel="插入时间延迟"  gValue="delay" ></g-option>
+                        <g-option *ngIf="currentRecord.type === 'mouse'" gLabel="{{'macro.insert_mouse_event' | translate}}"  gValue="mouse" ></g-option>
+                        <g-option *ngIf="currentRecord.type === 'keyboard'"  gLabel="{{'macro.insert_keyboard_event' | translate}}"  gValue="keyboard" ></g-option>
+                        <g-option *ngIf="currentRecord.type === 'delay'"  gLabel="{{'macro.insert_event_delay' | translate}}"  gValue="delay" ></g-option>
                     </g-select>
                     <span (click)="moveItem('up')" class="icon-upMove"></span>
                 </div> 
