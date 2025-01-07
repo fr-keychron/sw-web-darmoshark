@@ -25,7 +25,7 @@
                             </div>
                             </ng-container>
                             <ng-template #elseTemplate>
-                            <span>{{item.name || 'M' + (i + 1)}}</span>
+                            <span>{{'keymap.tabs.custom' | translate}}&nbsp;{{item.name}}</span>
                             <span *ngIf="!recordFlag">
                                 <i  (click)="macroModal(item)">
                                     ···

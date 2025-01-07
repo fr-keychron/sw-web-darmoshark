@@ -194,7 +194,7 @@ export class MouseDeviceV4 {
 			this.mouse.write(0, buf).subscribe();
 		});
 	}
-
+	private macroList = JSON.parse(localStorage.getItem('macroList'))
 	public getMouseBtnInfo(btn: number): Observable<any> {
 		return new Observable(s => {
 			const buf = MouseDevice.Buffer(64)
@@ -205,14 +205,54 @@ export class MouseDeviceV4 {
 			const subj = this.mouse.report$
 				.pipe(
 					filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 3 && v[4] === btn),
-					map(v => {
+					map(async v => {
 						const data = getMouseButtonInfo(Array.from(v.slice(5, 9)))
-						const { EMouseBtn, ...filteredData } = data || {};
+						if(data.MouseBtn === EMouseBtn.Macro){
+							const macroData = await firstValueFrom(this.getMacro(data.index))
+							const macro = this.macroList.find((e: any)=>{
+								return e.id === macroData.macroId
+							})
+							if (macro) {
+								data.name = macro.name
+							}
+							data.value = macroData.macroId
+						}
+						const { MouseBtn, ...filteredData } = data || {};
 						return {
-							type: data?.EMouseBtn,
+							type: data?.MouseBtn,
 							mouseKey: v[4],
 							data: filteredData,
 						}
+					})
+				)
+				.subscribe(async v => {
+					const result = await v;
+					s.next(result);
+					subj.unsubscribe()
+				})
+			this.setbuf0(buf)
+			this.setbuf63(buf)
+			this.mouse.write(0, buf).subscribe()
+		})
+	}
+
+	public getMacro(index: number): Observable<any> {
+		return new Observable(s => {
+			const buf = MouseDevice.Buffer(64)
+			buf[0] = 0x07
+			buf[2] = 0x80 | 3
+			buf[3] = 0x01
+			buf[4] = index & 0xFF
+			buf[5] = 0x00
+			const subj = this.mouse.report$
+				.pipe(
+					filter((v) => (v[0] === 0x07 || v[0] === 0x47) && v[3] === 0x01 && v[4] === index),
+					map(v => {
+						const data = v.slice(7, 21)
+						const text = new TextDecoder().decode(new Uint8Array(data));
+						return {
+							macroId: text,
+						};
 					})
 				)
 				.subscribe(v => {
@@ -449,6 +489,7 @@ export class MouseDeviceV4 {
 		macro: Array<number[]>;
 		delay: number;
 		macroIndex: number;
+		macroId: string;
 	}): Observable<any> {
 		return new Observable((s) => {
 			const section: Observable<Result>[] = [];
@@ -469,6 +510,14 @@ export class MouseDeviceV4 {
 					chunkBuf[4] = data.macroIndex; // 宏序号
 					chunkBuf[5] = data.loopType;
 					chunkBuf[6] = data.loopCount;
+					const macroNameBytes = new TextEncoder().encode(data.macroId); // 转换为 UTF-8 字节数组
+					for (let i = 0; i < 34; i++) {
+						if (i < macroNameBytes.length) {
+							chunkBuf[7 + i] = macroNameBytes[i];
+						} else {
+							chunkBuf[7 + i] = 0x00;
+						}
+					}
 					chunkBuf[41] = data.delay & 0xFF;
 					chunkBuf[42] = (data.delay >> 8) & 0xFF;
 					chunkBuf[43] = (remainingMacroData.length / 4) & 0xFF;
@@ -512,20 +561,20 @@ export class MouseDeviceV4 {
 				if (isLastChunk) {
 					break;
 				}
-				const run = () => {
-					const dataArr = section.shift();
-					dataArr.subscribe();
-					const subj = this.mouse.report$.subscribe(() => {
-						if (section.length) {
-							run();
-						} else {
-							this.setMouseMacro(data.mouseKey,data.macroIndex).subscribe(() => s.next())
-						}
-						subj.unsubscribe();
-					});
-				};
-				run();
 			}
+			const run = () => {
+				const dataArr = section.shift();
+				dataArr.subscribe();
+				const subj = this.mouse.report$.subscribe(() => {
+					if (section.length) {
+						run();
+					} else {
+						this.setMouseMacro(data.mouseKey,data.macroIndex).subscribe(() => s.next())
+					}
+					subj.unsubscribe();
+				});
+			};
+			run();
 		});
 	}
 	public setMouseMacro (
@@ -545,7 +594,7 @@ export class MouseDeviceV4 {
 			this.setbuf0(buf)
 			this.setbuf63(buf)
 			const subj = this.mouse.report$
-				.pipe(filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 0x04))
+				.pipe(filter((v) => (v[0] === 0x03 || v[0] === 0x43) && v[3] === 0x04 && v[7] === macroIndex))
 				.subscribe((v) => {
 					this.saveData().subscribe((r) => {
 						subj.unsubscribe()

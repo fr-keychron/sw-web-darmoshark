@@ -101,7 +101,7 @@ export class Macro implements OnInit {
         const len = this.macroList.length
         const defaultItem: MacroList = {
             id: 'M' + Date.now(),
-            name: len ? 'M' + (len + 1) : 'M1',
+            name: (len + 1).toString(),
             delayNum: 200,
             delayMode: 'none',
             loopNum: 1,
@@ -132,7 +132,7 @@ export class Macro implements OnInit {
         const len = this.macroList.length
         const copyItem: MacroList = {
             id: 'M' + Date.now(),
-            name: len ? 'M' + (len + 1) : 'M1',
+            name: (len + 1).toString(),
             delayNum:  this.currentMacro.delayNum,
             delayMode:  this.currentMacro.delayMode,
             loopNum:  this.currentMacro.loopNum,
@@ -438,7 +438,8 @@ export class Macro implements OnInit {
                     fromEvent(document.body, 'keyup')
                 ).subscribe((e: any) => {
                     let key: { name: string, value: number }
-                    const keyVal = EDmsMouseKeycodeDefault.find((value: any) => value.key === e.code)
+                    const keyVal = EDmsMouseKeycodeDefault.find((value: any) => value.code === e.code)
+                    if (!keyVal) return
                     const keyValue = Object.keys(EDmsMouseKeycode).find(
                         (k) => EDmsMouseKeycode[k as keyof typeof EDmsMouseKeycode] === keyVal.value
                     );

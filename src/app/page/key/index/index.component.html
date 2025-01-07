@@ -32,8 +32,9 @@
                         {{item.name ? (('mouse.key_basic.' + item.name) | translate) : (('mouse.button' | translate) + " " + (i + 1))}}
                     </b>
                     <b class="key-text">
-                        {{
-                            [2, 4, 7, 9].includes(item?.type)
+                        {{  item.type === 4 
+                            ? ('mouse.menu.setMacro' | translate) + ' ' + (item?.data.name || '')
+                            : [2, 7, 9].includes(item?.type)
                                 ? (('mouse.key.' + item.type) | translate)
                                 : item?.key
                                     ? ('mouse.key_basic.' + item.key | translate)
@@ -126,7 +127,7 @@
                         (ngModelChange)="setMacro($event)"
                     >
                         <g-option *ngFor="let option of macroList" 
-                            [gLabel]="option.name" 
+                            [gLabel]="('keymap.tabs.custom' | translate) + ' ' + (option?.name || '')"
                             [gValue]="option.id"
                         >
                         </g-option>

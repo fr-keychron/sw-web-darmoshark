@@ -240,7 +240,8 @@ export class MouseDevice extends Mouse {
 		loopCount?: number,
 		macro: Array<number[]>,
 		delay: number,
-		macroIndex: number
+		macroIndex: number,
+		macroId: string
 	}): Observable<any> {
 		return this.commands.setMacro(data)
 	}

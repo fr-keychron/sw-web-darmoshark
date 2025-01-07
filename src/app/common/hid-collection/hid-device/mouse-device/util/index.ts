@@ -12,10 +12,9 @@ import {
 	EDmsMouseBtnMedia,
 	EDmsMouseBtnShortcut,
 	EDmsMousseBtnLight,
-	EMdsMouseBtnDisabled,
 	EDmsMouseKeycode,
 	EMdsMouseBtnGameDefault,
-	EDmsMouseKeycodeDefault
+	EDmsMouseKeycodeDefault,
 } from "../enum";
 import {ByteUtil} from "src/app/utils";
 import keyJson from 'src/assets/json/mouse.json';
@@ -220,36 +219,38 @@ export const deserializeMacroByLong = (v: number[]): Record<string, any> => {
 export const getMouseButtonInfo = (bufferArr: number[]) => {
 	const value = ByteUtil.arrayToNumber(bufferArr)
 	
+	//宏
 	if(bufferArr[0] === 9){
-		return  {EMouseBtn: 4}
+		return {MouseBtn: EMouseBtn.Macro, value: "", index: bufferArr[2], name: "" }
 	}
 	
+	//禁用
 	if (bufferArr.every(value => value === 0)) {
-		return { EMouseBtn: 9 };
+		return { MouseBtn: EMouseBtn.disable };
 	}
 	
 	//按钮设置
 	const mouseBtnAction = EDmsMouseBtnAction.find(i => i.value === value)
 	if(mouseBtnAction) {
-		return  { EMouseBtn: 1, ...mouseBtnAction }
+		return  { MouseBtn: EMouseBtn.Mouse, ...mouseBtnAction }
 	}
 
 	//DPI
 	const mouseBtnDpi = EDmsMouseBtnDpi.find(i => i.value === value)
 	if(mouseBtnDpi) {
-		return  { EMouseBtn: 5, ...mouseBtnDpi }
+		return  { MouseBtn: EMouseBtn.Dpi, ...mouseBtnDpi }
 	}
 
 	//多媒体
 	const mouseBtnMedia = EDmsMouseBtnMedia.find(i => i.value === value)
 	if(mouseBtnMedia) {
-		return  { EMouseBtn: 3, ...mouseBtnMedia }
+		return  { MouseBtn: EMouseBtn.Media, ...mouseBtnMedia }
 	}
 	
 	//灯光
 	const mouseBtnLight = EDmsMousseBtnLight.find(i => i.value === value)
 	if(mouseBtnLight) {
-		return  { EMouseBtn: 6, ...mouseBtnLight }
+		return  { MouseBtn: EMouseBtn.Light, ...mouseBtnLight }
 	}
 
 	//键盘组合键
@@ -257,39 +258,32 @@ export const getMouseButtonInfo = (bufferArr: number[]) => {
 		let keycode = EDmsMouseKeycode[bufferArr[2]]
 		const keyItem = (<any[]>keyJson[0].keycodes).find((i: any) => i.code === keycode);
 		let keyValue = EDmsMouseKeycodeDefault.find((i: { value: number; }) => i.value === bufferArr[2]); 
-		return  {EMouseBtn: 2, shiftKey:bufferArr[1], key1:{...keyItem, value: keyValue.value}}
+		return  { MouseBtn: EMouseBtn.Keyboard, shiftKey:bufferArr[1], key1:{...keyItem, value: keyValue.value }}
 	}
 
 	//快捷键
 	const mouseBtnShortcut = EDmsMouseBtnShortcut.find(i => i.value === value)
 	if(mouseBtnShortcut) {
-		return  { EMouseBtn: 8, ...mouseBtnShortcut }
+		return  { MouseBtn: EMouseBtn.ShortCut, ...mouseBtnShortcut }
 	}
-
-	//禁用
-	const mouseBtnDisabled = EMdsMouseBtnDisabled.find(i => i.value === value)
-	if(mouseBtnDisabled) {
-		return  { EMouseBtn: 9 }
-	}
-	
 
 	//游戏增强键
 	if(bufferArr[0] &&  bufferArr[0] > 8){
 		if (bufferArr[0] >= 0x10 && bufferArr[0] <= 0x1F) {
 			let mouseCode = EMdsMouseBtnGameDefault.find(i => i.value === bufferArr[1]);
 			if(mouseCode) {
-				return  {EMouseBtn: 7, type:0, count:bufferArr[2], speed:bufferArr[3],keycode:mouseCode}
+				return  { MouseBtn: EMouseBtn.GameReinforce, type:0, count:bufferArr[2], speed:bufferArr[3],keycode:mouseCode }
 			}
 		} else if (bufferArr[0] >= 0x20 && bufferArr[0] <= 0x2F) {
 			let keycode = EDmsMouseKeycodeDefault.find((i: { value: number; }) => i.value === bufferArr[1]);
 			if(keycode) {
-				return  {EMouseBtn: 7, type:1, count: bufferArr[2], speed: bufferArr[3],keycode: keycode}
+				return  { MouseBtn: EMouseBtn.GameReinforce, type:1, count: bufferArr[2], speed: bufferArr[3],keycode: keycode }
 			}
 		} else if (bufferArr[0] >= 0x30 && bufferArr[0] <= 0x3F) {
 			let keycode = EDmsMouseKeycodeDefault.find((i: { value: number; }) => i.value === bufferArr[1]);
 			
 			if(keycode) {
-				return  {EMouseBtn: 7, type: 2, count: bufferArr[2], speed: bufferArr[3],keycode: keycode}
+				return  { MouseBtn: EMouseBtn.GameReinforce, type: 2, count: bufferArr[2], speed: bufferArr[3],keycode: keycode }
 			}
 		}
 	}

@@ -118,7 +118,7 @@ export class IndexComponent implements OnInit {
 		this.keyConf?.forEach((k: any, i: number) => {
 			this.mouseKeys[i] = {
 				...k,
-				key: k.data?.key || k.name || EDmsMouseBtnAction[i].key,
+				key: k.data?.key || k.data?.name || k.name || EDmsMouseBtnAction[i].key,
 				value: k.data?.value || EDmsMouseBtnAction[i].value,
 			}
 			if (k.mouseKey === this.activeMouseKey) {
@@ -225,17 +225,19 @@ export class IndexComponent implements OnInit {
 						this.msg.success(this.i18n.instant('notify.success'))
 					})
 			}
-		}123
+		}
 	}
 	public setMacro(value: string) {
 		const m = this.macroList.find((e)=>e.id===value)
 		
-		const { list, delayMode, delayNum, loopMode, loopNum } = m
+		const { list, delayMode, delayNum, loopMode, loopNum, id} = m
 		if (list.length > 200) {
 			this.msg.warn(this.i18n.instant('notify.macroSizeLimit'))
 			return
 		}
 		const macroIndex = this.mouseKeys.filter((e: { type: EMouseBtn; })=>e.type === EMouseBtn.Macro)
+		const activeIndex = this.mouseKeys.find((e: { type: EMouseBtn; mouseKey: number; })=>{return e.mouseKey === this.activeMouseKey && e.type === EMouseBtn.Macro})
+		
 		const delay = ['none', 'dynamic'].includes(delayMode) ? 0 : delayNum
 		this.device.setMacro({
 			mouseKey: this.activeMouseKey,
@@ -244,7 +246,8 @@ export class IndexComponent implements OnInit {
 			loopCount: loopNum,
 			delay,
 			macro: dmsSerializeMacro(list),
-			macroIndex: macroIndex.length 
+			macroIndex: activeIndex?.data.index ?? macroIndex.length,
+			macroId: id
 		}).subscribe(() => {
 			this.init()
 			this.msg.success(this.i18n.instant('notify.success'))
