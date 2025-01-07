@@ -128,6 +128,8 @@ export class IndexComponent implements OnInit {
 		})
 	}	
 	public init() {
+		console.log('init');
+		
 		const obs: any = this.device.json.keys
 			.filter(v => v.custom)
 			.map(k => [this.device.getMouseBtnInfo(k.index), k])

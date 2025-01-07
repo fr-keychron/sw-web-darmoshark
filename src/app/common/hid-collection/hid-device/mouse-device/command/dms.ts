@@ -223,7 +223,8 @@ export class MouseDeviceV4 {
 							mouseKey: v[4],
 							data: filteredData,
 						}
-					})
+					}),
+					take(1)
 				)
 				.subscribe(async v => {
 					const result = await v;
