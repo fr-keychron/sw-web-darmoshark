@@ -612,6 +612,8 @@ export class MouseDeviceV4 {
 		values: number[][];
 	}){
 		return new Observable<any>((s) => {
+			console.log(data);
+			
 			let configByte = 0x00;
 			const bitMasks = [
 				{ bitPosition: 0, value: this.mouse.baseInfo.sys.line },
@@ -648,7 +650,13 @@ export class MouseDeviceV4 {
 			buf[53] = ((this.mouse.baseInfo.sleep) >> 8) & 0xFF;
 			buf[54] = (this.mouse.baseInfo.delay) & 0xFF;
 			const subj = this.mouse.report$
-				.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 2))
+				.pipe(
+					map((v)=>{
+						console.log(v)
+						return v
+					}
+					),
+					filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 2))
 				.subscribe(() => {
 					this.saveData().subscribe((r) => {
 						subj.unsubscribe()
@@ -657,6 +665,8 @@ export class MouseDeviceV4 {
 				})
 			this.setbuf0(buf);
 			this.setbuf63(buf);
+			console.log(buf);
+			
 			this.mouse.write(0, buf).subscribe();
 		})
 	}
@@ -752,7 +762,6 @@ export class MouseDeviceV4 {
 							value: v[6]
 						}
 						this.power = power || this.power
-						// this.mouse.protocolVersion = 
 						this.mouse.baseInfo.power = power
 						this.mouse.baseInfo.profile = v[7]
 						return {
@@ -986,13 +995,9 @@ export class MouseDeviceV4 {
 			.pipe(
 				filter((v) => v[0] === 0x00 && v[3] === 0x05),
 			).subscribe((v) => {
-				console.log(v);
-				
 				s.next({pidDevice: this.pidDevice, mac: mac})
 			})
 			this.setbuf63(buf)
-			console.log(buf);
-			
 			this.mouse.write(0, buf).subscribe()
 		})
 	}

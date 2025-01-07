@@ -52,7 +52,7 @@
                     <div *ngIf="[1,2,5].includes(lightMode)">
                         <div >{{'light.saturation' | translate}} </div>
                         <div  class="range-box">
-                            <g-slider [(ngModel)]="saturation" [min]="0" [max]="100" [step]="1" (ngModelChange)="saturationChange()"></g-slider>
+                            <g-slider [(ngModel)]="saturation" [min]="0" [max]="100" [step]="1"  (ngModelChange)="saturationChange()"></g-slider>
                         </div>
                     </div>
                     <div class="rgb" *ngIf="[1,2,5].includes(lightMode)">
@@ -64,21 +64,21 @@
                             <span class="icon_square"></span>
                             <div class="color-btn">
                                 <span class="icon-R"></span>
-                                <span>{{rgbArr[0]}}</span>
+                                <input type="text" [(ngModel)]="rgbArr[0]" (keydown)="validateInput($event)" (input)="rgbaChange($event, 0)"/>
                             </div>
                         </div>
                         <div class="rgb-text">
                             <span class="icon_square"></span>
                             <div class="color-btn">
                                 <span class="icon-G"></span>
-                                <span>{{rgbArr[1]}}</span>
+                                <input type="text" [(ngModel)]="rgbArr[1]" (keydown)="validateInput($event)" (input)="rgbaChange($event, 1)"/>
                             </div>
                         </div>
                         <div class="rgb-text">
                             <span class="icon_square"></span>
                             <div class="color-btn">
                                 <span class="icon-B"></span>
-                                <span>{{rgbArr[2]}}</span>
+                                <input type="text" [(ngModel)]="rgbArr[2]" (keydown)="validateInput($event)" (input)="rgbaChange($event, 2)"/>
                             </div>
                         </div>
                     </div>

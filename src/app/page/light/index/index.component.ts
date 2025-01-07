@@ -83,7 +83,6 @@ export class IndexComponent implements OnInit {
 	}
 	// 饱和度
 	public saturationChange(){
-		console.log('saturationChange');
 		this.hsl[1] = this.saturation/100
 		this.rgbArr = this.hslToRgb(this.hsl)
 		this.setRGB()
@@ -97,21 +96,18 @@ export class IndexComponent implements OnInit {
 		if (this.updateSub) this.updateSub.unsubscribe()
 	}
 
-	private throttleTimer: any = null; // 节流计时器
+	private throttleTimer: any = null;
 
 	public setRGB() {
 		if (!this.isInitialized) return;
-
-		// 如果当前有未完成的计时器，直接返回，避免多次执行
 		if (this.throttleTimer !== null) return;
 
 		this.throttleTimer = setTimeout(() => {
 			const [r, g, b] = this.rgbArr;
+			console.log('setRGB', this.rgbArr);
+			
 			this.currentColor = `rgb(${r},${g},${b})`;
-
 			const device = this.service.getCurrentHidDevice<MouseDevice>();
-			console.log('setRGB', this.lightMode);
-
 			device.setLight({
 				i: this.lightMode,
 				l: this.brightness,
@@ -120,12 +116,9 @@ export class IndexComponent implements OnInit {
 				g,
 				b,
 			}).subscribe();
-
 			this.saturationUpdata();
-
-			// 清除节流计时器
 			this.throttleTimer = null;
-		}, 300); // 300 毫秒的节流间隔
+		}, 300);
 	}
 
 
@@ -210,4 +203,26 @@ export class IndexComponent implements OnInit {
 
 		return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 	}
+
+	public rgbaChange($event: Event, index: number) {
+		const target = $event.target as HTMLInputElement
+		const val = Number(target.value);
+		target.value = target.value.replace(/[^\d]/g, '');
+		if (val > 255) {
+			 target.value = '255'
+			 this.rgbArr[index] = 255;
+		}
+		this.setRGB()
+	}
+
+	// 验证键盘输入
+	public validateInput(event: KeyboardEvent): void {
+        const allowedKeys = [
+            'Backspace', 'ArrowLeft', 'ArrowRight', 'Tab', 'Delete', // 常用功能键
+        ]
+        const isNumber = /^[0-9]$/.test(event.key)
+        if (!isNumber && !allowedKeys.includes(event.key)) {
+            event.preventDefault()
+        }
+    }
 }

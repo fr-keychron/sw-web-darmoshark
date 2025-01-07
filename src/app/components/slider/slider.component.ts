@@ -33,7 +33,7 @@ export class SliderComponent implements ControlValueAccessor {
   }
 
   set value(val: number) {
-    if (val !== this.innerValue) {
+    if (Math.round(val) !== this.innerValue) {
       if (val < this.min) {
         this.innerValue = this.min;
       } else if (val > this.max) {
@@ -64,16 +64,23 @@ export class SliderComponent implements ControlValueAccessor {
 
   onMouseDown(event: MouseEvent): void {
     this.dragging = true;
+    // 绑定到 window 上，这样鼠标滑出 sliderTrack 时也能继续触发
     window.addEventListener('mousemove', this.onDrag.bind(this));
     window.addEventListener('mouseup', this.onStopDrag.bind(this));
+    window.addEventListener('touchmove', this.onDrag.bind(this));
+    window.addEventListener('touchend', this.onStopDrag.bind(this));
     event.preventDefault();
   }
 
+  // 点击滑块的轨道时
   onTrackClick(event: MouseEvent | TouchEvent): void {
     const clientX = this.getClientX(event);
     this.updateValueFromEvent(clientX);
+    // 防止事件传播
+    event.preventDefault();
   }
 
+  // 鼠标/触摸拖动时的处理
   onDrag(event: MouseEvent | TouchEvent): void {
     if (this.dragging) {
       const clientX = this.getClientX(event);
@@ -85,11 +92,20 @@ export class SliderComponent implements ControlValueAccessor {
     }
   }
 
-  onStopDrag(): void {
+  // 停止拖动时的处理
+  onStopDrag(event?: MouseEvent | TouchEvent): void {
     if (this.dragging) {
       this.dragging = false;
+      // 鼠标松开时触发更新
+      if (event) {
+        const clientX = this.getClientX(event);
+        this.updateValueFromEvent(clientX);
+      }
+      // 移除全局的事件监听
       window.removeEventListener('mousemove', this.onDrag.bind(this));
       window.removeEventListener('mouseup', this.onStopDrag.bind(this));
+      window.removeEventListener('touchmove', this.onDrag.bind(this));
+      window.removeEventListener('touchend', this.onStopDrag.bind(this));
     }
   }
 
@@ -126,12 +142,12 @@ export class SliderComponent implements ControlValueAccessor {
   private getTrackRect(): DOMRect {
     return this.sliderTrack.nativeElement.getBoundingClientRect();
   }
+
   public increaseValue(): void {
     this.value = Math.min(this.value + this.step, this.max);
   }
-  
+
   public decreaseValue(): void {
     this.value = Math.max(this.value - this.step, this.min);
   }
-  
 }

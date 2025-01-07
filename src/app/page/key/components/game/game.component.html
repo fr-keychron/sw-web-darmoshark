@@ -45,22 +45,6 @@
 						placeholder="{{ 'mouse.key_game.key_input_single_key' | translate }}"
 					>
 			</div>
-			<!-- <g-select
-				*ngIf="keyType == 2" 
-				class="game-key-select"
-				[ngClass]="{ 'game-active-select': keyActive }"
-				[(ngModel)]="currentSelectKey" 
-				[gCenter]="false" 
-				(ngModelChange)="setKey($event)"
-			>
-				<g-option
-					 *ngFor="let option of keyCodes " 
-					[gLabel]="option.name" 
-					[gValue]="option.code"
-					[useInnerHTML]="true"
-				>	
-				</g-option>
-			</g-select> -->
 		</div>
 		<div class="game-input g-flex g-item-center g-justify-between">
 			<span>{{ 'mouse.key_game.count' | translate }}</span>

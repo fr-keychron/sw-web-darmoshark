@@ -158,38 +158,26 @@ export class IndexComponent implements OnInit {
 		this.dpiValues[this.dpiLevel][1] = this.dpiValues[this.dpiLevel][0]
 	}
 
-	// 提交
-	public loading = {
-		dpi: false,
-		reportRate: false
-	}
-
 	// 设置DPI
 	public setDpi() {
-		if (this.loading.dpi) return;
-		this.loading.dpi = true;
 		this.currentHidDevice.setDpi({
 			current: this.dpiLevel,
 			level: null,
 			gears: this.dpiGears,
 			values: this.dpiValues,
 		}).subscribe(() => {
-			this.loading.dpi = false;
 			this.msgService.success(this.i18n.instant('notify.success'));
 			this.init();
 		});
 	}
 
 	public levelCount() {
-		if (this.loading.dpi) return;
-		this.loading.dpi = true;
 		this.currentHidDevice.setDpi({
 			current: 0,
 			level: null,
 			gears: this.dpiGears,
 			values: this.oldLevelVal,
 		}).subscribe(() => {
-			this.loading.dpi = false;
 			this.msgService.success(this.i18n.instant('notify.success'));
 			this.init();
 		});
@@ -197,13 +185,10 @@ export class IndexComponent implements OnInit {
 
 	// 设置回报率
 	public setReportRate(i: number) {
-		if (this.loading.reportRate) return;
-			this.loading.reportRate = true;
 			return this.currentHidDevice.setReportRate({
 			level: i,
 			values: this.reportRate.map(i => i.value)
 		}).subscribe(() => {
-			this.loading.reportRate = false;
 			const m = this.i18n.instant('notify.success');
 			this.msgService.success(m);
 			this.init();

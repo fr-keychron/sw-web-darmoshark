@@ -95,7 +95,22 @@ $width: 20rem;
                     width: 0; 
                     border-right:1px solid $global-border-white;
                 }
+                input[type="text"] {
+                    background: transparent;
+                    border: none;
+                    outline: none;
+                    color: inherit;
+                    font-size: inherit;
+                    width: 2.266rem;
+                    padding: 0;
+                    text-align: center;
+                }
+                input[type="text"]:focus {
+                    border: none;
+                    box-shadow: none;
+                }
             }
+            
         }
     }
     

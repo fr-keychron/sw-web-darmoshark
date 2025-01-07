@@ -256,6 +256,8 @@ export class DeviceConnectService {
 							const vid = `0x${ByteUtil.oct2Hex(v[6], 2, "")}${ByteUtil.oct2Hex(v[5], 2, "")}`;
 							const pid = `0x${ByteUtil.oct2Hex(v[12], 2, "")}${ByteUtil.oct2Hex(v[11], 2, "")}`;
 							const newPid = productFirmware.find((item) => item.productID.toLowerCase() === pid.toLowerCase())?.PID
+							console.log(pid,newPid);
+							
 							const vpId = BridgeDevice.vendorProductId(ByteUtil.hex2Oct(vid), ByteUtil.hex2Oct(newPid));
 							this.merchandise.info({ variable: {id: vpId} })
 								.subscribe({
