@@ -39,6 +39,7 @@
                         <span 
                             class="icon_hint"
                             nz-tooltip
+                            nzTooltipPlacement="right"
                             [nzTooltipTitle]="titleTemplate"
                         ></span>
                         <ng-template #titleTemplate let-thing>
@@ -48,11 +49,11 @@
                             <br>
                             <span>{{'mouse.tip.11' | translate}}</span>
                             <br>
-                            <span>{{'mouse.tip.12' | translate}}</span>
                             <br>
                             <span>【{{'mouse.sys.line' | translate}}】</span>
                             <br>
                             <span>{{'mouse.tip.14' | translate}}</span>
+                            <br>
                             <br>
                             <span>【{{'mouse.sys.motion' | translate}}】</span>
                             <br>
@@ -98,7 +99,7 @@
                             class="icon_hint"
                             nz-tooltip
                             nzTooltipPlacement="right"
-                            [nzTooltipTitle]="'mouse.tip.12' | translate"
+                            [nzTooltipTitle]="'mouse.tip.13' | translate"
                         ></span>
                     </div>
                     <div class="item-content">
@@ -111,70 +112,7 @@
                     </div>
                 </div>
             </div>
-            <!-- <div class="scroll-container">
-                <div class="item-container">
-                    <div class="g-flex g-item-center g-justify-between">
-                        <div class="g-flex g-item-center ">
-                            <span class="icon_square"></span>
-                            {{'mouse.sys.lod'  | translate}} 
-                        </div>
-                        <span 
-                            class="icon_hint"
-                            nz-tooltip
-                            [nzTooltipTitle]="'mouse.dpi.dpiTip' | translate"
-                        ></span>
-                    </div>
-                    <div class="item-content g-flex g-item-center">
-                        
-                        慢
-                        <g-slider type="Thumb" [(ngModel)]="mouseSleep" [min]="0" [max]="100" [step]="1" (ngModelChange)="mouseSleepChange()"></g-slider>
-                        快
-                        <div class="slider-number">{{mouseSleep}}</div>
-                    </div>
-                </div>
-                <div class="item-container">
-                    <div class="g-flex g-item-center">
-                        <div class="g-flex g-item-center ">
-                            <span class="icon_square"></span>
-                            {{'滚动速度'  | translate}} 
-                        </div>
-                    </div>
-                    <div class="item-content g-flex">
-                        <div class="radio-blue">
-                            <div>
-                                <input type="radio" [(ngModel)]="scrollType" [value]="0" name="scrollType" (ngModelChange)="submit()"/>
-                                <label>{{ "连续滚动" | translate }}</label>
-                            </div>
-                            <div>
-                                <input type="radio" [(ngModel)]="scrollType" [value]="1" name="scrollType" (ngModelChange)="submit()"/>
-                                <label>{{ "一次滚动一页" | translate }}</label>
-                            </div>
-                        </div>
-                        <div class="scroll-btn">
-                            <div (click)="increment()">+</div>
-                            <input type="number" [ngModel]="dalayTime" min="0" />
-                            <div (click)="decrement()">—</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="item-container">
-                    <div class="g-flex g-item-center">
-                        <div class="g-flex g-item-center ">
-                            <span class="icon_square"></span>
-                            {{'双击速度'  | translate}} 
-                        </div>
-                    </div>
-                    <div class="item-content g-flex g-item-center">
-                        慢
-                        <g-slider type="Thumb" [(ngModel)]="mouseSleep" [min]="0" [max]="100" [step]="1" (ngModelChange)="mouseSleepChange()"></g-slider>
-                        快
-                        <div class="slider-number">{{mouseSleep}}</div>
-                    </div>
-                </div>
-            </div> -->
         </div>
-        <!-- 鼠标系统功能设置 -->
-        
         <!-- 按键延迟相应设置 -->
         <div class="delay-container">
             <div class="delay-container-item g-flex g-justify-between g-item-center">

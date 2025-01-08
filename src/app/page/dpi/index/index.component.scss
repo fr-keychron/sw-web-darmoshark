@@ -135,25 +135,6 @@
         }
     }
 }
-.dpixy-container {
-    width: 45rem;
-    margin: .6rem 0 .6rem 1rem;
-    padding: 0 .666rem .333rem .2rem;
-    color: $global-white;
-    background: $global-bg-gray;
-    border: 1px solid $global-border-blue;
-    border-radius: .333rem;
-    & > .dpixy-os {
-        & > .dpixy-slider-box {
-            & > .dpi-slider  {
-                width: 100%;
-            }
-            & > span:last-child {
-                width: 4rem;
-            }
-        }
-    }
-}
 
 .report-container {
     width: 45rem;
