@@ -1,7 +1,8 @@
 @import "src/styles.scss";
 
 .card-container {
-    width: 33rem;
+    min-width: 33rem;
+    width:auto;
     height: 26.2rem;
     margin: .6rem 1rem 1rem 1rem;
     padding: 0.2rem;
