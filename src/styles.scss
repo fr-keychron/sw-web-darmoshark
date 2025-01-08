@@ -590,26 +590,6 @@ body {
     display: inline-block;
     vertical-align: middle;
 }
-.button-bule {
-    width: auto;
-    height: 1.333rem;
-    border-radius: 0.333rem;
-    background: transparent;
-    border: 1px solid white;
-    font-size: 0.933rem;
-    padding: 0;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-evenly;
-    transition: border-color 0.3s;
-
-    &:hover,
-    &:focus {
-        border-color: $global-border-blue;
-    }
-}
 
 .container-title {
     width: 33rem;

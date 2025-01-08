@@ -68,7 +68,6 @@ export class AsideComponent implements OnInit {
 
 	public showMenu(p: string) {
 		let condition: any = {}
-		if (this.connectType === 'bridge') return true
 		if (this.connectType === 'mouse') {
 			const d = this.currentDevice as MouseDevice
 			if (!d) return false
@@ -87,11 +86,11 @@ export class AsideComponent implements OnInit {
 	}
 
 
-	private connectType: 'mouse' | 'bridge' 
+	private connectType: 'mouse'
 
 	public deviceEvent: Subscription;
 
-	public switchType(t: 'mouse' | 'bridge') {
+	public switchType(t: 'mouse') {
 		this.connectType = t;
 		this.currentDevice = this.service.getCurrentHidDevice();
 		this.menus = this.menuService.get("mouse").map((item)=>{

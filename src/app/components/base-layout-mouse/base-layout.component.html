@@ -22,7 +22,7 @@
 						     (click)="(leftLock === '1' && i === 0) ? false : activeMouseKey($event, item.index)"
 						>
 							<div [ngStyle]="item.line"></div>
-							<div [ngStyle]="item.text" class="g-flex g-item-center g-justify-between">
+							<div [ngStyle]="item.text" class="g-flex g-item-center g-justify-start">
 								<div class="icon_square"></div>
 								<span>
         							{{(item.name && !item.keyKeep) ? (('mouse.key_basic.'+item.name) | translate) : (('mouse.button' | translate) +" "+ (i+1))}}

@@ -94,7 +94,8 @@
                 display: flex;
                 position: relative;
                 & > .submit-btn {
-                    width: 4rem;
+                    width: auto;
+                    padding: 0 1rem;
                     height: 1.4rem;
                     line-height: 1.3rem;
                     border-radius: .333rem;

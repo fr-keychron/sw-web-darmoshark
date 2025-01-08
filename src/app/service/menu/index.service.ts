@@ -48,20 +48,11 @@ export class MenuService {
 		}
 	]
 
-	private bridgeMenu: Array<any> = [
-		{
-			i18n: 'menu.keyboard_firmware',
-			path: 'firmware/frequency',
-			icon: 'assets/menu/firmware.svg',
-			id: 'bridge_firmware'
-		},
-	]
 
-	public get(t: "mouse" | 'bridge') {
+	public get(t: "mouse") {
 		const device = this.connect.getCurrentHidDevice();
 		const map = {
 			mouse: this.mouseMenu,
-			bridge: this.bridgeMenu,
 		}
 		const feat = this.appInit.getFeat();
 		const m = map[t];
