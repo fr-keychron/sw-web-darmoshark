@@ -9,7 +9,7 @@
 }
 
 .key-container{
-    width: 12.2rem;
+    max-width: 16.2rem;
     margin: .666rem 1rem 0 1rem;
     padding: 0 .333rem .666rem;
     color: $global-fc-white;
@@ -22,7 +22,8 @@
         border: 1px solid $global-border-blue;
         margin-top: 1.266rem;
         font-weight: 200;
-        
+        white-space: nowrap;
+        padding-right: 1rem;
         .key-text{
             position: relative;
             z-index: 2;
