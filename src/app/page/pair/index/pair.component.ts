@@ -79,7 +79,7 @@ export class PairComponent implements OnInit {
 			const deviceDFU = MouseDeviceDFU.Build(r[0], this.i18n)
 			deviceDFU.open().subscribe(() => {
 				if(deviceDFU.id === this.device.id){
-					this.msg.error('请勿和配对鼠标重复配对')
+					this.msg.error('mouse.pair.tip')
 					return
 				}
 				this.step = 1
