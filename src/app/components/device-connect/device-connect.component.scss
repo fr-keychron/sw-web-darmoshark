@@ -118,11 +118,31 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 10;
-    font-size: 2rem;
-    color: #ccc; 
-    display: flex;
-    justify-content: center;
-    align-items: center;
     z-index: 99;
+    & > h1 {
+        color: #ccc; 
+    }
+    & > button {
+        background-color: $global-bg-gray;
+        border: 1px solidd $global-border-blue;
+        color: #fff; // 白色字体
+        border: none;
+        padding: 10px 20px;
+        font-size: 16px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    
+        &:hover {
+          background-color: darken($global-border-blue, 10%); // 悬停加深颜色
+        }
+    
+        &:active {
+          transform: scale(0.95); // 点击时稍微缩小
+        }
+    
+        &:focus {
+          outline: 2px solid lighten($global-border-blue, 30%); // 聚焦高亮
+        }
+      }
 }
