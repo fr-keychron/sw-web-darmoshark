@@ -59,7 +59,8 @@ export class MouseDeviceV4 {
 					await firstValueFrom(this.getBaseInfo());
 				}
 				const protocol = await firstValueFrom(this.getPower());
-				await firstValueFrom(this.getVersion());
+				const mcu = productFirmware.find(item => item.PID === this.mouse.pid)
+				await firstValueFrom(this.getVersion(mcu?.MCU ? true : false));
 				this.mouse.baseInfo.workMode = workMode
 				this.mouse.baseInfo.profile = protocol.profile
 				this.mouse.baseInfo.power = protocol.power
@@ -361,7 +362,7 @@ export class MouseDeviceV4 {
 	}
 
 	public pidDevice: number[] = []
-	public getVersion(): Observable<{
+	public getVersion(MCU2: boolean): Observable<{
 		firmwareVersion: string;
 	}> {
 		return new Observable<{  firmwareVersion: string}>((s) => {
@@ -379,9 +380,9 @@ export class MouseDeviceV4 {
 				.pipe(
 					filter((v) => (v[0] === 0 || v[0] === 0x40) && v[3] === 0),
 					map((v) => {
-						this.pidDevice = [v[4], v[5], v[6], v[7]]
+						this.pidDevice = MCU2 ? [v[16], v[17], v[18], v[19]] : [v[4], v[5], v[6], v[7]];
 						return {
-							firmwareVersion:formatVersion(v[9],v[8]),//固件版本
+							firmwareVersion: formatVersion(MCU2 ? v[21] : v[9], MCU2 ? v[20] : v[8]), //固件版本
 						};
 					})
 				)
@@ -612,8 +613,6 @@ export class MouseDeviceV4 {
 		values: number[][];
 	}){
 		return new Observable<any>((s) => {
-			console.log(data);
-			
 			let configByte = 0x00;
 			const bitMasks = [
 				{ bitPosition: 0, value: this.mouse.baseInfo.sys.line },
@@ -651,11 +650,6 @@ export class MouseDeviceV4 {
 			buf[54] = (this.mouse.baseInfo.delay) & 0xFF;
 			const subj = this.mouse.report$
 				.pipe(
-					map((v)=>{
-						console.log(v)
-						return v
-					}
-					),
 					filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 2))
 				.subscribe(() => {
 					this.saveData().subscribe((r) => {
@@ -665,8 +659,6 @@ export class MouseDeviceV4 {
 				})
 			this.setbuf0(buf);
 			this.setbuf63(buf);
-			console.log(buf);
-			
 			this.mouse.write(0, buf).subscribe();
 		})
 	}

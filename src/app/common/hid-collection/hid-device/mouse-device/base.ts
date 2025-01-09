@@ -30,8 +30,8 @@ export class MouseDevice extends Mouse {
 		this.name = hid.productName || json.name
 		this.version = product.version
 		this.workMode = product.workMode || 0
-		this.pid = ByteUtil.oct2Hex(hid.productId)
-		this.vid = ByteUtil.oct2Hex(hid.vendorId)
+		this.pid = ByteUtil.oct2Hex(hid.productId,4)
+		this.vid = ByteUtil.oct2Hex(hid.vendorId,4)
 		this.id = MouseDevice.vendorProductId(hid.vendorId, hid.productId)
 		
 		this.productInfo = product

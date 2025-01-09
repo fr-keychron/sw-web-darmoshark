@@ -398,7 +398,6 @@ export class DeviceConnectService {
 		if(this.currentDevice){
 			this.currentDevice.disconnect()
 		}
-		sessionStorage.clear()
 		this.currentDevice = undefined
 		this.event$.next({type: EEventEnum.DISCONNECT, data: this})
 	}
