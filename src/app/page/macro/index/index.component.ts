@@ -110,11 +110,13 @@ export class Macro implements OnInit {
         }
         this.macroList.push(defaultItem)
         this.selectMacro(defaultItem)
+        this.currentRecord = undefined
         this.save()
     }
     // 选择宏
     public selectMacro(v: MacroList): void {
         this.currentMacro = v
+        this.currentRecord = undefined
     }
     // 切换延迟
     public handleDelay(v: string): void {
@@ -141,11 +143,13 @@ export class Macro implements OnInit {
         }
         this.macroList.push(copyItem)
         this.selectMacro(copyItem)
+        this.currentRecord = undefined
         this.save()
     }
     // 删除宏
     public delMarco() {
         this.macroList = this.macroList.filter(l => l.id !== this.currentMacro.id)
+        this.currentRecord = undefined
         this.save()
         if (!this.macroList.length) {
             this.addMacroItem()
@@ -155,7 +159,7 @@ export class Macro implements OnInit {
     }
     // 操作项点击时更新列表
     moveItem(action: string) {
-        const index = this.currentMacro.list.indexOf(this.currentRecord)
+        const index = this.currentMacro.list.findIndex(record => record.id === this.currentRecord.id && record.action === this.currentRecord.action)
         if (index === -1) return
 
         let newIndex = index
