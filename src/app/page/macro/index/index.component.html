@@ -94,14 +94,14 @@
                         </div>
                         <div class="record-btns g-flex g-justify-end">
                             <div class="record-btn" 
-                                [ngClass]="{disabled: recordFlag || !currentRecord}" 
+                                [ngClass]="{disabled: recordFlag}" 
                                 (click)="onInsertModal(true)" 
                                 (blur)="onInsertModal(false)"
                                 tabindex="0"
                             >
                                 {{'macro.macro_insert' | translate}}
                             </div>
-                            <div class="record-btn" [ngClass]="{disabled: recordFlag || !currentRecord}" (click)="delEvent()">
+                            <div class="record-btn" [ngClass]="{disabled: recordFlag}" (click)="delEvent()">
                                 {{'common.delete' | translate}}
                             </div>
                             <div class="insert-modal" *ngIf="insertModal" >

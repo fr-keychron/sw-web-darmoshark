@@ -422,8 +422,11 @@ export class Macro implements OnInit {
                 }]
             break;
         }
-        const index = this.currentMacro.list.findIndex(l => l.id === this.currentRecord.id)
-        this.currentMacro.list.splice(index+1, 0, ...newArr)
+        const index = this.currentRecord 
+            ? this.currentMacro.list.findIndex(l => l.id === this.currentRecord.id) + 1
+            : this.currentMacro.list.length;
+
+        this.currentMacro.list.splice(index, 0, ...newArr);
         this.insertModal = false;
         this.save()
     }
