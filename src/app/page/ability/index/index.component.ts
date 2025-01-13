@@ -26,8 +26,6 @@ export class IndexComponent implements OnInit {
 	ngOnDestroy() {
 		if (this.deviceSub) this.deviceSub.unsubscribe()
 	}
-
-	
 	
 	public lodList = [
 		{
@@ -47,6 +45,7 @@ export class IndexComponent implements OnInit {
 	public dalayTime: number = 10;
 	public mouseSleep: number = 15
 	public scrollType: number = 0
+	public reportRateVal = 0;
 	public dpiValues: Array<[]> = []
 	public load($e: number) {
 		if (this.deviceSub) this.deviceSub.unsubscribe()
@@ -57,15 +56,13 @@ export class IndexComponent implements OnInit {
 		const device = this.service.getCurrentHidDevice<MouseDevice>()
 		device.getBaseInfo().subscribe(()=>{
 			const {lod, motion, line, wave, scroll, eSports} = device.baseInfo.sys
-			const {sys} = device.json as any
-				
 			this.lodValue = lod
 			this.eSports = eSports
 			this.scrollValue =  scroll
 			this.sensorValue = [!!wave, !!line, !!motion]
 			this.dalayTime = device.baseInfo.delay
 			this.sleepTime = device.baseInfo.sleep
-			// this.lodList = sys.lod
+			this.reportRateVal = device.baseInfo.usb.reportRate
 		})
 	}
 
@@ -81,6 +78,7 @@ export class IndexComponent implements OnInit {
 			eSports: eSports,
 		}).subscribe(()=>{
 			this.init()
+			this.msgService.success(this.i18n.instant('notify.success'))
 		})
 	}
 	public submitTime() {
@@ -88,7 +86,10 @@ export class IndexComponent implements OnInit {
 		device.setBtnTime({
 			btnRespondTime: Math.min(Math.max(this.dalayTime, 0), 255),
 			sleepTime: this.sleepTime
-		}).subscribe()
+		}).subscribe(()=>{
+			this.init()
+			this.msgService.success(this.i18n.instant('notify.success'))
+		})
 	}
 	public increment() {  
 		this.dalayTime++
@@ -100,9 +101,5 @@ export class IndexComponent implements OnInit {
 		  	this.dalayTime--
 			  this.submitTime()
 		}
-	}
-
-	public mouseSleepChange() {
-		
 	}
 }

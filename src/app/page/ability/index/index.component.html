@@ -106,7 +106,7 @@
                         <div class="radio-blue">
                             <input type="radio" [(ngModel)]="eSports" [value]="1" name="eSports" (ngModelChange)="submit()"/>
                             <label>{{ "common.open" | translate }}</label>
-                            <input type="radio" [(ngModel)]="eSports" [value]="0" name="eSports" (ngModelChange)="submit()"/>
+                            <input type="radio" [disabled]="reportRateVal > 3" [(ngModel)]="eSports" [value]="0" name="eSports" (ngModelChange)="submit()"/>
                             <label>{{ "common.close" | translate }}</label>
                         </div>
                     </div>

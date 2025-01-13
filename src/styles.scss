@@ -642,12 +642,18 @@ body {
     border-radius: 50%;
 }
 
-.radio-blue  input[type="radio"]:hover {
+.radio-blue input[type="radio"]:hover {
     background-image: url('../src/assets/icon/icon-radio-hover.png');
     background-position: center center;
     background-repeat: no-repeat;
     background-size: contain; 
 }
+
+.radio-blue input[disabled] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
 .radio-blue  label{
     margin: 0 3rem 0 .6rem;
 }

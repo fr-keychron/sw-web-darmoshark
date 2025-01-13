@@ -676,11 +676,25 @@ export class MouseDeviceV4 {
 			this.setbuf0(buf)
 			this.setbuf63(buf)
 			const subj = this.mouse.report$
-				.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x04))
+				.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x04),take(1))
 				.subscribe(() => {
 					this.saveData().subscribe((r) => {
-						subj.unsubscribe()
-						s.next(r)
+						if (data.level > 2) { //自动进入全速不休眠模式
+							this.setExtConf({
+								lod: this.mouse.baseInfo.sys.lod,
+								wave: this.mouse.baseInfo.sys.wave,
+								line: this.mouse.baseInfo.sys.line,
+								motion: this.mouse.baseInfo.sys.motion,
+								scroll: this.mouse.baseInfo.sys.scroll,
+								eSports: 1
+							}).subscribe((r) => {
+								subj.unsubscribe()
+								s.next(r)
+							})
+						}else{
+							subj.unsubscribe()
+								s.next(r)
+						}
 					})
 				})
 			this.mouse.write(0, buf).subscribe()
@@ -694,7 +708,7 @@ export class MouseDeviceV4 {
 		motion: number
 		scroll: number
 		eSports: number
-	}, stop: boolean) {
+	}, stop?: boolean) {
 		return new Observable((s) => {
 			data.wave = data.wave
 			data.line = data.line
@@ -722,8 +736,8 @@ export class MouseDeviceV4 {
 			this.setbuf0(buf)
 			this.setbuf63(buf)
 			const subj = this.mouse.report$
-				.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x0a))
-				.subscribe(() => {
+				.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x0a),take(1))
+				.subscribe((v) => {
 					this.saveData().subscribe((r) => {
 						subj.unsubscribe()
 						s.next(r)
