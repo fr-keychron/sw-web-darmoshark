@@ -1,18 +1,16 @@
 import { Component, OnInit, } from "@angular/core";
-import { concatMap, filter, map, Subscription, tap } from "rxjs";
+import { map, Subscription } from "rxjs";
 import {ISelectEnums} from "../../../model";
 import {GLOBAL_CONFIG, setConfVal} from 'src/app/config';
 import { MsgService } from "src/app/service/msg/msg.service";
 import { TranslateService } from "@ngx-translate/core";
 import { MouseDevice, EEventEnum } from "../../../common/hid-collection";
 import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
-import { BridgeDevice } from "src/app/common/hid-collection/hid-device/device-dfu/bridge-device";
 import { MerchandiseService } from "src/app/service/merchandise/merchandise.service";
-import BuildInfo from "../../../version.json";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 @Component({
-	selector: "mouse-sys-index",
+	selector: "mouse-sys",
 	templateUrl: './index.component.html',
 	styleUrls: ['./index.component.scss']
 })

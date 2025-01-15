@@ -5,7 +5,7 @@ import { MouseDevice} from "../../../common/hid-collection";
 import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 import { Subject, Subscription} from 'rxjs';
 @Component({
-	selector: "mouse-light-index",
+	selector: "mouse-light",
 	templateUrl: './index.component.html',
 	styleUrls: ['./index.component.scss']
 })

@@ -13,10 +13,9 @@ import {
 } from "../../../common/hid-collection/hid-device/device-dfu/mouse-device";
 import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 import { Router } from "@angular/router";
-import { GLOBAL_CONFIG } from "src/app/config";
 
 @Component({
-	selector: 'firmware-update',
+	selector: 'mouse-pair',
 	templateUrl: './pair.component.html',
 	styleUrls: ['./pair.component.scss']
 })

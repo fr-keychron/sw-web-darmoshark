@@ -1,7 +1,7 @@
 import {Component, OnInit} from "@angular/core";
 import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 @Component({
-	selector: "mouse-dpi-index",
+	selector: "mouse-home",
 	templateUrl: './index.component.html',
 	styleUrls: ['./index.component.scss']
 })

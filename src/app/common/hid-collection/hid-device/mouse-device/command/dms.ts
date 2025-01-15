@@ -678,23 +678,18 @@ export class MouseDeviceV4 {
 			const subj = this.mouse.report$
 				.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x04),take(1))
 				.subscribe(() => {
-					this.saveData().subscribe((r) => {
-						if (data.level > 2) { //自动进入全速不休眠模式
-							this.setExtConf({
-								lod: this.mouse.baseInfo.sys.lod,
-								wave: this.mouse.baseInfo.sys.wave,
-								line: this.mouse.baseInfo.sys.line,
-								motion: this.mouse.baseInfo.sys.motion,
-								scroll: this.mouse.baseInfo.sys.scroll,
-								eSports: 1
-							}).subscribe((r) => {
-								subj.unsubscribe()
-								s.next(r)
-							})
-						}else{
+					this.saveData().subscribe(() => {
+						this.setExtConf({
+							lod: this.mouse.baseInfo.sys.lod,
+							wave: this.mouse.baseInfo.sys.wave,
+							line: this.mouse.baseInfo.sys.line,
+							motion: this.mouse.baseInfo.sys.motion,
+							scroll: this.mouse.baseInfo.sys.scroll,
+							eSports: data.level > 3 ? 1 : 0
+						}).subscribe((r) => {
 							subj.unsubscribe()
-								s.next(r)
-						}
+							s.next(r)
+						}) 
 					})
 				})
 			this.mouse.write(0, buf).subscribe()

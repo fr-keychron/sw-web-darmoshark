@@ -1,9 +1,7 @@
 import {Component, OnInit,} from "@angular/core";
-import {Subscription, Observable} from "rxjs";
-import {filter, retry} from 'rxjs/operators';
+import {Subscription} from "rxjs";
 import {
 	EDmsMacroLoopKey,
-	HidDeviceEventType, 
 	EDmsMouseBtnAction, 
 	MouseDevice,
 	EDmsMouseBtnMedia, 
@@ -12,7 +10,6 @@ import {
 	EDmsMouseBtnShortcut,
 	handleMouseKey,
 	EDmsMouseBtnDpi,
-	EDmsMouseGame,
 	EDmsMousseBtnLight,
 	EMouseBtn
 } from "../../../common/hid-collection";
@@ -20,7 +17,7 @@ import {DeviceConnectService} from "../../../service/device-conncet/device-conne
 import {TranslateService} from "@ngx-translate/core";
 import {MsgService} from "src/app/service/msg/msg.service";
 @Component({
-	selector: "mouse-dpi-index",
+	selector: "mouse-key",
 	templateUrl: './index.component.html',
 	styleUrls: ['./index.component.scss']
 })

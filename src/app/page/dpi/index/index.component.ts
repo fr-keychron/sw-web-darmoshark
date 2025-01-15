@@ -8,7 +8,7 @@ import { DeviceConnectService } from "../../../service/device-conncet/device-con
 
 
 @Component({
-  selector: "mouse-dpi-index",
+  selector: "mouse-dpi",
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss']
 })

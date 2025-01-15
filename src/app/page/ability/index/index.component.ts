@@ -6,7 +6,7 @@ import { MouseDevice } from "../../../common/hid-collection";
 import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 
 @Component({
-	selector: "mouse-dpi-index",
+	selector: "mouse-ability",
 	templateUrl: './index.component.html',
 	styleUrls: ['./index.component.scss']
 })

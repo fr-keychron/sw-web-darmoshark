@@ -15,10 +15,10 @@ import {
 import keyJson from 'src/assets/json/mouse.json';
 import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 
-const unit = ' ms'
+const unit = 'ms'
 
 @Component({
-  selector: "mouse-macro-index",
+  selector: "mouse-macro",
   templateUrl: './index.component.html',
   styleUrls: ['./index.component.scss']
 })
