@@ -2,11 +2,11 @@ import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from "@an
 import keyJson from 'src/assets/json/mouse.json';
 import {TaskQueueService} from "src/app/service/task-queue/task-queue.service";
 import {
-	EDmsMouseGame,
 	EMouseBtnGameKey,
-	EMdsMouseBtnGameMouse,
+	EDmsMouseBtnGameMouse,
 	MouseDevice,
-	EDmsMouseKeycodeDefault
+	EDmsMouseKeycodeDefault,
+	EMouseBtnGame
 } from "../../../../common/hid-collection";
 import {DeviceConnectService} from "../../../../service/device-conncet/device-connect.service";
 import {MsgService} from "src/app/service/msg/msg.service";
@@ -22,7 +22,8 @@ export class GameComponent {
 	public _mouseKey: number
 	public mouseCodes: Array<any> = []
 	private keyCodes: Array<any> = keyJson[0].keycodes.slice(2);
-	public keyType: number = 0
+	public mouseBtnGame = EMouseBtnGame
+	public keyType: number = 1
 	public keyData: { name: string, code: string } = {name: '', code: ''}
 	constructor(
 		private readonly mouseService: DeviceConnectService,
@@ -30,7 +31,7 @@ export class GameComponent {
 		private readonly msg: MsgService,
 		private readonly i18n: TranslateService,
 	) {
-		this.mouseCodes = EMdsMouseBtnGameMouse.map(i => {
+		this.mouseCodes = EDmsMouseBtnGameMouse.map(i => {
 			return {code: i.value, name: i.key}
 		})
 	}
@@ -121,11 +122,14 @@ export class GameComponent {
 		
 		if (!this.mouseKey && this.mouseKey !== 0) return
 		const item = this.data.find((element: any) => element.mouseKey === this.mouseKey);
-		if (!Object.values(EDmsMouseGame).includes(item.data.type))return;
+		const gameType = EMouseBtnGame.find((element: any)=>{
+			return element.value === item.data.type
+		})
+		if (!item || !gameType)return;
 		const {type, count, speed, keycode} = item.data;
 		this.currentSelectKey = keycode.value
 		this.keyType = type
-		if (type === EDmsMouseGame.keyboardGame) {
+		if (type !== EMouseBtnGameKey.mouse) {
 			const keyName = this.keyCodes.find(i => i.code === keycode.key)
             if (keyName && /<br\/>/.test(keyName.name)) {
                 const a = keyName.name.split('<br/>')

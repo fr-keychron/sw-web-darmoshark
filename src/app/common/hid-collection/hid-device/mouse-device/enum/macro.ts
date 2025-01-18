@@ -76,3 +76,7 @@ export const convertMacroLoop = () => {
       }
   })
 };
+
+export const setEMacroMouseButton = (index: number, i: number) => {
+  EMacroMouseButton[i].event = index
+}

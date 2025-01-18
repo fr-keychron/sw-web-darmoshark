@@ -123,7 +123,7 @@ export enum EDmsMouseBtnGameMouseKey {
 	back = 0x10,
 }
 
-export const EMdsMouseBtnGameMouse = [
+export const EDmsMouseBtnGameMouse = [
 	{key: 'left', value: EDmsMouseBtnGameMouseKey.left, event: 0},
 	{key: 'right', value: EDmsMouseBtnGameMouseKey.right, event: 2},
 	{key: 'middle', value: EDmsMouseBtnGameMouseKey.middle, event: 1},
@@ -137,14 +137,10 @@ export const EMdsMouseBtnGameDefault = [
 	{key: 'front', value: EDmsMouseBtnGameMouseKey.front},
 	{key: 'back', value: EDmsMouseBtnGameMouseKey.back}
 ]
-export enum EDmsMouseGame {
-	mouseGame,
-	modifierGame,
-	keyboardGame
-}
+
 export enum EDmsMouseBtnGameKey {
 	mouse = 0x01,
-	keyboard = 0x02
+	keyboard = 0x03
 }
 
 export enum EDmsMouseKeycode {

@@ -2,6 +2,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {
+	EDmsMouseBtnGameKey,
 	EDmsMousseBtnLightKey,
 	EMacroLoopKey,
 	EMouseBtn,
@@ -120,6 +121,9 @@ export class MouseDevice extends Mouse {
 	}
 
 	recovery(opt: {profile?:number, tagVal?: any, value?:number}) {
+		if(this.version != 'dms' && opt.value === 255 && opt.tagVal === 2){
+			opt.tagVal = 1
+		}
 		return this.commands.recovery(opt)
 	}
 
@@ -129,6 +133,9 @@ export class MouseDevice extends Mouse {
 		gears?: number,
 		values: number[] | number[][],
 	}): Observable<any> {
+		if (this.version != 'dms'){
+			data.values = (data.values as number[][]).map(item => item[0]);
+		}
 		return this.commands.setDpi(data)
 	}
 
@@ -158,7 +165,7 @@ export class MouseDevice extends Mouse {
 	}
 
 	public removeMouseBtn(mouseKey: number): Observable<any> {
-		return this.setMouseBtn(EMouseBtn.remove, mouseKey)
+		return this.version === 'dms' ? this.recovery({tagVal: 2, value: mouseKey}) :  this.setMouseBtn(EMouseBtn.remove, mouseKey)
 	}
 
 	public disableMouseBtn(mouseKey: number) {
@@ -196,13 +203,13 @@ export class MouseDevice extends Mouse {
 	public setMouseBtn2Game(
 		mouseKey: number,
 		data: {
-			type: EMouseBtnGameKey,
+			type: EMouseBtnGameKey | EDmsMouseBtnGameKey,
 			keycode: number,
 			speed: number,
 			count: number
 		}
 	): Observable<any> {
-		const type = !data.type
+		const type = data.type === EDmsMouseBtnGameKey.mouse
 		? 0x10 + Math.floor(data.count / 255)
 		: 0x30 + Math.floor(data.count / 255)
 		const count = data.count > 255 ? 255 : Number(data.count) 

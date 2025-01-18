@@ -3,7 +3,7 @@ import keyJson from 'src/assets/json/mouse.json';
 import { MsgService } from "src/app/service/msg/msg.service";
 import { TranslateService } from "@ngx-translate/core";
 import { Subscription, fromEvent } from 'rxjs';
-import { EDmsMouseKeycodeDefault, MouseDevice } from "../../../../common/hid-collection";
+import { EDmsMouseKeycodeDefault, EMouseBtn, MouseDevice } from "../../../../common/hid-collection";
 import { DeviceConnectService } from "../../../../service/device-conncet/device-connect.service";
 @Component({
 	selector: 'mouse-button-keyboard',
@@ -91,11 +91,8 @@ export class KeyboardComponent {
 	public update: EventEmitter<any> = new EventEmitter<any>();
 
 	public submit() {
-		if (
-			this.currentShift === this.cacheConf.shift &&
-			this.firstKey.code === this.cacheConf.first 
-		) return;
-		if (!this.currentShift && !this.firstKey.code && !this.firstKey.code) return
+		if (this.currentShift === this.cacheConf.shift && this.firstKey.code === this.cacheConf.first ) return;
+		if (!this.currentShift || !this.firstKey.code) return
 		if (this.mouseKey === null) return
 		const device = this.mouseService.getCurrentHidDevice<MouseDevice>();
 		const shift = this.currentShift ?? 0;
@@ -130,15 +127,18 @@ export class KeyboardComponent {
 		this.cacheConf.first = ''
 		if ((!mouseKey && mouseKey !== 0) || !this.data) return
 		const item = this.data['find']((d:{mouseKey: number}) => d.mouseKey === mouseKey);
-		if (!item.data || item.data.type !='mouseKeyboard') return;
+		if (!item.data || item.type !== EMouseBtn.Keyboard) return;
 		if (item.mouseKey || item.mouseKey === 0) {
-			this.currentShift = item.data.shift
-			this.cacheConf.shift = item.data.shift;
+			this.currentShift = item.data.shiftKey
+			this.cacheConf.shift = item.data.shiftKey;
 		}
 
-		if (item.data.code) {
-			this.firstKey = item.data.code
-			this.cacheConf.first = item.data.code
+		if (item.data.key1) {
+			this.firstKey = {
+				code: item.data.key1.code,
+				name: item.data.key1.name
+			}
+			this.cacheConf.first = item.data.key1.code
 		}
 	}
 }

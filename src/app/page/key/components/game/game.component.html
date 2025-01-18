@@ -16,12 +16,15 @@
 				[(ngModel)]="keyType" 
 				[gCenter]="false"
 			>
-				<g-option gLabel="mouse.key_game.mouse" [gValue]='0'></g-option>
-				<g-option gLabel="mouse.key_game.key" [gValue]='2'></g-option>
+				<g-option 
+					*ngFor="let option of mouseBtnGame" 
+					[gLabel]="'mouse.' + option.key" 
+					[gValue]="option.value">
+				</g-option>
 			</g-select>
 			<span>{{ 'common.key' | translate }}</span>
 			<g-select
-				*ngIf="keyType === 0" 
+				*ngIf="keyType === mouseBtnGame[0].value" 
 				class="game-key-select"
 				[ngClass]="{ 'game-active-select': currentSelectKey }"
 				[(ngModel)]="currentSelectKey" 
@@ -35,7 +38,7 @@
 				>	
 				</g-option>
 			</g-select>
-			<div #inputKey class="key-wrapper" *ngIf="keyType == 2" >
+			<div #inputKey class="key-wrapper" *ngIf="keyType === mouseBtnGame[1].value" >
 					<input 
 						type="text"
 						readonly

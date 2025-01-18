@@ -233,11 +233,9 @@ export class BaseLayoutMouseComponent implements OnInit {
 	public setConfig(e:number) {
 		const device = this.service.getCurrentHidDevice() as MouseDevice
 		device.switchProfile(e).subscribe(() => {
-			device.getProtocolVersion().subscribe(() => {
-				this.load(this.profile)
-				this.msg.success(this.i18n.instant('notify.success'))
-				localStorage.setItem('profile', JSON.stringify(this.profile))
-			})
+			this.load(this.profile)
+			this.msg.success(this.i18n.instant('notify.success'))
+			localStorage.setItem('profile', JSON.stringify(this.profile))
 		})
 	}
 
@@ -290,10 +288,10 @@ export class BaseLayoutMouseComponent implements OnInit {
 		const device = this.service.getCurrentHidDevice<MouseDevice>()
 		const convertedLevelVal = device.baseInfo.dpiConf.levelVal.reduce((acc, value, index, array) => {
 			if (index % 2 === 0) {
-			  acc.push([array[index], array[index + 1]]);
+			  	acc.push([array[index], array[index + 1]]);
 			}
 			return acc;
-		  }, []);
+		}, []);
 		const newBaseInfo = cloneDeep(device.baseInfo);
 		newBaseInfo.dpiConf.levelVal = convertedLevelVal;
 		const data = {
@@ -302,7 +300,6 @@ export class BaseLayoutMouseComponent implements OnInit {
 			lightConf: await this.getLightConf(),
 			leftLock: this.leftLock,
 		}
-		
         const filename = `${device?.name} 配置0${this.profile+1}.json`;
         const link = document.createElement('a')
         const json = JSON.stringify(data)
@@ -371,6 +368,10 @@ export class BaseLayoutMouseComponent implements OnInit {
 						level: 0,
 						gears: gears,
 						values: dpiConf.levelVal
+					}))
+					await firstValueFrom(device.setReportRate({
+						level: usb.reportRate,
+						values: []
 					}))
 					await firstValueFrom(device.setExtConf(sys))
 					await firstValueFrom(device.setBtnTime({btnRespondTime: delay, sleepTime: sleep}))

@@ -1,4 +1,4 @@
-import { EDmsMouseBtnActionKey, EDmsMouseBtnDpiKey, EDmsMouseBtnMediaKey, EDmsMouseBtnShortcutKey } from "./dms-mouse"
+import { EDmsMouseBtnActionKey, EDmsMouseBtnDpiKey, EDmsMouseBtnGameKey, EDmsMouseBtnMediaKey, EDmsMouseBtnShortcutKey } from "./dms-mouse"
 
 export enum EMouseBtn {
 	remove,
@@ -142,23 +142,23 @@ export enum EMousseBtnShortcutKey {
 	launchPad = 0x0ca002
 }
 // const screenshot = getBrowerType()
-export const EMousseBtnShortcut = [
-	{key: 'brightnessUp', value: EMousseBtnShortcutKey.brightnessUp, plat: ['Win', 'Mac']},
-	{key: 'brightnessDown', value: EMousseBtnShortcutKey.brightnessDown, plat: ['Win', 'Mac']},
-	{key: 'screenshot', value: EMousseBtnShortcutKey.screenshot, plat: ['Mac']},
-	{key: 'launchPad', value: EMousseBtnShortcutKey.launchPad, plat: ['Mac']},
-	{key: 'task', value: EMousseBtnShortcutKey.task, plat: ['Mac']},
+// export const EMousseBtnShortcut = [
+// 	{key: 'brightnessUp', value: EMousseBtnShortcutKey.brightnessUp, plat: ['Win', 'Mac']},
+// 	{key: 'brightnessDown', value: EMousseBtnShortcutKey.brightnessDown, plat: ['Win', 'Mac']},
+// 	{key: 'screenshot', value: EMousseBtnShortcutKey.screenshot, plat: ['Mac']},
+// 	{key: 'launchPad', value: EMousseBtnShortcutKey.launchPad, plat: ['Mac']},
+// 	{key: 'task', value: EMousseBtnShortcutKey.task, plat: ['Mac']},
 	// {key: 'homePage', value: EMousseBtnShortcutKey.homePage, plat: ['Win']},
-	{key: 'home', value: EMousseBtnShortcutKey.home, plat: ['Win']},
-	{key: 'copy', value: EMousseBtnShortcutKey.copy, plat: ['Win']},
-	{key: 'cut', value: EMousseBtnShortcutKey.cut, plat: ['Win']},
-	{key: 'paste', value: EMousseBtnShortcutKey.paste, plat: ['Win']},
+	// {key: 'home', value: EMousseBtnShortcutKey.home, plat: ['Win']},
+	// {key: 'copy', value: EMousseBtnShortcutKey.copy, plat: ['Win']},
+	// {key: 'cut', value: EMousseBtnShortcutKey.cut, plat: ['Win']},
+	// {key: 'paste', value: EMousseBtnShortcutKey.paste, plat: ['Win']},
 	// {key: 'calculate', value: EMousseBtnShortcutKey.calculate, plat: ['Win']},
 	// {key: 'myComputer', value: EMousseBtnShortcutKey.myComputer, plat: ['Win']},
 	// {key: 'email', value: EMousseBtnShortcutKey.email, plat: ['Win']},
 	// {key: 'refresh', value: EMousseBtnShortcutKey.refresh, plat: ['Win']},
 	// {key: 'switchApp', value: EMousseBtnShortcutKey.switchApp, plat: ['Win']},
-]
+// ]
 // function getBrowerType() {
 //   const agent = navigator.userAgent.toLowerCase();
 //   const isMac = /macintosh|mac os x/i.test(navigator.userAgent);
@@ -169,7 +169,19 @@ export const EMousseBtnShortcut = [
 //     return ['Mac', 0x070a16 ]
 //   }
 // }
-
+export const EMousseBtnShortcut = [
+	{key: 'brightnessUp', value: EMousseBtnShortcutKey.brightnessUp},
+	{key: 'brightnessDown', value: EMousseBtnShortcutKey.brightnessDown},
+	{key: 'calculate', value: EMousseBtnShortcutKey.calculate},
+	{key: 'myComputer', value: EMousseBtnShortcutKey.myComputer},
+	{key: 'homePage', value: EMousseBtnShortcutKey.homePage},
+	{key: 'email', value: EMousseBtnShortcutKey.email},
+	{key: 'refresh', value: EMousseBtnShortcutKey.refresh},
+	{key: 'switchApp', value: EMousseBtnShortcutKey.switchApp},
+	{key: 'copy', value: EMousseBtnShortcutKey.copy},
+	{key: 'cut', value: EMousseBtnShortcutKey.cut},
+	{key: 'paste', value: EMousseBtnShortcutKey.paste},
+]
 
 export const convertMousseBtnShortcut = () => {
     return EMousseBtnShortcut.forEach(item => {
@@ -200,6 +212,14 @@ export const convertMouseBtnActionEnum = () => {
         const newValue = EDmsMouseBtnActionKey[item.key as keyof typeof EDmsMouseBtnActionKey]
 		if (newValue !== undefined) {
             item.value = newValue as unknown as EMouseBtnActionKey;
+        }
+    })
+};
+export const convertMouseBtnGame= () => {
+    return EMouseBtnGame.forEach(item => {
+        const newValue = EDmsMouseBtnGameKey[item.key as keyof typeof EDmsMouseBtnGameKey]
+		if (newValue !== undefined) {
+            item.value = newValue as unknown as EMouseBtnGameKey;
         }
     })
 };

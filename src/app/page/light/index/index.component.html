@@ -1,5 +1,6 @@
 <base-layout-mouse 
     [left]="left"
+    (load)="load($event)"
     [showMouseButton]="false" 
 >
     <ng-template #left>
@@ -46,7 +47,7 @@
                     <div *ngIf="![0,1].includes(lightMode)">
                         <div >{{'lights.key_speed_adjustment' | translate}} </div>
                         <div  class="range-box">
-                            <g-slider [(ngModel)]="speed" [min]="0" [max]="4" [step]="1" (ngModelChange)="setRGB()"></g-slider>
+                            <g-slider [(ngModel)]="speed" [min]="0" [max]="speedMax" [step]="1" (ngModelChange)="setRGB()"></g-slider>
                         </div>
                     </div>
                     <div *ngIf="[1,2,5].includes(lightMode)">

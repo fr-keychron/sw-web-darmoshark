@@ -29,7 +29,11 @@ export class MouseDeviceM {
 		return new Observable<any>((s) => {
 			const init = async () => {			
 				const { workMode, version } = this.mouse
+				console.log(workMode, version);
+				
 				const protocol = await firstValueFrom(this.getProtocolVersion());
+				console.log(protocol);
+				
 				if (workMode === 1) {
 					this.mouse.setTransceiver(new RecverTransceiver(this.mouse.hidRaw))
 					const receiver = await firstValueFrom(this.getReceiverState());
@@ -85,6 +89,8 @@ export class MouseDeviceM {
 					// timeout(500),
 					map((v) =>v.slice(1)),
 					map((v) => {
+						console.log(v);
+						
 						const bits = ByteUtil.oct2Bin(v[9]);
 						const workMode = ByteUtil.bin2Oct(bits.substring(5, bits.length));
 						const powerState = ByteUtil.oct2Bin(v[11], 8, 'tail');
@@ -119,6 +125,8 @@ export class MouseDeviceM {
 						})
 					},
 				});
+				console.log(buf);
+				
 			this.mouse.write(0x51, buf, 2).subscribe();
 		});
 	}

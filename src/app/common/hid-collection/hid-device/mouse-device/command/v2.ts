@@ -245,7 +245,8 @@ export class MouseDeviceV2{
 				wave: Number(bits.charAt(5)),
 				line: Number(bits.charAt(4)),
 				motion: Number(bits.charAt(3)),
-				scroll: Number(bits.charAt(1))
+				scroll: Number(bits.charAt(1)),
+				eSports: Number(bits.charAt(0))
 			}
 		}
 		const dpiPosition: number[][] = [
@@ -255,7 +256,7 @@ export class MouseDeviceV2{
 		const dpiLevelCount = v[16];
 		const dpiVal = dpiPosition.slice(0, dpiLevelCount)
 			.map(i => v[i[0]] << 8 | v[i[1]])
-
+		const doubledDpiVal = dpiVal.flatMap(val => [val, val]);
 		const powerState = ByteUtil.oct2Bin(v[19], 8);
 		const power = {
 			state: Number(powerState.charAt(0)),
@@ -270,11 +271,11 @@ export class MouseDeviceV2{
 			bt: handleDpi(v[4]),
 			dpiConf: {
 				levelEnable: dpiLevelCount - 1 || 4,
-				levelVal: dpiVal
+				levelVal: doubledDpiVal
 			},
 			gears: v[16],
 			delay: v[17],
-			sleep: v[18],
+			sleep: v[18] * 60,
 			sys: handleSys(v[15]),
 			power
 		}
@@ -342,11 +343,17 @@ export class MouseDeviceV2{
 			// Bit 3 = 1 表示有 Sensor 配置恢复出厂功能 buf1/3
 			// Bit 4 = 1 表示 Profile 恢复到 Profile0 buf1
 
-      buf[1] = value || 0 // 所有profile reset
+      		buf[1] = value || 0 // 所有profile reset
 			buf[2] = profile || 0 // 目标profile
-      buf[3] = tagVal || 0 // 目标profile reset
-			// console.log(buf);
-
+     		buf[3] = tagVal || 0 // 目标profile reset
+			if (tagVal === 0xff){
+				buf[1] = 0x3f
+				buf[3] = 0
+			}
+			if (profile || profile === 0){
+				buf[3] = 0x2f
+			}
+			
 			this.mouse.write(0xb5, buf).subscribe((r) => {
 				s.next(r)
 			})
@@ -383,6 +390,7 @@ export class MouseDeviceV2{
 		})
 	}
 
+	private macroList = JSON.parse(localStorage.getItem('macroList'))
 	public getMouseBtnInfo(btn: number): Observable<any> {
 		return new Observable(s => {
 			const buf = MouseDevice.Buffer(63)
@@ -391,17 +399,30 @@ export class MouseDeviceV2{
 			const subj = this.mouse.report$
 				.pipe(
 					filter(v => v[0] === EMouseCommand.CMD_MOUSE_BTN_GET_n_CONFIG && v[1] === btn),
-					map(v => {
+					map(async v => {
 						const type = v[3];
+						const data = deserializeMouseButton(type, v.slice(4))
+						if(type === EMouseBtn.Macro){
+							const macroData = await firstValueFrom(this.getMacroName(btn))
+							const macro = this.macroList.find((e: any)=>{
+								return e.id === macroData.macroId
+							})
+							if (macro) {
+								data.name = macro.name
+							}
+							data.value = macroData.macroId
+						}
+						const { MouseBtn, ...filteredData } = data || {};
 						return {
 							type,
 							mouseKey: v[1],
-							data: deserializeMouseButton(type, v.slice(4))
+							data: filteredData
 						}
 					})
 				)
-				.subscribe(v => {
-					s.next(v)
+				.subscribe(async v => {
+					const result = await v;
+					s.next(result);
 					subj.unsubscribe()
 				})
 			this.mouse.write(0xb3, buf).subscribe()
@@ -413,7 +434,8 @@ export class MouseDeviceV2{
 		loopType: EMacroLoopKey,
 		loopCount?: number,
 		macro: Array<number[]>,
-		delay: number
+		delay: number,
+		macroId: string
 	}): Observable<any> {
 		return new Observable(s => {
 			const loop = data.loopType << 13 | data.loopCount;
@@ -440,16 +462,60 @@ export class MouseDeviceV2{
 				const buffer = MouseDevice.Buffer(63);
 				buf.forEach((v, i) => buffer[i] = v)
 				const sub = this.mouse.report$.subscribe(v => {
-					sub.unsubscribe()
-					s.next()
+					this.setMacroName(data.mouseKey, data.macroId).subscribe(() => {
+						sub.unsubscribe()
+						s.next()
+					})
 				})
 				this.mouse.write(0xb3, buffer).subscribe()
 			} else {
 				this.mouse.sendLongData(buf)
 					.subscribe(() => {
-						s.next()
+						this.setMacroName(data.mouseKey, data.macroId).subscribe(() => s.next())
 					})
 			}
+		})
+	}
+
+	public setMacroName(
+		mouseKey: number,
+		macroId: string
+	): Observable<any> {
+		return new Observable(s => {
+			const buf = MouseDevice.Buffer(63);
+			buf[0] = EMouseCommand.CMD_MOUSE_BTN_MACROS_SET_n_NAME;
+			buf[1] = mouseKey;
+			buf[2] = macroId.length;
+			const macroNameBytes = new TextEncoder().encode(macroId);
+			for (let i = 0; i < macroId.length; i++) {
+				buf[3 + i] = macroNameBytes[i];
+			}
+			this.mouse.write(0xb3, buf).subscribe(()=>s.next())
+		})
+	}
+	public getMacroName(
+		mouseKey: number
+	): Observable<any> {
+		return new Observable(s => {
+			const buf = MouseDevice.Buffer(63);
+			buf[0] = EMouseCommand.CMD_MOUSE_BTN_MACROS_GET_n_NAME;
+			buf[1] = mouseKey;
+			const subj = this.mouse.report$
+				.pipe(
+					filter((v) => (v[0] === 0x63)),
+					map(v => {
+						const data = v.slice(3, 17)
+						const text = new TextDecoder().decode(new Uint8Array(data));
+						return {
+							macroId: text,
+						};
+					})
+				)
+				.subscribe(v => {
+					s.next(v)
+					subj.unsubscribe()
+				})
+			this.mouse.write(0xb3, buf).subscribe()
 		})
 	}
 
@@ -585,7 +651,7 @@ export class MouseDeviceV2{
 	}
 
 	public setExtConf(data: {
-		lod: number, wave: number, line: number, motion: number, scroll: number,
+		lod: number, wave: number, line: number, motion: number, scroll: number, eSports: number
 	}, stop?: boolean) {
 		return new Observable(s => {
 			const buf = MouseDevice.Buffer(20)
@@ -595,7 +661,7 @@ export class MouseDeviceV2{
 			buf[3] = data.line || 2;
 			buf[4] = data.motion || 1
 			buf[6] = data.scroll || 1;
-
+			buf[7] = data.eSports || 1;
 			this.mouse.write(0xb5, buf).subscribe(() => {
 				if (!stop) {
 					setTimeout(() => {
@@ -619,20 +685,20 @@ export class MouseDeviceV2{
       buf[0] = 0x23;
 
       const subj = this.mouse.report$
-				.pipe(filter(v => v[0] === 0x23))
-        .subscribe((v: any) => {
-					if(v){
-						const r = v.slice(1)
-						const data = {
-							lightMode: r[0],
-							brightness: r[1],
-							speed: r[2],
-							rgbArr: [r[3], r[4], r[5]],
-							currentColor: `rgb(${r[3]},${r[4]},${r[5]})`
-						}
-						s.next(data);
+		.pipe(
+			filter(v => v[0] === 0 || v[0] === 1 || v[0] === 2 || v[0] === 3))
+			.subscribe((v: any) => {
+				if (v) {
+					const data = {
+						lightMode: v[0],
+						brightness: v[1],
+						speed: v[2],
+						rgbArr: [v[3], v[4], v[5]],
+						currentColor: `rgb(${v[3]},${v[4]},${v[5]})`
 					}
-          subj.unsubscribe();
+					s.next(data);
+				}
+          	subj.unsubscribe();
         });
 
       this.mouse.write(0xb5, buf).subscribe();
@@ -641,19 +707,35 @@ export class MouseDeviceV2{
 	public setLight(data: Light){
 		const {i, l, s, r, g, b} = data
 
-    return new Observable((res) => {
-      const buf = MouseDevice.Buffer(20);
-			buf[0] = 0x24
-			buf[1] = i || 0
-			buf[2] = l || 0
-			buf[3] = s || 0
-			buf[4] = r || 0
-			buf[5] = g || 0
-			buf[6] = b || 0
+		return new Observable((res) => {
+			const buf = MouseDevice.Buffer(20);
+					buf[0] = 0x24
+					buf[1] = i || 0
+					buf[2] = l || 0
+					buf[3] = s || 0
+					buf[4] = r || 0
+					buf[5] = g || 0
+					buf[6] = b || 0
 
-      this.mouse.write(0xb5, buf).subscribe((r) => {
-        res.next(r);
-      });
-    });
+			this.mouse.write(0xb5, buf).subscribe((r) => {
+				res.next(r);
+			});
+		});
+	}
+	public setBtnTime(data: {
+		btnRespondTime: number
+		sleepTime:number
+	}) {
+		return new Observable((s) => {
+			const buf = MouseDevice.Buffer(20)
+			buf[0] = EMouseCommand.CMD_BASE_DEV_TIME;
+			buf[1] = 0x1;
+			buf[2] = data.sleepTime / 60;
+			this.mouse.write(0xb5, buf).subscribe(() => {
+				this.setDebounce(data.btnRespondTime).subscribe(() => {
+					s.next();
+				});
+			})
+		});
 	}
 }

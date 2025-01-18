@@ -17,7 +17,6 @@
                     <span 
                         class="icon_hint"
                         nz-tooltip
-                        nzTooltipPlacement="right"
                         [nzTooltipTitle]="'mouse.tip.8' | translate"
                     ></span>
                 </div> 
@@ -110,7 +109,7 @@
                         </div>
                     </div>
                    <div class="scale-bottom">
-                        <div class="checkbox-blue">
+                        <div class="checkbox-blue" *ngIf="isXYSetting">
                             <input type="checkbox" [(ngModel)]="nxySetting" />
                             <label>X-Y Setting</label>
                         </div>
@@ -129,7 +128,6 @@
                 <span 
                     class="icon_hint"
                     nz-tooltip
-                    nzTooltipPlacement="right"
                     [nzTooltipTitle]="'mouse.tip.9' | translate"
                 ></span> 
             </div>

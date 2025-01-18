@@ -10,7 +10,8 @@ import {
 	IEvent,
 	KeyboardDevice,
 	MouseDevice,
-	productFirmware
+	productFirmware,
+	setEMacroMouseButton
 } from "../../common/hid-collection";
 import {fromEvent, Observable, Subject} from "rxjs";
 import {filter, map} from "rxjs/operators";
@@ -74,11 +75,11 @@ export class DeviceConnectService {
 		return new Observable(s => {
 			// @ts-ignore
 			const requestedDevice = navigator.hid.requestDevice({
-				filters: filters || [{
-					//鼠标DMS
-					usage: 0x01,
-					usagePage: 0xff0a,
-				}]
+				filters: filters || [
+					{usage: 0x01, usagePage: 0xff0a}, //鼠标DMS 
+					{usage: 0x01, usagePage: 0xffc1}, //正常鼠标
+					{usage: 0x01, usagePage: 0x8c } // 接收器固件/鼠标(G1(8K),M3,M6,....1K Mouse) -> DFU
+				]
 			}).then((r: any) => {
 				if (!r.length) {
 					s.error(this.i18n.instant('notify.emptyHid'))
@@ -139,6 +140,11 @@ export class DeviceConnectService {
 					const host = GLOBAL_CONFIG.API + `mouse/${id}.json`
 					this.http.get(host).subscribe({
 						next: (json: any) => {
+							json.keys.forEach((k: any, i: number) => {
+								if (i < 5) {
+									setEMacroMouseButton(k.index, i)
+								}
+							})
 							this.device.createMouse(hid, { product: JSON.parse(JSON.stringify(product)), json }).subscribe()
 						}, error: () => {
 							this.msg.error(this.i18n.instant('notify.hidConfNotFound'))
@@ -157,6 +163,11 @@ export class DeviceConnectService {
 						product.contract = "dms"
 					} else{
 						product.contract = "M"
+						json.keys.forEach((k: any, i: number) => {
+							if (i < 5) {
+								setEMacroMouseButton(k.index, i)
+							}
+						})
 					}
 					this.device.createMouse(mHid, { product: JSON.parse(JSON.stringify(product)), json })
 					.subscribe({

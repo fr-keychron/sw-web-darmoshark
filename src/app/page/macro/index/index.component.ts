@@ -9,7 +9,7 @@ import {
   MacroList,
   RecordList,
   MouseDevice,
-  EMdsMouseBtnGameMouse,
+  EDmsMouseBtnGameMouse,
   EDmsMacroLoop
 } from 'src/app/common/hid-collection/hid-device/mouse-device'
 import keyJson from 'src/assets/json/mouse.json';
@@ -46,7 +46,6 @@ export class Macro implements OnInit {
     public macroItem:any
     public macroMenu:boolean = false
     ngOnInit(): void {
-        const device = this.service.getCurrentHidDevice() as MouseDevice
         const data = JSON.parse(localStorage.getItem('macroList'))
         if (data && data.length > 0) {
             this.macroList = data 
@@ -247,7 +246,7 @@ export class Macro implements OnInit {
             }
             const action = e.type === 'mouseup' ? EKey.release : EKey.press
             const button = Reflect.get(e, 'button') as number
-            const buttonKey = EMdsMouseBtnGameMouse.find(i => i.event === button)
+            const buttonKey = EDmsMouseBtnGameMouse.find(i => i.event === button)
             return {
                 id, 
                 action, 
@@ -378,7 +377,7 @@ export class Macro implements OnInit {
     }
     // 插入
     public macroType: string = ''
-    public macroMouses = EMdsMouseBtnGameMouse
+    public macroMouses = EDmsMouseBtnGameMouse
     public insert(type:string) {
         if (this.enterEvent$) this.enterEvent$.unsubscribe();
         this.recflag = false;

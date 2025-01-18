@@ -14,7 +14,7 @@ import {SerialTransceiver, FeatureTransceiver, RecverTransceiver} from "./transc
 import {convertMacroLoop, MouseDevice} from "./hid-device/mouse-device";
 import {BridgeDevice, EBridgeDeviceEventType} from "./hid-device/device-dfu/bridge-device";
 import {EDeviceConnectState, EDeviceType} from "./enum";
-import {setEMouseBtnAction, EMouseBtnActionKey, convertMouseBtnActionEnum, convertMouseBtnMedia, convertMouseBtnDpi, convertMousseBtnShortcut } from '../hid-collection/hid-device/mouse-device/enum/mouse-button'
+import {setEMouseBtnAction, EMouseBtnActionKey, convertMouseBtnActionEnum, convertMouseBtnMedia, convertMouseBtnDpi, convertMousseBtnShortcut, convertMouseBtnGame } from '../hid-collection/hid-device/mouse-device/enum/mouse-button'
 import {
 	DecorateLightKeyboard
 } from "./hid-device/keyboard-device/feature-keyboard/decorate-light/decorate-light-keyboard";
@@ -224,6 +224,7 @@ export class HidCollection implements IHidCollection {
 					convertMouseBtnDpi()
 					convertMousseBtnShortcut()
 					convertMacroLoop()
+					convertMouseBtnGame()
 					hidDevice = new MouseDevice({
 						product: {...product, ...v},
 						json,
@@ -244,7 +245,6 @@ export class HidCollection implements IHidCollection {
 				hidDevice.productInfo = {raw: product}
 				hidDevice?.open().subscribe({
 					next: () => {
-						
 						this.currentHidDevice = hidDevice
 						this.collection.mouse.push(hidDevice)
 						this.event$.next({type: EEventEnum.CONNECT, data: this})

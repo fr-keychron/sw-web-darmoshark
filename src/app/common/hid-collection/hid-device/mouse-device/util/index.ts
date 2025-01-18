@@ -15,6 +15,7 @@ import {
 	EDmsMouseKeycode,
 	EMdsMouseBtnGameDefault,
 	EDmsMouseKeycodeDefault,
+	EDmsMouseBtnGameKey,
 } from "../enum";
 import {ByteUtil} from "src/app/utils";
 import keyJson from 'src/assets/json/mouse.json';
@@ -60,7 +61,10 @@ export const deserializeMouseButton = (type: EMouseBtn, data: Uint8Array) => {
 			}
 
 			if (type === EMouseBtnGameKey.keyboard) {
-				k = EMouseKeycodeDefault[keycode]
+				k = {
+					value: keycode,
+					key: EMouseKeycodeDefault[keycode]
+				};
 			}
 
 			return {type, speed, count, keycode: k}
@@ -272,7 +276,7 @@ export const getMouseButtonInfo = (bufferArr: number[]) => {
 		if (bufferArr[0] >= 0x10 && bufferArr[0] <= 0x1F) {
 			let mouseCode = EMdsMouseBtnGameDefault.find(i => i.value === bufferArr[1]);
 			if(mouseCode) {
-				return  { MouseBtn: EMouseBtn.GameReinforce, type:0, count:bufferArr[2], speed:bufferArr[3],keycode:mouseCode }
+				return  { MouseBtn: EMouseBtn.GameReinforce, type:EDmsMouseBtnGameKey.mouse, count:bufferArr[2], speed:bufferArr[3],keycode:mouseCode }
 			}
 		} else if (bufferArr[0] >= 0x20 && bufferArr[0] <= 0x2F) {
 			let keycode = EDmsMouseKeycodeDefault.find((i: { value: number; }) => i.value === bufferArr[1]);
@@ -283,7 +287,7 @@ export const getMouseButtonInfo = (bufferArr: number[]) => {
 			let keycode = EDmsMouseKeycodeDefault.find((i: { value: number; }) => i.value === bufferArr[1]);
 			
 			if(keycode) {
-				return  { MouseBtn: EMouseBtn.GameReinforce, type: 2, count: bufferArr[2], speed: bufferArr[3],keycode: keycode }
+				return  { MouseBtn: EMouseBtn.GameReinforce, type: EDmsMouseBtnGameKey.keyboard, count: bufferArr[2], speed: bufferArr[3],keycode: keycode }
 			}
 		}
 	}

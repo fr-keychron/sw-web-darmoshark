@@ -1,17 +1,18 @@
 import {Component, OnInit,} from "@angular/core";
 import {Subscription} from "rxjs";
 import {
-	EDmsMacroLoopKey,
-	EDmsMouseBtnAction, 
 	MouseDevice,
-	EDmsMouseBtnMedia, 
 	MacroList, 
 	dmsSerializeMacro,
-	EDmsMouseBtnShortcut,
 	handleMouseKey,
-	EDmsMouseBtnDpi,
 	EDmsMousseBtnLight,
-	EMouseBtn
+	EMouseBtn,
+	EMouseBtnDpi,
+	EMouseBtnMedia,
+	EMousseBtnShortcut,
+	EMouseBtnAction,
+	serializeMacro,
+	EMacroLoopKey
 } from "../../../common/hid-collection";
 import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 import {TranslateService} from "@ngx-translate/core";
@@ -36,43 +37,48 @@ export class IndexComponent implements OnInit {
 	public keyChange: handleMouseKey = new handleMouseKey()
 	public mouseKeys: any = [{
 		mouseKey: 0,
-		key: EDmsMouseBtnAction[0].key,
-		value: EDmsMouseBtnAction[0].value,
+		key: EMouseBtnAction[0].key,
+		value: EMouseBtnAction[0].value,
 		keyType: 0,
 	}, {
 		mouseKey: 1,
-		key: EDmsMouseBtnAction[2].key,
-		value: EDmsMouseBtnAction[2].value,
+		key: EMouseBtnAction[2].key,
+		value: EMouseBtnAction[2].value,
 		keyType: 0,
 	}, {
 		mouseKey: 2,
-		key: EDmsMouseBtnAction[1].key,
-		value: EDmsMouseBtnAction[1].value,
+		key: EMouseBtnAction[1].key,
+		value: EMouseBtnAction[1].value,
 		keyType: 0,
 	}, {
 		mouseKey: 3,
-		key: EDmsMouseBtnAction[3].key,
-		value: EDmsMouseBtnAction[3].value,
+		key: EMouseBtnAction[3].key,
+		value: EMouseBtnAction[3].value,
 		keyType: 0,
 	}, {
 		mouseKey: 4,
-		key: EDmsMouseBtnAction[4].key,
-		value: EDmsMouseBtnAction[4].value,
+		key: EMouseBtnAction[4].key,
+		value: EMouseBtnAction[4].value,
 		keyType: 0,
 	}];
-	public sensitiveAction = EDmsMouseBtnDpi
-	public mediaAction = EDmsMouseBtnMedia
-	public shortcutAction = EDmsMouseBtnShortcut
+	public sensitiveAction = EMouseBtnDpi
+	public mediaAction = EMouseBtnMedia
+	public shortcutAction = EMousseBtnShortcut
 	public lightAction = EDmsMousseBtnLight
 	public funBtnKeys = EMouseBtn
 	public macroList: MacroList[]
 	public activeMouseKey: number = 1;
-	public mouseAction = EDmsMouseBtnAction 
+	public mouseAction = EMouseBtnAction.filter(btn => !['scrollLeftClick', 'scrollRightClick'].includes(btn.key))
 	public activeModal: string | null = null;
 	public leftLock:string = "1"
+	public showLight = false
 	ngOnInit() {
 		this.keyChange.setMouseKey(this.activeMouseKey)
-		
+		const device = this.service.getCurrentHidDevice() as MouseDevice
+		if (device) {
+			this.activeMouseKey = device.version === "dms" ? 1 : 2
+			this.showLight = device.version === "dms"
+		}
 		const data = JSON.parse(localStorage.getItem('macroList'))
 		if (data && data.length > 0) {
 			this.macroList = data
@@ -96,6 +102,7 @@ export class IndexComponent implements OnInit {
 	public load($e: number) {
 		if (this.deviceSub) this.deviceSub.unsubscribe()
 		this.device = this.service.getCurrentHidDevice() as MouseDevice
+		this.activeMouseKey
 		const profile = $e
 		const leftLockList = localStorage.getItem('leftLockList')
 		const parsedList = JSON.parse(leftLockList)
@@ -115,12 +122,19 @@ export class IndexComponent implements OnInit {
 		this.keyConf?.forEach((k: any, i: number) => {
 			this.mouseKeys[i] = {
 				...k,
-				key: k.data?.key || k.data?.name || k.name || EDmsMouseBtnAction[i].key,
-				value: k.data?.value || EDmsMouseBtnAction[i].value,
+				key: k.data?.key || k.data?.name || k.title || EMouseBtnAction[i].key,
+				value: k.data?.value || EMouseBtnAction[i].value,
 			}
 			if (k.mouseKey === this.activeMouseKey) {
+				const btnMouseActive = EMouseBtnAction.find(
+					(v) => v.key === k.title
+				);
 				this.funType = k.type
-				this.currentMouseKey = k.data.value
+				if(k.type === EMouseBtn.disable || k.type === EMouseBtn.GameReinforce || k.type === EMouseBtn.Keyboard){
+					this.currentMouseKey = null
+				}else{
+					this.currentMouseKey = k.data?.value || (!k.type ? btnMouseActive?.value : undefined)  || EMouseBtnAction[i].value;
+				}
 			}
 		})
 	}
@@ -155,7 +169,7 @@ export class IndexComponent implements OnInit {
 	}
 
 	public resetFun() {
-		this.device.recovery({tagVal: 2, value: this.activeMouseKey}).subscribe(() => {
+		this.device.removeMouseBtn(this.activeMouseKey).subscribe(() => {
 			this.device.getBaseInfo().subscribe(() => {
 				this.msg.success(this.i18n.instant('notify.success'))
 				this.init()
@@ -210,6 +224,7 @@ export class IndexComponent implements OnInit {
 						this.msg.success(this.i18n.instant('notify.success'))
 					})
 			} else if (type === this.funBtnKeys.disable) { // 禁用
+				this.funType = this.funBtnKeys.disable
 				this.device.disableMouseBtn(v)
 					.subscribe(() => {
 						this.init()
@@ -239,10 +254,10 @@ export class IndexComponent implements OnInit {
 		this.device.setMacro({
 			mouseKey: this.activeMouseKey,
 			// @ts-ignore
-			loopType: EDmsMacroLoopKey[loopMode],
+			loopType: EMacroLoopKey[loopMode],
 			loopCount: loopNum,
 			delay,
-			macro: dmsSerializeMacro(list),
+			macro: this.device.version === 'dms' ? dmsSerializeMacro(list) : serializeMacro(list),
 			macroIndex: activeIndex?.data.index ?? macroIndex.length,
 			macroId: id
 		}).subscribe(() => {

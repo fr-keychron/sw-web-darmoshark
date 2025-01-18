@@ -16,15 +16,15 @@ export class IndexComponent implements OnInit {
 		private readonly i18n: TranslateService
 	) {
 	}
-
-	lightMode = 2
-	currentColor = ''
-	rgbArr: number[] = [255,255,255]
-	speed: number = 0xff
-	brightness: number = 0xff
-	hsl: number[]
-	saturation: number
-	isInitialized: boolean = false;
+	public speedMax: number = 0xff
+	public lightMode = 2
+	public currentColor = ''
+	public rgbArr: number[] = [255,255,255]
+	public speed: number = 0xff
+	public brightness: number = 0xff
+	public hsl: number[]
+	public saturation: number
+	public isInitialized: boolean = false;
 	readonly staticColors = [{
 		color: [255, 0, 0],
 	},{
@@ -42,22 +42,31 @@ export class IndexComponent implements OnInit {
 	}]
 
 	ngOnInit(): void {
+	}
+	/**父组件传递方法：鼠标值变化时执行 */
+	public load($e: number) {
+		if (this.deviceSub) this.deviceSub.unsubscribe()
 		this.init()
 	}
 	public init(){
 		const device = this.service.getCurrentHidDevice<MouseDevice>();
-		console.log('init'	,device);
-		device?.getLight().subscribe((r: any)=>{
-			this.lightMode = r.lightMode
-			this.brightness = r.brightness
-			this.speed = r.speed
-			this.rgbArr = r.rgbArr
-			this.currentColor = r.currentColor
-			this.saturationUpdata()
-			setTimeout(()=>{
-				this.isInitialized = true;
-			},100)
-		})
+		if(device) {
+			this.speedMax = device.version === "dms" ? 4 : 255
+			device.getLight().subscribe((r: any)=>{
+				console.log(r);
+				
+				this.lightMode = r.lightMode
+				this.brightness = r.brightness
+				this.speed = r.speed
+				this.rgbArr = r.rgbArr
+				this.currentColor = r.currentColor
+				this.saturationUpdata()
+				setTimeout(()=>{
+					this.isInitialized = true;
+				},100)
+			})
+		}
+		
 	}
 
 	// 取色器

@@ -277,11 +277,10 @@ export class MouseDeviceV4 {
 				.pipe(
 					filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x01),
 					map((v) => {
-						
 						const dpiPosition = Array.from({ length: 10 }, (_, i) => [i * 2 + 8, i * 2 + 9]);
 						const dpiVal = dpiPosition.map((i) => {
 							return (v[i[1]] << 8) | v[i[0]]
-						  });
+						});
 						return {
 							dpiConf: {
 								levelVal: dpiVal,
@@ -675,24 +674,19 @@ export class MouseDeviceV4 {
 			buf[4] = data.level > 0 ? data.level + 1 : 0
 			this.setbuf0(buf)
 			this.setbuf63(buf)
-			const subj = this.mouse.report$
-				.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x04),take(1))
-				.subscribe(() => {
-					this.saveData().subscribe(() => {
-						this.setExtConf({
-							lod: this.mouse.baseInfo.sys.lod,
-							wave: this.mouse.baseInfo.sys.wave,
-							line: this.mouse.baseInfo.sys.line,
-							motion: this.mouse.baseInfo.sys.motion,
-							scroll: this.mouse.baseInfo.sys.scroll,
-							eSports: data.level > 3 ? 1 : 0
-						}).subscribe((r) => {
-							subj.unsubscribe()
-							s.next(r)
-						}) 
-					})
+			// const subj = this.mouse.report$
+			// 	.pipe(filter((v) => (v[0] === 0x04 || v[0] === 0x44) && v[3] === 0x04),take(1))
+			// 	.subscribe(() => {
+			// 		this.saveData().subscribe((r) => {
+			// 			subj.unsubscribe()
+			// 			s.next(r)
+			// 		})
+			// 	})
+			this.mouse.write(0, buf).subscribe(() => {
+				this.saveData().subscribe((r) => {
+					s.next(r)
 				})
-			this.mouse.write(0, buf).subscribe()
+			})
 		});
 	}
 
@@ -705,11 +699,11 @@ export class MouseDeviceV4 {
 		eSports: number
 	}, stop?: boolean) {
 		return new Observable((s) => {
-			data.wave = data.wave
-			data.line = data.line
-			data.motion = data.motion
-			data.scroll = data.scroll
-			data.eSports = data.eSports
+			data.wave = data.wave === 2 ? 0 : 1 ,
+			data.line = data.line === 2 ? 0 : 1  ,
+			data.motion = data.motion === 2 ? 0 : 1,
+			data.scroll = data.scroll === 1 ? 0 : 1
+			data.eSports = data.eSports  === 1 ? 0 : 1
 			let configByte = 0x00;
 			const bitMasks = [
 				{ bitPosition: 0, value: data.line },
@@ -742,54 +736,54 @@ export class MouseDeviceV4 {
 		});
 	}
 	
-	public getProtocolVersion(): Observable<{
-		version: number;
-		workMode: number;
-		profile: number;
-	}> {
-		return new Observable<{ version: number; workMode: number; profile: number;}>((s) => {
-			const buf = MouseDevice.Buffer(64);
-			buf[0] = 0x01
-			buf[2] = 0x81
-			buf[3] = 0x01
-			const obj = this.mouse.report$
-				.pipe(
-					filter((v) => (v[0] === 0x01 || v[0] === 0x41) && v[3] === 0x01),
-					map((v) => {
-						const bits = ByteUtil.oct2Bin(v[4])
-						const workMode = Number(bits[4])
-						const power = {
-							state: v[5],
-							value: v[6]
-						}
-						this.power = power || this.power
-						this.mouse.baseInfo.power = power
-						this.mouse.baseInfo.profile = v[7]
-						return {
-							workMode,
-							version: null,
-							profile: v[7],
-						};
-					})
-				)
-				.subscribe({
-					next: (v) => {
-						obj.unsubscribe()
-						s.next(v);
-					},
-					error: () => {
-						s.next({
-							version: 1,
-							workMode: 0,
-							profile: 0
-						})
-					},
-				});
-			this.setbuf0(buf)
-			this.setbuf63(buf)
-			this.mouse.write(0, buf).subscribe();
-		});
-	}
+	// public getProtocolVersion(): Observable<{
+	// 	version: number;
+	// 	workMode: number;
+	// 	profile: number;
+	// }> {
+	// 	return new Observable<{ version: number; workMode: number; profile: number;}>((s) => {
+	// 		const buf = MouseDevice.Buffer(64);
+	// 		buf[0] = 0x01
+	// 		buf[2] = 0x81
+	// 		buf[3] = 0x01
+	// 		const obj = this.mouse.report$
+	// 			.pipe(
+	// 				filter((v) => (v[0] === 0x01 || v[0] === 0x41) && v[3] === 0x01),
+	// 				map((v) => {
+	// 					const bits = ByteUtil.oct2Bin(v[4])
+	// 					const workMode = Number(bits[4])
+	// 					const power = {
+	// 						state: v[5],
+	// 						value: v[6]
+	// 					}
+	// 					this.power = power || this.power
+	// 					this.mouse.baseInfo.power = power
+	// 					this.mouse.baseInfo.profile = v[7]
+	// 					return {
+	// 						workMode,
+	// 						version: null,
+	// 						profile: v[7],
+	// 					};
+	// 				})
+	// 			)
+	// 			.subscribe({
+	// 				next: (v) => {
+	// 					obj.unsubscribe()
+	// 					s.next(v);
+	// 				},
+	// 				error: () => {
+	// 					s.next({
+	// 						version: 1,
+	// 						workMode: 0,
+	// 						profile: 0
+	// 					})
+	// 				},
+	// 			});
+	// 		this.setbuf0(buf)
+	// 		this.setbuf63(buf)
+	// 		this.mouse.write(0, buf).subscribe();
+	// 	});
+	// }
 	public setDebounce(v: number) {
 		return new Observable((s) => {
 			const buf = MouseDevice.Buffer(64);
@@ -1007,13 +1001,12 @@ export class MouseDeviceV4 {
 		const mac: number[] = [];
 		const invalidValues = [0x00, 0xFF, 0x55, 0xAA];
 		for (let i = 0; i < 5; i++) {
-		  let byte: number;
-		  do {
-			byte = Math.floor(Math.random() * 256);
-		  } while (invalidValues.includes(byte));
-	  
-		  mac.push(byte);
+		  	let byte: number;
+		  	do {
+				byte = Math.floor(Math.random() * 256);	
+		  	} while (invalidValues.includes(byte));
+		  	mac.push(byte);
 		}
 		return mac
-	  }
+	}
 }

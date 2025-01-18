@@ -29,6 +29,7 @@ export class IndexComponent implements OnInit {
 	public lngEnum: ISelectEnums = GLOBAL_CONFIG.langs;
 	public resetModal = false
 	public updataModal = false
+	public showPair = false
 	public profile = 0
 	public leftLock: string|null = '1'
 	public mouseInfo = {
@@ -62,6 +63,7 @@ export class IndexComponent implements OnInit {
 	private init() {
 		const device = this.service.getCurrentHidDevice() as MouseDevice
 		this.device = device
+		this.showPair = device.version === 'dms'
 		const parseInfo = (d: MouseDevice) => {
 			this.mouseInfo.mouse = d.firmware.mouse || '0.0.0'
 			this.mouseInfo.receiver = d.firmware.receiver || '0.0.0'

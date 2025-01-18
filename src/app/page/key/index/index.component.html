@@ -65,7 +65,7 @@
                     <g-select
                         class="fun-select"
                         [(ngModel)]="currentMouseKey" 
-                        [ngClass]="funType === funBtnKeys.Mouse ? 'active-bgfun' : ''"
+                        [ngClass]="funType === funBtnKeys.Mouse || funType === funBtnKeys.remove ? 'active-bgfun' : ''"
                         [gCenter]="false"
                         (ngModelChange)="setSelectActive($event,1)"
                     >
@@ -152,7 +152,7 @@
                         </g-option>
                     </g-select> 
                 </div>
-                <div class="fun-item">
+                <div class="fun-item" *ngIf="showLight">
                     <div class="g-flex g-item-center">
                         <span class="icon_square"></span>
                         {{ 'mouse.key.14' | translate}}
@@ -177,8 +177,8 @@
                         {{ 'mouse.key.2' | translate}}
                     </div>
                     <button 
-                        (click)="funType = 2;"
-                        [ngClass]="funType === funBtnKeys.Keyboard ? 'active-bgfun' : ''"
+                        (click)="funType = funBtnKeys.Keyboard"
+                        [ngClass]="funType === funBtnKeys.Keyboard ? 'active-bg-btn' : ''"
                     > 
                         {{ 'menu.setting' | translate}}
                     </button>
@@ -197,8 +197,8 @@
                         ></span>
                     </div>
                     <button 
-                        (click)="funType = 7;"
-                        [ngClass]="funType === funBtnKeys.GameReinforce  ? 'active-bgfun' : ''"
+                        (click)="funType = funBtnKeys.GameReinforce"
+                        [ngClass]="funType === funBtnKeys.GameReinforce  ? 'active-bg-btn' : ''"
                     > 
                         {{ 'menu.setting' | translate}}
                     </button>
@@ -210,7 +210,7 @@
                     </div>
                     <button 
                         (click)="setSelectActive(null,9)"
-                        [ngClass]="funType === funBtnKeys.disable ? 'active-bgfun' : ''"
+                        [ngClass]="funType === funBtnKeys.disable ? 'active-bg-btn' : ''"
                     > 
                         {{ 'mouse.key.9' | translate}}
                     </button>
