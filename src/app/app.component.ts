@@ -16,7 +16,7 @@ export class AppComponent {
 		const host: any = {
 			"us": 'https://launcher.keychron.com/',
 			'cn': 'https://launcher.keychron.cn/',
-			'local': 'https://192.168.31.92:23333/'
+			'local': 'https://172.17.172.2:23333/'
 		}
 		const _api = this.appInit.getFeat() as any
 		const api = _api?.api || {}

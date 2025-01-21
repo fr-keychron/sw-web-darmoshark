@@ -25,29 +25,6 @@
 		<div class="connect-type">{{(workMode === 0 ? 'USB' : workMode === 1 ? '2.4Ghz' : 'BT') + ('common.connection' | translate)}} </div>
 	</div>
 </div>
-<ng-template #template let-notification>
-	<div class="ant-notification-notice-content">
-		<div>
-			<div class="ant-notification-notice-message">
-				{{ 'firmware.info.4' | translate }}
-			</div>
-			<div class="ant-notification-notice-description">
-				<div>{{ 'firmware.info.3' | translate }}</div>
-				<div style="margin-top: 16px;color: #ee724b">
-					<span>{{ 'firmware.info.7' | translate }}:</span>
-					<span>{{ version }}</span>
-				</div>
-			</div>
-			<span class="ant-notification-notice-btn">
-            <div style="cursor: pointer;color: #007cf9" (click)="notification.close()">
-              <span>
-	              {{ 'common.cancel' | translate}}
-              </span>
-            </div>
-          </span>
-		</div>
-	</div>
-</ng-template>
 <div class="mask g-flex g-item-center g-justify-center g-flex-col" *ngIf="hibernate && currentDevice">
 	<h1>{{"notify.fr_not_connect_mouse" | translate}}</h1>
 	<button (click)="choseDevice()">{{"firmware.button.1" | translate}}</button>

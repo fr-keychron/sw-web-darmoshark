@@ -31,9 +31,9 @@ export class MouseDeviceV2{
 				if (workMode === 1) {
 					this.mouse.setTransceiver(new SerialTransceiver(this.mouse.hidRaw))
 					const receiver = await firstValueFrom(this.getReceiverState());
-          if(receiver?.code){
+          			if(receiver?.code){
 						return s.error(receiver)
-          }
+          			}
 					if (receiver.state === 0) {
 						return s.error({
 							...receiver, 
@@ -116,29 +116,29 @@ export class MouseDeviceV2{
 				timeout(500),
 				filter(v => v[0] === EMouseCommand.CMD_BASE_GET_BOND_INFO),
 				map(v => {
-          const bondNum = v[1]
-          const receivers = []
-          for(let i=0; i < bondNum; i++){
-            const vid = `0x${ByteUtil.oct2Hex(v[3+5*i], 2, '')}${ByteUtil.oct2Hex(v[2+5*i], 2, '')}`
-            const pid = `0x${ByteUtil.oct2Hex(v[5+5*i], 2, '')}${ByteUtil.oct2Hex(v[4+5*i], 2, '')}`
-					  const state = v[6+5*i]
-            receivers.push({
-              vid,
-              pid,
-              state,
-              vpId: MouseDevice.vendorProductId(
-                ByteUtil.hex2Oct(vid), ByteUtil.hex2Oct(pid)
-              )
-            })
-          }
-          const receiver = receivers.find(r => r.state === 1)
-					return receiver
+				const bondNum = v[1]
+				const receivers = []
+				for(let i=0; i < bondNum; i++){
+				const vid = `0x${ByteUtil.oct2Hex(v[3+5*i], 2, '')}${ByteUtil.oct2Hex(v[2+5*i], 2, '')}`
+				const pid = `0x${ByteUtil.oct2Hex(v[5+5*i], 2, '')}${ByteUtil.oct2Hex(v[4+5*i], 2, '')}`
+							const state = v[6+5*i]
+				receivers.push({
+					vid,
+					pid,
+					state,
+					vpId: MouseDevice.vendorProductId(
+					ByteUtil.hex2Oct(vid), ByteUtil.hex2Oct(pid)
+					)
 				})
-			).subscribe(v => {
-				sub.unsubscribe()
+				}
+				const receiver = receivers.find(r => r.state === 1)
+				return receiver
+			})
+		).subscribe(v => {
+			sub.unsubscribe()
         if(!v){
-          s.next({code: 'noHid', msg: this.mouse.i18n.instant('notify.device_unconnect_sleep')})
-          return
+			s.next({code: 'noHid', msg: this.mouse.i18n.instant('notify.device_unconnect_sleep')})
+			return
         }
         this.mouse.id = v.vpId
 				s.next(v)
@@ -282,6 +282,8 @@ export class MouseDeviceV2{
 	}
 
 	public handleUpdate(buf: Uint8Array) {
+		console.log(buf);
+		
 		return new Observable(s => {
 			if(buf[0] === 0xe1){
 				this.mouse.update$.next({ type: "light" })

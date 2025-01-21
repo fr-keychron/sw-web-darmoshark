@@ -18,6 +18,7 @@
     & > .dpi-os {
         display: flex;
         margin-top: .4rem;
+        position: relative;
         & > .os-left {
             width: 25%;
             & > .os-item {
@@ -89,36 +90,38 @@
                     }
                 }
             }
-            & > .scale-bottom {
-                width: 100%;
-                display: flex;
-                position: relative;
-                & > .submit-btn {
-                    width: auto;
-                    padding: 0 1rem;
-                    height: 1.4rem;
-                    line-height: 1.3rem;
-                    border-radius: .333rem;
-                    text-align: center;
-                    position: absolute;
-                    right: 0;
-                    bottom: 0;
-                    cursor: pointer;
-                    border: 1px solid $global-border-gray;
-                    &:hover {
-                        border: 1px solid $global-border-blue;
-                        box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
-                    }
-                }
-                
-            }
-           
+
             .text-levelCount {
                 line-height: 1.2rem;
                 margin-right: .333rem;
             }
         }
+
+        & > .scale-bottom {
+            width: 100%;
+            position: absolute;                                             
+            bottom: 0;
+            right: 0;                                                                             
+            & > .submit-btn {
+                width: auto;
+                padding: 0 1rem;
+                height: 1.4rem;
+                line-height: 1.3rem;
+                border-radius: .333rem;
+                text-align: center;
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                cursor: pointer;
+                border: 1px solid $global-border-gray;
+                &:hover {
+                    border: 1px solid $global-border-blue;
+                    box-shadow: 0 0 8px rgba($global-border-blue, 0.5);
+                }
+            }
+        }
     }
+
     & > .dpixy-os {
         & > .os-left {
             & > .os-item {

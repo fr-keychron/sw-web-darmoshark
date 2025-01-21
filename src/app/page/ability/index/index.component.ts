@@ -37,7 +37,7 @@ export class IndexComponent implements OnInit {
 			"value": "common.high"
 		}
 	]
-	public isSleepAndGame: boolean = false //只有dms才有电竞模式和休眠时间设置
+	public isSleepAndGame: boolean = false 
 	public lodValue: number
 	public scrollValue: number
 	public sensorValue: Array<boolean> = [false, false, false]
@@ -55,8 +55,9 @@ export class IndexComponent implements OnInit {
 
 	public init() {
 		const device = this.service.getCurrentHidDevice<MouseDevice>()
+		if (!device) return
 		device.getBaseInfo().subscribe(()=>{
-			this.isSleepAndGame = device.version === "dms"
+			this.isSleepAndGame = device.version != "M" //m协议没有电竞模式和休眠时间设置
 			const {lod, motion, line, wave, scroll, eSports} = device.baseInfo.sys
 			this.lodValue = lod
 			this.eSports = eSports

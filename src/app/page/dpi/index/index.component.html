@@ -51,7 +51,7 @@
                     </div>
                 </div>
                 <div class="os-right g-flex g-item-end g-flex-col">
-                    <div class="g-flex">
+                    <div class="g-flex" *ngIf="isGear">
                         <span class="text-levelCount">{{'mouse.dpi.levelCount' | translate }}</span>
                         <g-select
                             class="dpi-select"
@@ -108,17 +108,17 @@
                             </g-slider>
                         </div>
                     </div>
-                   <div class="scale-bottom">
-                        <div class="checkbox-blue" *ngIf="isXYSetting">
-                            <input type="checkbox" [(ngModel)]="nxySetting" />
-                            <label>X-Y Setting</label>
-                        </div>
-                        <div class="submit-btn" (click)="setDpi()">
-                            <span>{{'common.key_confirm' | translate }}</span>
-                        </div>
-                   </div>
+                </div>
+                <div class="scale-bottom">
+                    <div class="checkbox-blue" *ngIf="isXYSetting">
+                        <input type="checkbox" [(ngModel)]="nxySetting" />
+                        <label>X-Y Setting</label>
+                    </div>
+                    <div class="submit-btn" (click)="setDpi()">
+                        <span>{{'common.key_confirm' | translate }}</span>
+                    </div>
+                </div>
             </div>
-        </div>
         </div>
         <!-- 回报率设置 -->
         <div class="report-container">

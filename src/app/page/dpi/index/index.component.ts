@@ -35,6 +35,7 @@ export class IndexComponent implements OnInit {
     public reportRateMax = 3; // 最大回报率数量
     public nxySetting = false; 
     public isXYSetting = false;
+    public isGear = false;
     public reportRate = [
         { value: 125, color: '#ff3643' },
         { value: 500, color: '#003cb8' },
@@ -73,9 +74,12 @@ export class IndexComponent implements OnInit {
             profile,
             reportRateMax
         }} = h;
+        console.log(h);
+        
         const drValue = [usb, rf, bt];
         const value = drValue[workMode];
         this.isXYSetting = version === 'dms' ? true : false;
+        this.isGear = version != "M"
         this.jsonConf = json; // 鼠标json信息（鼠标名、键位标识。。）
         this.reportRateVal = value?.reportRate;
         this.dpiLevel = value.dpi;
@@ -95,7 +99,7 @@ export class IndexComponent implements OnInit {
             this.maxDpi = dpi.limit[1] || 26000;
 
             if (dpi.colors) {
-            this.dpiColors = dpi.colors;
+                this.dpiColors = dpi.colors;
             }
 
             if (Object.keys(dpi.reportRate).length > 0) {

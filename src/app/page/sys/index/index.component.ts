@@ -58,7 +58,6 @@ export class IndexComponent implements OnInit {
 	} 
 
 	ngOnInit(){
-		this.init()
 	}
 	private init() {
 		const device = this.service.getCurrentHidDevice() as MouseDevice
@@ -151,7 +150,12 @@ export class IndexComponent implements OnInit {
 	}
 
 	public goUpdate(){
-		this.router.navigate(['/update'])
+		if(!this.showPair){
+			this.router.navigate(['/update'])
+		}else{
+			this.router.navigate(['/update/dms'])
+		}
+		 
 	}
 
 	public goPair(){

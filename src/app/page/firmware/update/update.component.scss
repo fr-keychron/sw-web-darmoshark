@@ -46,7 +46,7 @@
             }
 
             & .content-block {
-                background: #2C3132;
+                background: $global-light-gray;
                 width: 26.667rem;
                 min-height: 5.882rem;
                 color: #fff;
@@ -84,7 +84,6 @@
             }
 
             & .content-btn-group {
-                //width: 18.647rem;
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;

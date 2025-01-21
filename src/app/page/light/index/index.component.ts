@@ -61,10 +61,10 @@ export class IndexComponent implements OnInit {
 				this.rgbArr = r.rgbArr
 				this.currentColor = r.currentColor
 				this.saturationUpdata()
-				setTimeout(()=>{
-					this.isInitialized = true;
-				},100)
 			})
+			setTimeout(()=>{
+				this.isInitialized = true;
+			},100)
 		}
 		
 	}

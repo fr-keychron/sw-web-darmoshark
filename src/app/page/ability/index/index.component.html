@@ -89,7 +89,7 @@
                     </div>
                 </div>
                 <!-- 电竞模式锁定 -->
-                <div class="item-container">
+                <div class="item-container" *ngIf="isSleepAndGame">
                     <div class="g-flex g-item-center g-justify-between">
                         <div class="g-flex g-item-center ">
                             <span class="icon_square"></span>
@@ -126,7 +126,7 @@
                     <div (click)="decrement()">—</div>
                 </div>
             </div>
-            <div class="delay-container-item g-flex g-justify-between">
+            <div class="delay-container-item g-flex g-justify-between" *ngIf="isSleepAndGame">
                 <div class="g-flex g-item-center">
                     <span class="icon_square"></span>
                     {{'mouse.sys.sleep_setting'  | translate}}

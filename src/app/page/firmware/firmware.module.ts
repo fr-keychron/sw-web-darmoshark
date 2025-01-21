@@ -1,15 +1,18 @@
 import {NgModule} from "@angular/core";
 import {ShareModule} from "../../share.module";
 import {RouterModule, Routes} from "@angular/router";
-import {UpdateComponent} from "./index/update.component";
+import {UpdateComponent} from "./update/update.component";
+import { IndexComponent } from "./index/index.component";
 
 const routes: Routes = [
-	{path: '', component: UpdateComponent},
+	{path: '', component: IndexComponent},
+	{path: 'dms', component: UpdateComponent},
 ]
 
 @NgModule({
 	declarations: [
 		UpdateComponent,
+		IndexComponent
 	],
 	imports: [
 		ShareModule,

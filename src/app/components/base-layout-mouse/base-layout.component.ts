@@ -43,6 +43,7 @@ export class BaseLayoutMouseComponent implements OnInit {
 	public images:{cover:string, i18:string}[] = []
 	public coverUrl: string = ''
 	public deviceName: string = ''
+	public isconfig: boolean = false
 	ngOnInit() {
 		if (this.hidDevices) {
 			this.hidDeviceInit()
@@ -114,6 +115,7 @@ export class BaseLayoutMouseComponent implements OnInit {
 			this.profile = h.baseInfo.profile
 			this.images = this.jsonConf?.images
 			this.deviceName = hidDevice.name
+			this.isconfig = h.version != "M"
 			this.load(this.profile)
 			this.getInfo()
 		}

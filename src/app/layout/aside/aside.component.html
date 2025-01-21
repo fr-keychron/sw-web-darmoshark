@@ -9,6 +9,7 @@
 					(click)="nav(item.path)"
 					(mouseover)="item.isHovered = true" 
 					(mouseleave)="item.isHovered = false"
+					*ngIf="showMenu( item.path )"
 			>
 				<div class="aside-menu-content"  >
 					<span>{{ item.i18n | translate }}</span>

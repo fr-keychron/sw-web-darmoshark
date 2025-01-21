@@ -72,9 +72,7 @@ export class AsideComponent implements OnInit {
 			const d = this.currentDevice as MouseDevice
 			if (!d) return false
 			condition = { 
-				'mouse/light': () => [875876426, 875876403, 198901714].includes(d.id), // M3灯效
-				'mouse/bluetooth': () => d.state === EDeviceConnectState.USB,
-				'firmware/frequency': () => d.state === EDeviceConnectState.G,
+				'mouse/light': () => d.json?.light
 			}
 		}
 

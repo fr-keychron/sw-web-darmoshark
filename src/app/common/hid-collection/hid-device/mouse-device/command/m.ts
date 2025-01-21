@@ -29,11 +29,7 @@ export class MouseDeviceM {
 		return new Observable<any>((s) => {
 			const init = async () => {			
 				const { workMode, version } = this.mouse
-				console.log(workMode, version);
-				
 				const protocol = await firstValueFrom(this.getProtocolVersion());
-				console.log(protocol);
-				
 				if (workMode === 1) {
 					this.mouse.setTransceiver(new RecverTransceiver(this.mouse.hidRaw))
 					const receiver = await firstValueFrom(this.getReceiverState());
@@ -89,8 +85,6 @@ export class MouseDeviceM {
 					// timeout(500),
 					map((v) =>v.slice(1)),
 					map((v) => {
-						console.log(v);
-						
 						const bits = ByteUtil.oct2Bin(v[9]);
 						const workMode = ByteUtil.bin2Oct(bits.substring(5, bits.length));
 						const powerState = ByteUtil.oct2Bin(v[11], 8, 'tail');
@@ -98,8 +92,6 @@ export class MouseDeviceM {
 							state: Number(powerState.charAt(0)),
 							value: v[10]
 						}
-						// console.log(power);
-						
 						this.power = power || this.power
 
 						const featureBit = ByteUtil.oct2Bin(v[13])
@@ -125,8 +117,6 @@ export class MouseDeviceM {
 						})
 					},
 				});
-				console.log(buf);
-				
 			this.mouse.write(0x51, buf, 2).subscribe();
 		});
 	}
@@ -250,6 +240,7 @@ export class MouseDeviceM {
 								line: Number(bits.charAt(4)),
 								motion: Number(bits.charAt(3)),
 								scroll: Number(bits.charAt(1)),
+								eSports: Number(bits.charAt(0))
 							};
 						};
 						const dpiLevelCount = v[16];
@@ -266,7 +257,7 @@ export class MouseDeviceM {
 						const dpiVal = dpiPosition
 							.slice(0, dpiLevelCount)
 							.map((i) => (v[i[0]] << 8) | v[i[1]]);
-						
+						const doubledDpiVal = dpiVal.flatMap(val => [val, val]);
 						return {
 							feature: this.mouse.baseInfo?.feature,
 							workMode:
@@ -279,11 +270,11 @@ export class MouseDeviceM {
 							bt: handleDpi(v[4]),
 							dpiConf: {
 								levelEnable: dpiLevelCount - 1 || 4,
-								levelVal: dpiVal,
+								levelVal: doubledDpiVal,
 							},
 							gears: v[16],
 							delay: v[17],
-							sleep: v[18],
+							sleep: v[18] * 60,
 							sys: handleSys(v[15]),
 							power: this.power
 						};
@@ -383,6 +374,7 @@ export class MouseDeviceM {
 		});
 	}
 
+	private macroList = JSON.parse(localStorage.getItem('macroList'))
 	public getMouseBtnInfo(btn: number): Observable<any> {
 		return new Observable((s) => {
 			const buf = MouseDevice.Buffer(64);
@@ -392,20 +384,31 @@ export class MouseDeviceM {
 				.pipe(
 					map((v) => v.slice(1)),
 					filter((v) => v[0] === 0x62 && v[1] === btn),
-					map((v) => {
+					map(async v => {
 						const type = v[3];
-						console.log(deserializeMouseButton(type, v.slice(4)));
-						
+						const data = deserializeMouseButton(type, v.slice(4))
+						if(type === EMouseBtn.Macro){
+							const macroData = await firstValueFrom(this.getMacroName(btn))
+							const macro = this.macroList.find((e: any)=>{
+								return e.id === macroData.macroId
+							})
+							if (macro) {
+								data.name = macro.name
+							}
+							data.value = macroData.macroId
+						}
+						const { MouseBtn, ...filteredData } = data || {};
 						return {
 							type,
 							mouseKey: v[1],
-							data: deserializeMouseButton(type, v.slice(4)),
-						};
+							data: filteredData
+						}
 					})
 				)
-				.subscribe((v) => {
-					s.next(v);
-					subj.unsubscribe();
+				.subscribe( async (v) => {
+					const result = await v;
+					s.next(result);
+					subj.unsubscribe()
 				});
 			this.mouse.write(0x52, buf, 2).subscribe();
 		});
@@ -432,6 +435,7 @@ export class MouseDeviceM {
 		loopCount?: number;
 		macro: Array<number[]>;
 		delay: number;
+		macroId: string
 	}): Observable<any> {
 		return new Observable((s) => {
 			const maxlen = 64;
@@ -480,19 +484,75 @@ export class MouseDeviceM {
 			}
 
 			const run = () => {
-				const data = section.shift();
-				data.subscribe();
+				const datas = section.shift();
+				datas.subscribe();
 				const subj = this.mouse.report$.subscribe((r) => {
 					if (section.length) {
 						run();
 					} else {
-						s.next();
+						this.setMacroName(data.mouseKey, data.macroId).subscribe(() => {
+							s.next()
+						})
 					}
 					subj.unsubscribe();
 				});
 			};
 			run();
 		});
+	}
+
+	public getMacroName(
+		mouseKey: number
+	): Observable<any> {
+		return new Observable(s => {
+			const buf = MouseDevice.Buffer(63);
+			buf[0] = 0x63;
+			buf[1] = mouseKey;
+			const subj = this.mouse.report$
+				.pipe(
+					filter((v) => (v[1] === 0x63)),
+					map(v => {
+						const data = v.slice(4, 18)
+						const text = new TextDecoder().decode(new Uint8Array(data));
+						return {
+							macroId: text,
+						};
+					})
+				)
+				.subscribe(v => {
+					s.next(v)
+					subj.unsubscribe()
+				})
+			this.mouse.write(0x52, buf, 2).subscribe()
+		})
+	}
+
+	public setMacroName(
+		mouseKey: number,
+		macroId: string
+	): Observable<any> {
+		return new Observable(s => {
+			const buf = MouseDevice.Buffer(63);
+			buf[0] = 0x53;
+			buf[1] = mouseKey;
+			buf[2] = macroId.length;
+			const macroNameBytes = new TextEncoder().encode(macroId);
+			for (let i = 0; i < macroId.length; i++) {
+				buf[3 + i] = macroNameBytes[i];
+			}
+			const subj = this.mouse.report$
+				.pipe(
+					filter((v) => (v[0] === 0x53)),
+					map(v => {
+						return  v
+					})
+				)
+				.subscribe(v => {
+					s.next(v)
+					subj.unsubscribe()
+				})
+			this.mouse.write(0x52, buf, 3).subscribe()
+		})
 	}
 
 	public setDebounce(v: number) {
@@ -562,6 +622,17 @@ export class MouseDeviceM {
 		});
 	}
 
+	public setBtnTime(data: {
+		btnRespondTime: number
+		sleepTime:number
+	}) {
+		return new Observable((s) => {
+			this.setDebounce(data.btnRespondTime).subscribe(() => {
+				s.next();
+			});
+		});
+	}
+
 	/**
 	 * light 灯效
 	 * 0x12 灯效工作模式读取
@@ -580,10 +651,11 @@ export class MouseDeviceM {
 				buf[1] = index;
 
 				const subj = this.mouse.report$
-					.pipe(filter(v => v[1] === 0x18))
+					.pipe(
+						filter(v => v[1] === 0x18)
+					)
 					.subscribe((v: any) => {
 						if (v) {
-							// console.log(v);
 							const r = v.slice(2)
 							const data = {
 								lightMode: (r[4] || r[5]) ? (r[0] + 1) : r[0],
@@ -602,7 +674,9 @@ export class MouseDeviceM {
 			const buf = MouseDevice.Buffer(20);
 			buf[0] = 0x12;
 			const subj = this.mouse.report$
-				.pipe(filter(v => v[1] === 0x12))
+			.pipe(
+				filter(v => v[1] === 0x12)
+			)
 				.subscribe((v: any) => {
 					if (v) {
 						const r = v.slice(4)
