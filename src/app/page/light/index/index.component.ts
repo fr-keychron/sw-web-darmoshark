@@ -4,11 +4,17 @@ import { TranslateService } from "@ngx-translate/core";
 import { MouseDevice} from "../../../common/hid-collection";
 import {DeviceConnectService} from "../../../service/device-conncet/device-connect.service";
 import { Subject, Subscription} from 'rxjs';
+enum setType {
+	mode = 1,
+	brightness,
+	speed
+  }
 @Component({
 	selector: "mouse-light",
 	templateUrl: './index.component.html',
 	styleUrls: ['./index.component.scss']
 })
+
 export class IndexComponent implements OnInit {
 	constructor(
 		private readonly service: DeviceConnectService,
@@ -25,6 +31,7 @@ export class IndexComponent implements OnInit {
 	public hsl: number[]
 	public saturation: number
 	public isInitialized: boolean = false;
+	public lightList: {value: number, name: string}[]
 	readonly staticColors = [{
 		color: [255, 0, 0],
 	},{
@@ -50,6 +57,7 @@ export class IndexComponent implements OnInit {
 	}
 	public init(){
 		const device = this.service.getCurrentHidDevice<MouseDevice>();
+		this.lightList = device?.json.light || []
 		if(device) {
 			this.speedMax = device.version === "dms" ? 4 : 255
 			device.getLight().subscribe((r: any)=>{
@@ -106,8 +114,8 @@ export class IndexComponent implements OnInit {
 	}
 
 	private throttleTimer: any = null;
-
-	public setRGB() {
+	
+	public setRGB(type?: setType) {
 		if (!this.isInitialized) return;
 		if (this.throttleTimer !== null) return;
 
@@ -124,6 +132,7 @@ export class IndexComponent implements OnInit {
 				r,
 				g,
 				b,
+				type
 			}).subscribe();
 			this.saturationUpdata();
 			this.throttleTimer = null;

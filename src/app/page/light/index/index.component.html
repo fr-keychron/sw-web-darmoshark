@@ -21,13 +21,10 @@
                 <g-select
                     [(ngModel)]="lightMode" 
                     [gCenter]="false"
-                    (ngModelChange)="setRGB()"
+                    (ngModelChange)="setRGB(1)"
                 >
                     <g-option [gValue]="0" [gLabel]="'common.close'| translate"></g-option>
-                    <g-option [gValue]="1" [gLabel]="'lights.1. Solid Color'| translate"></g-option>
-                    <g-option [gValue]="2" [gLabel]="'lights.2. Breathing'| translate"></g-option>
-                    <g-option [gValue]="3" [gLabel]="'lights.4. Cycle All'| translate"></g-option>
-                    
+                    <g-option [gValue]="l.value" [gLabel]="('mouse.light.'+ l.name) | translate" *ngFor="let l of lightList"></g-option>
                 </g-select> 
             </div>
         </div>
@@ -41,13 +38,13 @@
                     <div >
                         <div class="title">{{'lights.key_brightness_adjustment' | translate}} </div>
                         <div  class="range-box">
-                            <g-slider [(ngModel)]="brightness" [min]="0" [max]="255" [step]="1" (ngModelChange)="setRGB()"></g-slider>
+                            <g-slider [(ngModel)]="brightness" [min]="0" [max]="255" [step]="1" (ngModelChange)="setRGB(2)"></g-slider>
                         </div>
                     </div>
                     <div *ngIf="![0,1].includes(lightMode)">
                         <div >{{'lights.key_speed_adjustment' | translate}} </div>
                         <div  class="range-box">
-                            <g-slider [(ngModel)]="speed" [min]="0" [max]="speedMax" [step]="1" (ngModelChange)="setRGB()"></g-slider>
+                            <g-slider [(ngModel)]="speed" [min]="0" [max]="speedMax" [step]="1" (ngModelChange)="setRGB(3)"></g-slider>
                         </div>
                     </div>
                     <div *ngIf="[1,2,5].includes(lightMode)">

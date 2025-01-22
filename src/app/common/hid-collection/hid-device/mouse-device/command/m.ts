@@ -10,6 +10,7 @@ import {EDeviceConnectState} from "../../../enum";
 import {IBaseInfo, Light} from "../types";
 import {Result} from "src/app/model";
 import { RecverTransceiver } from "../../../transceiver";
+import { EEventEnum } from "../../../type";
 
 VersionFactory.inject(
 	(s) => s === "M",
@@ -29,7 +30,6 @@ export class MouseDeviceM {
 		return new Observable<any>((s) => {
 			const init = async () => {			
 				const { workMode, version } = this.mouse
-				const protocol = await firstValueFrom(this.getProtocolVersion());
 				if (workMode === 1) {
 					this.mouse.setTransceiver(new RecverTransceiver(this.mouse.hidRaw))
 					const receiver = await firstValueFrom(this.getReceiverState());
@@ -37,10 +37,9 @@ export class MouseDeviceM {
 						return s.error({...receiver, workMode, version});
 					}
 					this.mouse.state = EDeviceConnectState.G;
-					await firstValueFrom(this.getBaseInfo());
-				} else {
-					await firstValueFrom(this.getBaseInfo());
 				}
+				const protocol = await firstValueFrom(this.getProtocolVersion());
+				await firstValueFrom(this.getBaseInfo());
 				this.mouse.baseInfo.workMode = workMode;
 				this.mouse.baseInfo.feature = protocol.feature;
 				await firstValueFrom(this.getDeviceDesc());
@@ -285,7 +284,6 @@ export class MouseDeviceM {
 					sub.unsubscribe();
 					s.next(v);
 				});
-
 			this.mouse.write(0x51, buf, 2).subscribe();
 		});
 	}
@@ -306,26 +304,29 @@ export class MouseDeviceM {
 			}
 			if (buf[0] === 0xe2) {
 				// workMode: 0: usb, 1: 2.4g, 2: BT
-				const obj = {
-					workMode: buf[1],
-					connect: buf[2],
-					power: {
-						state: buf[3],
-						percent: buf[4],
-					},
-					dpi: {
-						value: buf[5],
-						report: buf[6],
-						level: buf[7],
-					},
-				};
-				this.mouse.baseInfo.power = {state: buf[3], value: buf[4]}
-				this.power = {state: buf[3], value: buf[4]}
-				
+				// const obj = {
+				// 	workMode: buf[1],
+				// 	connect: buf[2],
+				// 	power: {
+				// 		state: buf[3],
+				// 		percent: buf[4],
+				// 	},
+				// 	dpi: {
+				// 		value: buf[5],
+				// 		report: buf[6],
+				// 		level: buf[7],
+				// 	},
+				// };
+				// this.mouse.baseInfo.power = {state: buf[3], value: buf[4]}
+				// this.power = {state: buf[3], value: buf[4]}
 				this.mouse.update$.next({
-					type: "base",
-					data: obj,
+					type: EEventEnum.HIBERNATE,
+					data: buf[2] === 2 ? true : false,
 				});
+				// this.mouse.update$.next({
+				// 	type: "base",
+				// 	data: obj,
+				// });
 				s.next(true);
 			} else {
 				s.next(false);
@@ -691,7 +692,6 @@ export class MouseDeviceM {
 	public setLight(data: Light) {
 		return new Observable((res) => {
 			const {i, l, s, r, g, b, type} = data
-			
 			switch(type){
 				case 1: // 灯效模式
 					this.setLightM(i).subscribe((r) => {

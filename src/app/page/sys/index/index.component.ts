@@ -126,6 +126,7 @@ export class IndexComponent implements OnInit {
 		if (Array.isArray(parsedList) && parsedList[$e]) {
 			this.leftLock = parsedList[$e].leftLock
 		}
+		this.init()
 	}
 
 	// 获取固件信息

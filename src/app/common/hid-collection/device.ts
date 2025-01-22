@@ -243,6 +243,8 @@ export class HidCollection implements IHidCollection {
 				}
 				
 				hidDevice.productInfo = {raw: product}
+				console.log('hidDevice', hidDevice);
+				
 				hidDevice?.open().subscribe({
 					next: () => {
 						this.currentHidDevice = hidDevice
@@ -251,6 +253,8 @@ export class HidCollection implements IHidCollection {
 						s.next(this)
 					},
 					error: (err: { code: string; msg: any; }) => {
+						console.log('error', err);
+						
 						if (err?.code === 'noHid') {
 							s.error(err.msg)
 							return
@@ -259,6 +263,8 @@ export class HidCollection implements IHidCollection {
 					}
 				})
 			} 
+			console.log('mouse', hidDevice);
+			
 			if(product?.contract === 'dms'){
 				getDevice({version: product.contract, workMode: product.workMode || 0})
 			} else{

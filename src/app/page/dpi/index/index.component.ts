@@ -63,57 +63,61 @@ export class IndexComponent implements OnInit {
 
     /**连接初始化 */
     private init() {
+        console.log('init');
+        
         this.currentHidDevice = this.service.getCurrentHidDevice() as MouseDevice;
 
         const getHidConf = (h: MouseDevice) => {
-        const { version, json, baseInfo: {
-            gears,
-            dpiConf,
-            workMode,
-            usb, rf, bt,
-            profile,
-            reportRateMax
-        }} = h;
-        console.log(h);
-        
-        const drValue = [usb, rf, bt];
-        const value = drValue[workMode];
-        this.isXYSetting = version === 'dms' ? true : false;
-        this.isGear = version != "M"
-        this.jsonConf = json; // 鼠标json信息（鼠标名、键位标识。。）
-        this.reportRateVal = value?.reportRate;
-        this.dpiLevel = value.dpi;
-        this.currentProfile = profile;
-        this.oldLevelVal = JSON.parse(JSON.stringify(json.dpi.level)).map((level: number) => [level, level]);
-        const convertedLevelVal = dpiConf.levelVal.reduce((acc, value, index, array) => {
-            if (index % 2 === 0) {
-                acc.push([array[index], array[index + 1]]);
-            }
-            return acc;
-        }, []);
-        this.dpiValues = convertedLevelVal.slice(0, gears)
-        this.dpiGears = gears || json.dpi.level.length;
-        if (json?.dpi) {
-            const { dpi } = json;
-            this.minDpi = dpi.limit[0] || 100;
-            this.maxDpi = dpi.limit[1] || 26000;
+            const { version, json, baseInfo: {
+                gears,
+                dpiConf,
+                workMode,
+                usb, rf, bt,
+                profile,
+                reportRateMax
+            }} = h;
+            console.log(h);
+            
+            const drValue = [usb, rf, bt];
+            const value = drValue[workMode];
+            this.isXYSetting = version === 'dms' ? true : false;
+            this.isGear = version != "M"
+            this.jsonConf = json; // 鼠标json信息（鼠标名、键位标识。。）
+            this.reportRateVal = value?.reportRate;
+            this.dpiLevel = value.dpi;
+            this.currentProfile = profile;
+            this.oldLevelVal = JSON.parse(JSON.stringify(json.dpi.level)).map((level: number) => [level, level]);
+            const convertedLevelVal = dpiConf.levelVal.reduce((acc, value, index, array) => {
+                if (index % 2 === 0) {
+                    acc.push([array[index], array[index + 1]]);
+                }
+                return acc;
+            }, []);
+            this.dpiValues = convertedLevelVal.slice(0, gears)
+            this.dpiGears = gears || json.dpi.level.length;
+            if (json?.dpi) {
+                const { dpi } = json;
+                this.minDpi = dpi.limit[0] || 100;
+                this.maxDpi = dpi.limit[1] || 26000;
 
-            if (dpi.colors) {
-                this.dpiColors = dpi.colors;
-            }
+                if (dpi.colors) {
+                    this.dpiColors = dpi.colors;
+                }
 
-            if (Object.keys(dpi.reportRate).length > 0) {
-            this.reportRate = dpi.reportRate.slice(0, reportRateMax)
-                .filter(r => r.type ? r.type.includes(workMode) : true)
-                .map(r => ({
-                ...r,
-                color: Array.isArray(r.color) ? 'linear-gradient(' + r.color + ')' : r.color
-                }));
+                if (Object.keys(dpi.reportRate).length > 0) {
+                this.reportRate = dpi.reportRate.slice(0, reportRateMax)
+                    .filter(r => r.type ? r.type.includes(workMode) : true)
+                    .map(r => ({
+                    ...r,
+                    color: Array.isArray(r.color) ? 'linear-gradient(' + r.color + ')' : r.color
+                    }));
+                }
             }
-        }
         }
 
         const sub = this.currentHidDevice?.getBaseInfo().subscribe(v => {
+            console.log(this.currentHidDevice.loaded);
+            
             if (this.currentHidDevice.loaded) {
                 getHidConf(this.currentHidDevice);
             } else {

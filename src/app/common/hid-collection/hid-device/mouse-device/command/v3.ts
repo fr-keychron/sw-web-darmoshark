@@ -13,6 +13,7 @@ import {VersionFactory} from '.'
 import {SerialTransceiver} from "../../../transceiver";
 import {EDeviceConnectState} from "../../../enum";
 import {IBaseInfo, Light} from "../types";
+import { EEventEnum } from "../../../type";
 
 VersionFactory.inject(s => s === 3, (device: MouseDevice) => new MouseDeviceV3(device))
 
@@ -31,9 +32,9 @@ export class MouseDeviceV3 {
 				if (workMode === 1) {
 					this.mouse.setTransceiver(new SerialTransceiver(this.mouse.hidRaw))
 					const receiver = await firstValueFrom(this.getReceiverState());
-          if(receiver?.code){
+         			if(receiver?.code){
 						return s.error(receiver)
-          }
+          			}
 					if (receiver?.state === 0) {
 						return s.error({
 							...receiver, 
@@ -289,24 +290,28 @@ export class MouseDeviceV3 {
 			}
 			if (buf[0] === 0xe2) {
 				// workMode: 0: usb, 1: 2.4g, 2: BT
-				const obj = {
-					workMode: buf[1],
-					connect: buf[2],
-					power: {
-						state: buf[3],
-						percent: buf[4]
-					},
-					dpi: {
-						value: buf[5],
-						report: buf[6],
-						level: buf[7]
-					}
-				}
+				// const obj = {
+				// 	workMode: buf[1],
+				// 	connect: buf[2],
+				// 	power: {
+				// 		state: buf[3],
+				// 		percent: buf[4]
+				// 	},
+				// 	dpi: {
+				// 		value: buf[5],
+				// 		report: buf[6],
+				// 		level: buf[7]
+				// 	}
+				// }
 
+				// this.mouse.update$.next({
+				// 	type: "base",
+				// 	data: obj
+				// })
 				this.mouse.update$.next({
-					type: "base",
-					data: obj
-				})
+					type: EEventEnum.HIBERNATE,
+					data: buf[2] === 2 ? true : false,
+				});
 				s.next(true)
 			} else {
 				s.next(false)

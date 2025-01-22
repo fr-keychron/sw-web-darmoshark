@@ -91,14 +91,14 @@ export class DeviceConnectService {
 
 				this.getDeviceInfo(id, r).subscribe()
 
-				this.device.event$
-					.pipe(filter(v => v.type === EEventEnum.Update && v.deviceType === EDeviceType.Bridge))
-					.subscribe(v => {
-						if (v.data.connect === EFrConnectState.disconnect) {
-							this.disconnect()
-							this.msg.error(this.i18n.instant('notify.fr_not_connect'))
-						}
-					})
+				// this.device.event$
+				// 	.pipe(filter(v => v.type === EEventEnum.Update && v.deviceType === EDeviceType.Bridge))
+				// 	.subscribe(v => {
+				// 		if (v.data.connect === EFrConnectState.disconnect) {
+				// 			this.disconnect()
+				// 			this.msg.error(this.i18n.instant('notify.fr_not_connect'))
+				// 		}
+				// 	})
 				this.device.event$
 					.pipe(filter(v => v.type === EEventEnum.CONNECT))
 					.subscribe(v => {
