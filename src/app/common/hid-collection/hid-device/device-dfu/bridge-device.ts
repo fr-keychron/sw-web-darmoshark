@@ -314,7 +314,6 @@ export class BridgeDevice {
 					const sub = this.report$
 						.pipe(timeout(200))
 						.subscribe(r => {
-							// console.log(bufArr.length, total);
 							if (bufArr.length) {
 								run()
 								s.next({status: 'writing', data: Number(k / total * 100).toFixed(2)})

@@ -1,151 +1,143 @@
 {
-  "name": "Darnoshark M3S MAX",
-  "type": "mouse",
-  "size": [
-    1200,
-    2000
-  ],
-  "keys": [
-    {
-      "x": 348,
-      "y": 157,
-      "dir": "left",
-      "index": 0,
-      "custom": true,
-      "w": 390
-    },
-    {
-      "x": 803,
-      "y": 169,
-      "w": 381,
-      "dir": "right",
-      "custom": true,
-      "index": 1
-    },
-    {
-      "x": 602,
-      "y": 420,
-      "w": 650,
-      "dir": "left",
-      "custom": true,
-      "index": 2
-    },
-    {
-      "x": 120,
-      "y": 787,
-      "w": 180,
-      "dir": "left",
-      "custom": true,
-      "index": 4
-    },
-    {
-      "x": 134,
-      "y": 1027,
-      "w": 200,
-      "dir": "left",
-      "custom": true,
-      "index": 3
-    },
-    {
-      "x": 603,
-      "y": 299,
-      "w": 582,
-      "dir": "right",
-      "custom": true,
-      "index": 7,
-      "title": "upScroll",
-      "name": "onRoller"
-    },
-    {
-      "x": 603,
-      "y": 526,
-      "w": 584,
-      "dir": "right",
-      "custom": true,
-      "index": 8,
-      "title": "downScroll",
-      "name": "underRoller"
-    }
-  ],
-  "dpi": {
-    "limit": [
-      50,
-      30000
-    ],
-    "level": [
-      400,
-      800,
-      1600,
-      3200,
-      4800
-    ],
-    "reportRate": [
-      {
-        "value": 125,
-        "color": "#ff0000"
-      },
-      {
-        "value": 500,
-        "color": "#0060ff"
-      },
-      {
-        "value": 1000,
-        "color": "#12ff00"
-      },
-      {
-        "value": 2000,
-        "color": "#e218ff"
-      },
-      {
-        "value": 4000,
-        "color": "#f9e14c"
-      },
-      {
-        "value": 8000,
-        "color": "#ffffff"
-      }
-    ],
-    "colors": [
-      "#ff0000",
-      "#0060ff",
-      "#12ff00",
-      "#e218ff",
-      "#f9e14c",
-      "#e218ff"
-    ]
-  },
-  "sys": {
-    "lod": [
-      {
-        "index": 1,
-        "value": "1.0mm"
-      },
-      {
-        "index": 2,
-        "value": "2.0mm"
-      }
-    ],
-    "disSensor": false
-  },
-  "light": null,
-  "images": [
-    {
-      "cover": "upload/cover/27/1735175555210.png",
-      "colors": [
-        "#FFFFFF"
-      ]
-    },
-    {
-      "cover": "upload/cover/27/1735899469878.png",
-      "colors": [
-        "#FFC0CB"
-      ]
-    },
-    {
-      "cover": "upload/cover/27/1735899482784.png",
-      "colors": [
-        "#000000"
-      ]
-    }
-  ]
-}
+	"name": "Darnoshark M3",
+	"type": "mouse",
+	"size": [
+	  1200,
+	  2000
+	],
+	"keys": [
+	  {
+		"x": 462,
+		"y": 216,
+		"dir": "left",
+		"index": 0,
+		"custom": true,
+		"w": 451
+	  },
+	  {
+		"x": 733,
+		"y": 208,
+		"w": 480,
+		"dir": "right",
+		"custom": true,
+		"index": 2
+	  },
+	  {
+		"x": 601,
+		"y": 458,
+		"w": 591,
+		"dir": "left",
+		"custom": true,
+		"index": 1
+	  },
+	  {
+		"x": 177,
+		"y": 771,
+		"w": 169,
+		"dir": "left",
+		"custom": true,
+		"index": 3
+	  },
+	  {
+		"x": 181,
+		"y": 982,
+		"w": 175,
+		"dir": "left",
+		"custom": true,
+		"index": 4
+	  }
+	],
+	"dpi": {
+	  "limit": [
+		50,
+		30000
+	  ],
+	  "level": [
+		400,
+		800,
+		1600,
+		3200,
+		4800
+	  ],
+	  "reportRate": [
+		{
+		  "value": 125,
+		  "color": "#ff0000"
+		},
+		{
+		  "value": 500,
+		  "color": "#0060ff"
+		},
+		{
+		  "value": 1000,
+		  "color": "#12ff00"
+		}
+	  ],
+	  "colors": [
+		"#ff0000",
+		"#0060ff",
+		"#12ff00",
+		"#e218ff",
+		"#f9e14c",
+		"#e218ff"
+	  ]
+	},
+	"sys": {
+	  "lod": [
+		{
+		  "index": 1,
+		  "value": "1.0mm"
+		},
+		{
+		  "index": 2,
+		  "value": "2.0mm"
+		}
+	  ],
+	  "disSensor": false
+	},
+	"light": null,
+	"images": [
+	  {
+		"cover": "upload/cover/27/1737451132474.png",
+		"colors": [
+		  "#FFFFFF"
+		]
+	  },
+	  {
+		"cover": "upload/cover/27/1739160513053.png",
+		"colors": [
+		  "#FFC0CB"
+		]
+	  },
+	  {
+		"cover": "upload/cover/27/1739160730899.png",
+		"colors": [
+		  "#000000"
+		]
+	  },
+	  {
+		"cover": "upload/cover/27/1739160758143.png",
+		"colors": [
+		  "#8B0000"
+		]
+	  },
+	  {
+		"cover": "upload/cover/27/1739160807074.png",
+		"colors": [
+		  "#808000"
+		]
+	  },
+	  {
+		"cover": "upload/cover/27/1739161006539.png",
+		"colors": [
+		  "#333333"
+		]
+	  },
+	  {
+		"cover": "upload/cover/27/1739161066957.png",
+		"colors": [
+		  "#4B0082"
+		]
+	  }
+	]
+  }

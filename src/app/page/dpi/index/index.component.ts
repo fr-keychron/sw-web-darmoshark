@@ -63,8 +63,6 @@ export class IndexComponent implements OnInit {
 
     /**连接初始化 */
     private init() {
-        console.log('init');
-        
         this.currentHidDevice = this.service.getCurrentHidDevice() as MouseDevice;
 
         const getHidConf = (h: MouseDevice) => {
@@ -76,8 +74,6 @@ export class IndexComponent implements OnInit {
                 profile,
                 reportRateMax
             }} = h;
-            console.log(h);
-            
             const drValue = [usb, rf, bt];
             const value = drValue[workMode];
             this.isXYSetting = version === 'dms' ? true : false;
@@ -116,8 +112,6 @@ export class IndexComponent implements OnInit {
         }
 
         const sub = this.currentHidDevice?.getBaseInfo().subscribe(v => {
-            console.log(this.currentHidDevice.loaded);
-            
             if (this.currentHidDevice.loaded) {
                 getHidConf(this.currentHidDevice);
             } else {
@@ -140,7 +134,6 @@ export class IndexComponent implements OnInit {
 
     public changeScaleX() {
         if (!this.isXYSetting || this.currentHidDevice?.loaded) return;
-        console.log('changeScaleX');
         this.dpiValues[this.dpiLevel][1] = this.dpiValues[this.dpiLevel][0];
     }
 

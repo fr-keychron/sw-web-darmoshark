@@ -56,7 +56,6 @@ export class HidCollection implements IHidCollection {
 		return new Observable(s => {
 			const device = BridgeDevice.Build(hid, this.i18n)
 			this.collection.bridge.push(device)
-			
 			device.open().subscribe(() => {
 				this.currentHidDevice = device
 				// this.event$.next({type: EEventEnum.CONNECT, data: this})
@@ -243,8 +242,6 @@ export class HidCollection implements IHidCollection {
 				}
 				
 				hidDevice.productInfo = {raw: product}
-				console.log('hidDevice', hidDevice);
-				
 				hidDevice?.open().subscribe({
 					next: () => {
 						this.currentHidDevice = hidDevice
@@ -253,8 +250,6 @@ export class HidCollection implements IHidCollection {
 						s.next(this)
 					},
 					error: (err: { code: string; msg: any; }) => {
-						console.log('error', err);
-						
 						if (err?.code === 'noHid') {
 							s.error(err.msg)
 							return
@@ -262,9 +257,7 @@ export class HidCollection implements IHidCollection {
 						s.error(this.i18n.instant('mouse.tip.16'))
 					}
 				})
-			} 
-			console.log('mouse', hidDevice);
-			
+			}
 			if(product?.contract === 'dms'){
 				getDevice({version: product.contract, workMode: product.workMode || 0})
 			} else{

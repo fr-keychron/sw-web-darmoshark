@@ -14,9 +14,15 @@
 <div class="device-connected g-flex g-item-center g-justify-between" *ngIf="currentDevice">
 	<div class="g-flex g-item-center">
 		<div class="battery-container">
-			<div class="battery-level" [style.width]="power === 100 ? 'calc(100% - 2px)' : (power + '%')">
-				<span style="color: #173b3b" nz-icon nzType="thunderbolt" nzTheme="outline" *ngIf="powerState === 1" ></span>
-			</div>
+			<div class="battery-level" [style.width]="power === 100 ? 'calc(100% - 2px)' : (power + '%')"></div>
+			<span 
+				class="g-flex g-justify-center lightning-icon" 
+				nz-icon nzType="thunderbolt" 
+				nzTheme="outline" 
+				*ngIf="powerState === 1"
+				[ngStyle]="{'color': power < 45 ? '#00FFFD' : '#173b3b'}"
+			>
+			</span>
 		</div>
 		<div class="">{{powerState === 2 ? ('common.battery_fully_charged' | translate )  : powerState === 1 ? ('common.battery_charging' | translate ) : (power+"%")}}</div>
 	</div>
