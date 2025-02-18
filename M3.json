@@ -1,5 +1,5 @@
 {
-	"name": "Darnoshark M3",
+	"name": "Darnoshark M2 MOUSE",
 	"type": "mouse",
 	"size": [
 	  1200,
@@ -7,44 +7,64 @@
 	],
 	"keys": [
 	  {
-		"x": 462,
-		"y": 216,
+		"x": 414,
+		"y": 166,
 		"dir": "left",
 		"index": 0,
 		"custom": true,
-		"w": 451
+		"w": 450
 	  },
 	  {
-		"x": 733,
-		"y": 208,
-		"w": 480,
+		"x": 803,
+		"y": 169,
+		"w": 381,
 		"dir": "right",
-		"custom": true,
-		"index": 2
-	  },
-	  {
-		"x": 601,
-		"y": 458,
-		"w": 591,
-		"dir": "left",
 		"custom": true,
 		"index": 1
 	  },
 	  {
-		"x": 177,
-		"y": 771,
-		"w": 169,
+		"x": 602,
+		"y": 401,
+		"w": 647,
+		"dir": "left",
+		"custom": true,
+		"index": 2
+	  },
+	  {
+		"x": 140,
+		"y": 787,
+		"w": 180,
+		"dir": "left",
+		"custom": true,
+		"index": 4
+	  },
+	  {
+		"x": 154,
+		"y": 1027,
+		"w": 200,
 		"dir": "left",
 		"custom": true,
 		"index": 3
 	  },
 	  {
-		"x": 181,
-		"y": 982,
-		"w": 175,
-		"dir": "left",
+		"x": 603,
+		"y": 299,
+		"w": 582,
+		"dir": "right",
 		"custom": true,
-		"index": 4
+		"index": 7,
+		"title": "upScroll",
+		"name": "onRoller"
+	  },
+	  {
+		"x": 603,
+		"y": 526,
+		"w": 584,
+		"dir": "right",
+		"custom": true,
+		"index": 8,
+		"title": "downScroll",
+		"name": "underRoller"
 	  }
 	],
 	"dpi": {
@@ -71,6 +91,18 @@
 		{
 		  "value": 1000,
 		  "color": "#12ff00"
+		},
+		{
+		  "value": 2000,
+		  "color": "#e218ff"
+		},
+		{
+		  "value": 4000,
+		  "color": "#f9e14c"
+		},
+		{
+		  "value": 8000,
+		  "color": "#ffffff"
 		}
 	  ],
 	  "colors": [
@@ -95,48 +127,39 @@
 	  ],
 	  "disSensor": false
 	},
-	"light": null,
+	"light": [
+	  {
+		"value": 1,
+		"name": "soleLight"
+	  },
+	  {
+		"value": 2,
+		"name": "soleBreathe"
+	  },
+	  {
+		"value": 3,
+		"name": "fullColorCycle"
+	  }
+	],
 	"images": [
 	  {
-		"cover": "upload/cover/27/1737451132474.png",
+		"cover": "upload/cover/27/1739846156766.png",
 		"colors": [
-		  "#FFFFFF"
-		]
-	  },
-	  {
-		"cover": "upload/cover/27/1739160513053.png",
-		"colors": [
-		  "#FFC0CB"
-		]
-	  },
-	  {
-		"cover": "upload/cover/27/1739160730899.png",
-		"colors": [
+		  "#FF4500",
 		  "#000000"
 		]
 	  },
 	  {
-		"cover": "upload/cover/27/1739160758143.png",
+		"cover": "upload/cover/27/1739846257335.png",
 		"colors": [
-		  "#8B0000"
+		  "#CFE4EB",
+		  "#867A96"
 		]
 	  },
 	  {
-		"cover": "upload/cover/27/1739160807074.png",
+		"cover": "upload/cover/27/1739846198476.png",
 		"colors": [
-		  "#808000"
-		]
-	  },
-	  {
-		"cover": "upload/cover/27/1739161006539.png",
-		"colors": [
-		  "#333333"
-		]
-	  },
-	  {
-		"cover": "upload/cover/27/1739161066957.png",
-		"colors": [
-		  "#4B0082"
+		  "#000000"
 		]
 	  }
 	]

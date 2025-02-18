@@ -4,6 +4,7 @@ export const productFirmware = [
 	{productName: 'M3SMax', productID: "0x071F", PID: "0x0740"},
 	{productName: 'M3MICCROPRO', productID: "0x071E", PID: "0x073E"},
 	{productName: 'M2MOUSE', productID: "0x0713", PID: "0x0733"},
+	{productName: 'M2PRO', productID: "0x071B", PID: "0x073F"},
 	{productName: 'M5PRO', productID: "0x071C", PID: "0x073D"},
 	{productName: 'M3SPRO', productID: "0x0710", PID: "0x0722"},
 	{productName: 'N7', productID: "0x9F1", PID: "0x0744"},
