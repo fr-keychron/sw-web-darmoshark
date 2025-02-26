@@ -8,7 +8,8 @@ import {DeviceConnectService} from "../../service/device-conncet/device-connect.
 import {BaseKeyboard, EEventEnum, MouseDevice, HidDeviceEventType} from "../../common/hid-collection";
 import {ActivatedRoute, Route, Router} from "@angular/router";
 import {BridgeDevice} from "src/app/common/hid-collection/hid-device/device-dfu/bridge-device";
-import {filter, map, throttleTime} from "rxjs/operators";
+import {filter} from "rxjs/operators";
+import {GLOBAL_CONFIG} from "../../config";
 @Component({
 	selector: 'common-connect-devices',
 	templateUrl: './device-connect.component.html',
@@ -105,7 +106,7 @@ export class DeviceConnectComponent implements OnInit {
 		if (!this.service.support) return this.msg.error(s)
 		this.loading = true
 		sessionStorage.removeItem('cover');
-		this.service.requestDevice()
+		this.service.requestDevice(GLOBAL_CONFIG.deviceFilters)
 			.subscribe(
 				(r: any) => {
 					setTimeout(() => this.loading = false, 1000)
